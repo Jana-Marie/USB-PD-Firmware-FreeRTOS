@@ -30,12 +30,12 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C2_Init();
  
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-
-  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 0) {
+  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
     dfu_otter_bootloader();
   }
+
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   osKernelStart();
   
