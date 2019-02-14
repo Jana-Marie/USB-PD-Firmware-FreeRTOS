@@ -79,7 +79,10 @@
 #define OLED_SDA_GPIO_Port GPIOB
 #define OLED_PULLUP_Pin GPIO_PIN_8
 #define OLED_PULLUP_GPIO_Port GPIOB
-
+#define LED_POWER_Pin GPIO_PIN_10
+#define LED_POWER_GPIO_Port GPIOA
+#define LED_STATUS_Pin GPIO_PIN_15
+#define LED_STATUS_Port GPIOA
 /* ########################## Assert Selection ############################## */
 /**
   * @brief Uncomment the line below to expanse the "assert_param" macro in the 
