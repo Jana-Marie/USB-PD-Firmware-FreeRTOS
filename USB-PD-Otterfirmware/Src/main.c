@@ -30,10 +30,6 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C2_Init();
  
-  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
-    dfu_otter_bootloader();
-  }
-
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
@@ -46,11 +42,15 @@ int main(void)
 
 void StartDefaultTask(void const * argument)
 {
+  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
+    dfu_otter_bootloader();
+  }
+
   HAL_GPIO_TogglePin(GPIOA,LED_POWER_Pin);
   for(;;)
   {
     osDelay(1);
-    HAL_GPIO_TogglePin(GPIOA,LED_STATUS_Pin);
+     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
   }
 }
 
