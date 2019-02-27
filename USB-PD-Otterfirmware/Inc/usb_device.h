@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file           : usb_device.h
+  * @version        : v2.0_Cube
+  * @brief          : Header for usb_device.c file.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,80 +46,66 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __USB_DEVICE__H__
+#define __USB_DEVICE__H__
 
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f0xx.h"
 #include "stm32f0xx_hal.h"
+#include "usbd_def.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN INCLUDE */
 
-/* USER CODE END Includes */
+/* USER CODE END INCLUDE */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+/** @addtogroup USBD_OTG_DRIVER
+  * @{
+  */
 
-/* USER CODE END ET */
+/** @defgroup USBD_DEVICE USBD_DEVICE
+  * @brief Device file for Usb otg low level driver.
+  * @{
+  */
 
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+/** @defgroup USBD_DEVICE_Exported_Variables USBD_DEVICE_Exported_Variables
+  * @brief Public variables.
+  * @{
+  */
 
-/* USER CODE END EC */
+/**
+  * @}
+  */
 
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+/** @defgroup USBD_DEVICE_Exported_FunctionsPrototype USBD_DEVICE_Exported_FunctionsPrototype
+  * @brief Declaration of public functions for Usb device.
+  * @{
+  */
 
-/* USER CODE END EM */
+/** USB Device initialization function. */
+void MX_USB_DEVICE_Init(void);
 
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+/**
+  * @}
+  */
 
-/* USER CODE BEGIN EFP */
+/**
+  * @}
+  */
 
-/* USER CODE END EFP */
-
-/* Private defines -----------------------------------------------------------*/
-#define I_IN_Pin GPIO_PIN_1
-#define I_IN_GPIO_Port GPIOA
-#define U_IN_Pin GPIO_PIN_2
-#define U_IN_GPIO_Port GPIOA
-#define BUTTON_Pin GPIO_PIN_3
-#define BUTTON_GPIO_Port GPIOA
-#define LED_POWER_Pin GPIO_PIN_10
-#define LED_POWER_GPIO_Port GPIOA
-#define LED_STATUS_Pin GPIO_PIN_15
-#define LED_STATUS_Port GPIOA
-#define USB_SCL_Pin GPIO_PIN_10
-#define USB_SCL_GPIO_Port GPIOB
-#define USB_SDA_Pin GPIO_PIN_11
-#define USB_SDA_GPIO_Port GPIOB
-#define INT_N_Pin GPIO_PIN_12
-#define INT_N_GPIO_Port GPIOB
-#define MOSFET_Pin GPIO_PIN_3
-#define MOSFET_GPIO_Port GPIOB
-#define OLED_SCL_Pin GPIO_PIN_6
-#define OLED_SCL_GPIO_Port GPIOB
-#define OLED_SDA_Pin GPIO_PIN_7
-#define OLED_SDA_GPIO_Port GPIOB
-#define OLED_PULLUP_Pin GPIO_PIN_8
-#define OLED_PULLUP_GPIO_Port GPIOB
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H */
+#endif /* __USB_DEVICE__H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

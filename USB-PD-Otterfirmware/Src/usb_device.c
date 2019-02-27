@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file           : usb_device.c
+  * @version        : v2.0_Cube
+  * @brief          : This file implements the USB Device
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,80 +46,76 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f0xx_hal.h"
 
-/* Private includes ----------------------------------------------------------*/
+#include "usb_device.h"
+#include "usbd_core.h"
+#include "usbd_desc.h"
+#include "usbd_cdc.h"
+#include "usbd_cdc_if.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
 
-/* USER CODE END ET */
+/* USER CODE END PV */
 
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+/* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
 
-/* USER CODE END EC */
+/* USER CODE END PFP */
 
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+/* USB Device Core handle declaration. */
+USBD_HandleTypeDef hUsbDeviceFS;
 
-/* USER CODE END EM */
+/*
+ * -- Insert your variables declaration here --
+ */
+/* USER CODE BEGIN 0 */
 
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+/* USER CODE END 0 */
 
-/* USER CODE BEGIN EFP */
+/*
+ * -- Insert your external function declaration here --
+ */
+/* USER CODE BEGIN 1 */
 
-/* USER CODE END EFP */
+/* USER CODE END 1 */
 
-/* Private defines -----------------------------------------------------------*/
-#define I_IN_Pin GPIO_PIN_1
-#define I_IN_GPIO_Port GPIOA
-#define U_IN_Pin GPIO_PIN_2
-#define U_IN_GPIO_Port GPIOA
-#define BUTTON_Pin GPIO_PIN_3
-#define BUTTON_GPIO_Port GPIOA
-#define LED_POWER_Pin GPIO_PIN_10
-#define LED_POWER_GPIO_Port GPIOA
-#define LED_STATUS_Pin GPIO_PIN_15
-#define LED_STATUS_Port GPIOA
-#define USB_SCL_Pin GPIO_PIN_10
-#define USB_SCL_GPIO_Port GPIOB
-#define USB_SDA_Pin GPIO_PIN_11
-#define USB_SDA_GPIO_Port GPIOB
-#define INT_N_Pin GPIO_PIN_12
-#define INT_N_GPIO_Port GPIOB
-#define MOSFET_Pin GPIO_PIN_3
-#define MOSFET_GPIO_Port GPIOB
-#define OLED_SCL_Pin GPIO_PIN_6
-#define OLED_SCL_GPIO_Port GPIOB
-#define OLED_SDA_Pin GPIO_PIN_7
-#define OLED_SDA_GPIO_Port GPIOB
-#define OLED_PULLUP_Pin GPIO_PIN_8
-#define OLED_PULLUP_GPIO_Port GPIOB
+/**
+  * Init USB device Library, add supported class and start the library
+  * @retval None
+  */
+void MX_USB_DEVICE_Init(void)
+{
+  /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
+  
+  /* USER CODE END USB_DEVICE_Init_PreTreatment */
+  
+  /* Init Device Library, add supported class and start the library. */
+  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
-/* USER CODE BEGIN Private defines */
+  USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC);
 
-/* USER CODE END Private defines */
+  USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS);
 
-#ifdef __cplusplus
+  USBD_Start(&hUsbDeviceFS);
+
+  /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
+  
+  /* USER CODE END USB_DEVICE_Init_PostTreatment */
 }
-#endif
 
-#endif /* __MAIN_H */
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -2,6 +2,7 @@
 
 #include "stm32f0xx_hal.h"
 #include "init.h"
+#include "main.h"
 
 void SystemClock_Config(void);
 void MX_GPIO_Init(void);

@@ -1,13 +1,17 @@
 /**
   ******************************************************************************
-  * @file    usbpd_pdo_defs.h
-  * @author  MCD Application Team
-  * @brief   This file contains selection of H file for PDO definition.
+  * @file           : usbd_cdc_if.h
+  * @version        : v2.0_Cube
+  * @brief          : Header for usbd_cdc_if.c file.
   ******************************************************************************
-  * @attention
+  * This notice applies to any and all portions of this file
+  * that are not between comment pairs USER CODE BEGIN and
+  * USER CODE END. Other portions of this file, whether 
+  * inserted by the user or by software development tools
+  * are owned by their respective copyright owners.
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V. 
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2019 STMicroelectronics International N.V. 
+  * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
   * modification, are permitted, provided that the following conditions are met:
@@ -43,40 +47,112 @@
   ******************************************************************************
   */
 
-#ifndef __USBPD_PDO_DEF_H_
-#define __USBPD_PDO_DEF_H_
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __USBD_CDC_IF_H__
+#define __USBD_CDC_IF_H__
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
 /* Includes ------------------------------------------------------------------*/
-#if USBPD_PORT_COUNT == 1
-     
-#if defined(_DRP)
-#include "usbpd_pdo_defs_Drp_1Port.h"
-#elif defined(_SRC)
-#include "usbpd_pdo_defs_Src_1Port.h"
-#elif defined(_SNK)
-#include "usbpd_pdo_defs_Snk_1Port.h"
-#else
-#error "Unknown PDO definition file"
-#endif
+#include "usbd_cdc.h"
 
-#elif USBPD_PORT_COUNT == 2
+/* USER CODE BEGIN INCLUDE */
 
-#include "usbpd_pdo_defs_Drp_2Ports.h"
+/* USER CODE END INCLUDE */
 
-#else
-#error "Unexpected nb of Ports for selecting PDO definition file"
-#endif
+/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+  * @brief For Usb device.
+  * @{
+  */
+  
+/** @defgroup USBD_CDC_IF USBD_CDC_IF
+  * @brief Usb VCP device module
+  * @{
+  */ 
 
+/** @defgroup USBD_CDC_IF_Exported_Defines USBD_CDC_IF_Exported_Defines
+  * @brief Defines.
+  * @{
+  */
+/* USER CODE BEGIN EXPORTED_DEFINES */
+
+/* USER CODE END EXPORTED_DEFINES */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_CDC_IF_Exported_Types USBD_CDC_IF_Exported_Types
+  * @brief Types.
+  * @{
+  */
+
+/* USER CODE BEGIN EXPORTED_TYPES */
+
+/* USER CODE END EXPORTED_TYPES */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_CDC_IF_Exported_Macros USBD_CDC_IF_Exported_Macros
+  * @brief Aliases.
+  * @{
+  */
+
+/* USER CODE BEGIN EXPORTED_MACRO */
+
+/* USER CODE END EXPORTED_MACRO */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_CDC_IF_Exported_Variables USBD_CDC_IF_Exported_Variables
+  * @brief Public variables.
+  * @{
+  */
+
+/** CDC Interface callback. */
+extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
+
+/* USER CODE BEGIN EXPORTED_VARIABLES */
+
+/* USER CODE END EXPORTED_VARIABLES */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype USBD_CDC_IF_Exported_FunctionsPrototype
+  * @brief Public functions declaration.
+  * @{
+  */
+
+uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
+
+/* USER CODE BEGIN EXPORTED_FUNCTIONS */
+
+/* USER CODE END EXPORTED_FUNCTIONS */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __USBPD_PDO_DEF_H_ */
+#endif /* __USBD_CDC_IF_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

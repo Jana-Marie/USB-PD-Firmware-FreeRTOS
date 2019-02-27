@@ -1,9 +1,8 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file           : usbd_desc.c
+  * @version        : v2.0_Cube
+  * @brief          : Header for usbd_conf.c file.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,80 +46,110 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __USBD_DESC__C__
+#define __USBD_DESC__C__
 
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f0xx_hal.h"
+#include "usbd_def.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN INCLUDE */
 
-/* USER CODE END Includes */
+/* USER CODE END INCLUDE */
 
-/* Exported types ------------------------------------------------------------*/
-/* USER CODE BEGIN ET */
+/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+  * @{
+  */
 
-/* USER CODE END ET */
+/** @defgroup USBD_DESC USBD_DESC
+  * @brief Usb device descriptors module.
+  * @{
+  */
 
-/* Exported constants --------------------------------------------------------*/
-/* USER CODE BEGIN EC */
+/** @defgroup USBD_DESC_Exported_Defines USBD_DESC_Exported_Defines
+  * @brief Defines.
+  * @{
+  */
 
-/* USER CODE END EC */
+/* USER CODE BEGIN EXPORTED_DEFINES */
 
-/* Exported macro ------------------------------------------------------------*/
-/* USER CODE BEGIN EM */
+/* USER CODE END EXPORTED_DEFINES */
 
-/* USER CODE END EM */
+/**
+  * @}
+  */
 
-/* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
+/** @defgroup USBD_DESC_Exported_TypesDefinitions USBD_DESC_Exported_TypesDefinitions
+  * @brief Types.
+  * @{
+  */
 
-/* USER CODE BEGIN EFP */
+/* USER CODE BEGIN EXPORTED_TYPES */
 
-/* USER CODE END EFP */
+/* USER CODE END EXPORTED_TYPES */
 
-/* Private defines -----------------------------------------------------------*/
-#define I_IN_Pin GPIO_PIN_1
-#define I_IN_GPIO_Port GPIOA
-#define U_IN_Pin GPIO_PIN_2
-#define U_IN_GPIO_Port GPIOA
-#define BUTTON_Pin GPIO_PIN_3
-#define BUTTON_GPIO_Port GPIOA
-#define LED_POWER_Pin GPIO_PIN_10
-#define LED_POWER_GPIO_Port GPIOA
-#define LED_STATUS_Pin GPIO_PIN_15
-#define LED_STATUS_Port GPIOA
-#define USB_SCL_Pin GPIO_PIN_10
-#define USB_SCL_GPIO_Port GPIOB
-#define USB_SDA_Pin GPIO_PIN_11
-#define USB_SDA_GPIO_Port GPIOB
-#define INT_N_Pin GPIO_PIN_12
-#define INT_N_GPIO_Port GPIOB
-#define MOSFET_Pin GPIO_PIN_3
-#define MOSFET_GPIO_Port GPIOB
-#define OLED_SCL_Pin GPIO_PIN_6
-#define OLED_SCL_GPIO_Port GPIOB
-#define OLED_SDA_Pin GPIO_PIN_7
-#define OLED_SDA_GPIO_Port GPIOB
-#define OLED_PULLUP_Pin GPIO_PIN_8
-#define OLED_PULLUP_GPIO_Port GPIOB
+/**
+  * @}
+  */
 
-/* USER CODE BEGIN Private defines */
+/** @defgroup USBD_DESC_Exported_Macros USBD_DESC_Exported_Macros
+  * @brief Aliases.
+  * @{
+  */
 
-/* USER CODE END Private defines */
+/* USER CODE BEGIN EXPORTED_MACRO */
+
+/* USER CODE END EXPORTED_MACRO */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_DESC_Exported_Variables USBD_DESC_Exported_Variables
+  * @brief Public variables.
+  * @{
+  */
+
+/** Descriptor for the Usb device. */
+extern USBD_DescriptorsTypeDef FS_Desc;
+
+/* USER CODE BEGIN EXPORTED_VARIABLES */
+
+/* USER CODE END EXPORTED_VARIABLES */
+
+/**
+  * @}
+  */
+
+/** @defgroup USBD_DESC_Exported_FunctionsPrototype USBD_DESC_Exported_FunctionsPrototype
+  * @brief Public functions declaration.
+  * @{
+  */
+
+/* USER CODE BEGIN EXPORTED_FUNCTIONS */
+
+/* USER CODE END EXPORTED_FUNCTIONS */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H */
+#endif /* __USBD_DESC__C__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

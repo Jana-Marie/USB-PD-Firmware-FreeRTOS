@@ -1,8 +1,7 @@
 #include "main.h"
-#include "stm32f0xx_hal.h"
 #include "cmsis_os.h"
+#include "usb_device.h"
 #include "init.h"
-#include <stdint.h>
 
 extern ADC_HandleTypeDef hadc;
 extern DMA_HandleTypeDef hdma_adc;
@@ -16,12 +15,18 @@ extern DMA_HandleTypeDef hdma_i2c2_tx;
 
 osThreadId defaultTaskHandle;
 
-void dfu_otter_bootloader(void);
+void SystemClock_Config(void);
+void MX_GPIO_Init(void);
+void MX_DMA_Init(void);
+void MX_ADC_Init(void);
+void MX_I2C1_Init(void);
+void MX_I2C2_Init(void);
 void StartDefaultTask(void const * argument);
 
 int main(void)
 {
   HAL_Init();
+
   SystemClock_Config();
 
   MX_GPIO_Init();
@@ -29,28 +34,14 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
- 
+
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   osKernelStart();
-  
+
   while (1)
   {
-  }
-}
-
-void StartDefaultTask(void const * argument)
-{
-  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
-    dfu_otter_bootloader();
-  }
-
-  HAL_GPIO_TogglePin(GPIOA,LED_POWER_Pin);
-  for(;;)
-  {
-    osDelay(1);
-     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
   }
 }
 
@@ -60,17 +51,35 @@ void dfu_otter_bootloader(void)
   NVIC_SystemReset();
 }
 
-void _Error_Handler(char *file, int line)
+void StartDefaultTask(void const * argument)
 {
-  while(1)
+  if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
+    dfu_otter_bootloader();
+  }  
+
+  MX_USB_DEVICE_Init();
+
+  HAL_GPIO_WritePin(GPIOA,LED_POWER_Pin,1);
+
+  char str[100];
+  uint8_t i = 0;
+  for(;;)
   {
+    i++;
+    osDelay(1);
+    HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
+    sprintf(str,"Otter! %d\n\r",i);
+    CDC_Transmit_FS(str,sizeof(str));
   }
 }
 
+void Error_Handler(void)
+{
+
+}
+
 #ifdef  USE_FULL_ASSERT
-
-void assert_failed(uint8_t* file, uint32_t line)
+void assert_failed(char *file, uint32_t line)
 { 
-
 }
 #endif /* USE_FULL_ASSERT */

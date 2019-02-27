@@ -173,7 +173,6 @@ void SystemInit(void)
       SysMemBootJump();
       while (1);
   }
-
   /* Reset the RCC clock configuration to the default reset state ------------*/
   /* Set HSION bit */
   RCC->CR |= (uint32_t)0x00000001U;
