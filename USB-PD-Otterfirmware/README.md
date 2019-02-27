@@ -6,6 +6,8 @@ Todo:
 
  - [ ] USB-PD
  - [ ] ADC
- - [ ] FET
- - [ ] LEDs
+ - [x] FET
+ - [x] LEDs
+ - [x] USB-CDC
+ - [x] USB-DFU
  - [ ] Display
