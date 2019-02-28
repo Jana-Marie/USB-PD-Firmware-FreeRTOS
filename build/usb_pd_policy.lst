@@ -1,0 +1,1996 @@
+ARM GAS  /tmp/cc4k6GfE.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usb_pd_policy.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.stub_pd_board_check_request,"ax",%progbits
+  16              		.align	1
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	stub_pd_board_check_request:
+  23              	.LFB19:
+  24              		.file 1 "Src/usb_pd_policy.c"
+   1:Src/usb_pd_policy.c **** /* Copyright (c) 2014 The Chromium OS Authors. All rights reserved.
+   2:Src/usb_pd_policy.c ****  * Use of this source code is governed by a BSD-style license that can be
+   3:Src/usb_pd_policy.c ****  * found in the LICENSE file.
+   4:Src/usb_pd_policy.c ****  */
+   5:Src/usb_pd_policy.c **** 
+   6:Src/usb_pd_policy.c **** //#include "atomic.h"
+   7:Src/usb_pd_policy.c **** //#include "charge_manager.h"
+   8:Src/usb_pd_policy.c **** //#include "common.h"
+   9:Src/usb_pd_policy.c **** //#include "console.h"
+  10:Src/usb_pd_policy.c **** //#include "flash.h"
+  11:Src/usb_pd_policy.c **** //#include "gpio.h"
+  12:Src/usb_pd_policy.c **** //#include "hooks.h"
+  13:Src/usb_pd_policy.c **** //#include "host_command.h"
+  14:Src/usb_pd_policy.c **** //#include "registers.h"
+  15:Src/usb_pd_policy.c **** //#include "rsa.h"
+  16:Src/usb_pd_policy.c **** //#include "sha256.h"
+  17:Src/usb_pd_policy.c **** //#include "system.h"
+  18:Src/usb_pd_policy.c **** //#include "task.h"
+  19:Src/usb_pd_policy.c **** #include "tcpm.h"
+  20:Src/usb_pd_policy.c **** //#include "timer.h"
+  21:Src/usb_pd_policy.c **** //#include "util.h"
+  22:Src/usb_pd_policy.c **** //#include "usb_api.h"
+  23:Src/usb_pd_policy.c **** #include "usb_pd.h"
+  24:Src/usb_pd_policy.c **** //#include "version.h"
+  25:Src/usb_pd_policy.c **** 
+  26:Src/usb_pd_policy.c **** #ifdef CONFIG_COMMON_RUNTIME
+  27:Src/usb_pd_policy.c **** #define CPRINTS(format, args...) cprints(CC_USBPD, format, ## args)
+  28:Src/usb_pd_policy.c **** #define CPRINTF(format, args...) cprintf(CC_USBPD, format, ## args)
+  29:Src/usb_pd_policy.c **** #else
+  30:Src/usb_pd_policy.c **** #define CPRINTS(format, args...)
+  31:Src/usb_pd_policy.c **** #define CPRINTF(format, args...)
+  32:Src/usb_pd_policy.c **** #endif
+  33:Src/usb_pd_policy.c **** 
+  34:Src/usb_pd_policy.c **** static int rw_flash_changed = 1;
+ARM GAS  /tmp/cc4k6GfE.s 			page 2
+
+
+  35:Src/usb_pd_policy.c **** 
+  36:Src/usb_pd_policy.c **** int pd_check_requested_voltage(uint32_t rdo, const int port)
+  37:Src/usb_pd_policy.c **** {
+  38:Src/usb_pd_policy.c **** 	int max_ma = rdo & 0x3FF;
+  39:Src/usb_pd_policy.c **** 	int op_ma = (rdo >> 10) & 0x3FF;
+  40:Src/usb_pd_policy.c **** 	int idx = RDO_POS(rdo);
+  41:Src/usb_pd_policy.c **** 	uint32_t pdo;
+  42:Src/usb_pd_policy.c **** 	uint32_t pdo_ma;
+  43:Src/usb_pd_policy.c **** #if defined(CONFIG_USB_PD_DYNAMIC_SRC_CAP) || \
+  44:Src/usb_pd_policy.c **** 		defined(CONFIG_USB_PD_MAX_SINGLE_SOURCE_CURRENT)
+  45:Src/usb_pd_policy.c **** 	const uint32_t *src_pdo;
+  46:Src/usb_pd_policy.c **** 	const int pdo_cnt = charge_manager_get_source_pdo(&src_pdo, port);
+  47:Src/usb_pd_policy.c **** #else
+  48:Src/usb_pd_policy.c **** 	const uint32_t *src_pdo = pd_src_pdo;
+  49:Src/usb_pd_policy.c **** 	const int pdo_cnt = pd_src_pdo_cnt;
+  50:Src/usb_pd_policy.c **** #endif
+  51:Src/usb_pd_policy.c **** 
+  52:Src/usb_pd_policy.c **** 	/* Board specific check for this request */
+  53:Src/usb_pd_policy.c **** 	if (pd_board_check_request(rdo, pdo_cnt))
+  54:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL;
+  55:Src/usb_pd_policy.c **** 
+  56:Src/usb_pd_policy.c **** 	/* check current ... */
+  57:Src/usb_pd_policy.c **** 	pdo = src_pdo[idx - 1];
+  58:Src/usb_pd_policy.c **** 	pdo_ma = (pdo & 0x3ff);
+  59:Src/usb_pd_policy.c **** 	if (op_ma > pdo_ma)
+  60:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL; /* too much op current */
+  61:Src/usb_pd_policy.c **** 	if (max_ma > pdo_ma && !(rdo & RDO_CAP_MISMATCH))
+  62:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL; /* too much max current */
+  63:Src/usb_pd_policy.c **** 
+  64:Src/usb_pd_policy.c **** 	CPRINTF("Requested %d V %d mA (for %d/%d mA)\n",
+  65:Src/usb_pd_policy.c **** 		 ((pdo >> 10) & 0x3ff) * 50, (pdo & 0x3ff) * 10,
+  66:Src/usb_pd_policy.c **** 		 op_ma * 10, max_ma * 10);
+  67:Src/usb_pd_policy.c **** 
+  68:Src/usb_pd_policy.c **** 	/* Accept the requested voltage */
+  69:Src/usb_pd_policy.c **** 	return EC_SUCCESS;
+  70:Src/usb_pd_policy.c **** }
+  71:Src/usb_pd_policy.c **** 
+  72:Src/usb_pd_policy.c **** static int stub_pd_board_check_request(uint32_t rdo, int pdo_cnt)
+  73:Src/usb_pd_policy.c **** {
+  25              		.loc 1 73 0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		@ link register save eliminated.
+  30              	.LVL0:
+  74:Src/usb_pd_policy.c **** 	int idx = RDO_POS(rdo);
+  31              		.loc 1 74 0
+  32 0000 030F     		lsrs	r3, r0, #28
+  33 0002 0720     		movs	r0, #7
+  34              	.LVL1:
+  35 0004 1840     		ands	r0, r3
+  36              	.LVL2:
+  75:Src/usb_pd_policy.c **** 
+  76:Src/usb_pd_policy.c **** 	/* Check for invalid index */
+  77:Src/usb_pd_policy.c **** 	return (!idx || idx > pdo_cnt) ?
+  78:Src/usb_pd_policy.c **** 		EC_ERROR_INVAL : EC_SUCCESS;
+  37              		.loc 1 78 0
+ARM GAS  /tmp/cc4k6GfE.s 			page 3
+
+
+  38 0006 05D0     		beq	.L3
+  77:Src/usb_pd_policy.c **** 		EC_ERROR_INVAL : EC_SUCCESS;
+  39              		.loc 1 77 0
+  40 0008 8842     		cmp	r0, r1
+  41 000a 01DC     		bgt	.L5
+  42              		.loc 1 78 0
+  43 000c 0020     		movs	r0, #0
+  44              	.LVL3:
+  45              	.L1:
+  79:Src/usb_pd_policy.c **** }
+  46              		.loc 1 79 0
+  47              		@ sp needed
+  48 000e 7047     		bx	lr
+  49              	.LVL4:
+  50              	.L5:
+  78:Src/usb_pd_policy.c **** }
+  51              		.loc 1 78 0
+  52 0010 0520     		movs	r0, #5
+  53              	.LVL5:
+  54 0012 FCE7     		b	.L1
+  55              	.LVL6:
+  56              	.L3:
+  57 0014 0520     		movs	r0, #5
+  58              	.LVL7:
+  59 0016 FAE7     		b	.L1
+  60              		.cfi_endproc
+  61              	.LFE19:
+  63              		.weak	pd_board_check_request
+  64              		.thumb_set pd_board_check_request,stub_pd_board_check_request
+  65              		.section	.text.pd_check_requested_voltage,"ax",%progbits
+  66              		.align	1
+  67              		.global	pd_check_requested_voltage
+  68              		.syntax unified
+  69              		.code	16
+  70              		.thumb_func
+  71              		.fpu softvfp
+  73              	pd_check_requested_voltage:
+  74              	.LFB18:
+  37:Src/usb_pd_policy.c **** 	int max_ma = rdo & 0x3FF;
+  75              		.loc 1 37 0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              	.LVL8:
+  80 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  81              	.LCFI0:
+  82              		.cfi_def_cfa_offset 24
+  83              		.cfi_offset 3, -24
+  84              		.cfi_offset 4, -20
+  85              		.cfi_offset 5, -16
+  86              		.cfi_offset 6, -12
+  87              		.cfi_offset 7, -8
+  88              		.cfi_offset 14, -4
+  89 0002 0600     		movs	r6, r0
+  38:Src/usb_pd_policy.c **** 	int op_ma = (rdo >> 10) & 0x3FF;
+  90              		.loc 1 38 0
+  91 0004 8705     		lsls	r7, r0, #22
+ARM GAS  /tmp/cc4k6GfE.s 			page 4
+
+
+  92 0006 BF0D     		lsrs	r7, r7, #22
+  93              	.LVL9:
+  39:Src/usb_pd_policy.c **** 	int idx = RDO_POS(rdo);
+  94              		.loc 1 39 0
+  95 0008 850A     		lsrs	r5, r0, #10
+  96 000a AD05     		lsls	r5, r5, #22
+  97 000c AD0D     		lsrs	r5, r5, #22
+  98              	.LVL10:
+  40:Src/usb_pd_policy.c **** 	uint32_t pdo;
+  99              		.loc 1 40 0
+ 100 000e 040F     		lsrs	r4, r0, #28
+ 101 0010 0723     		movs	r3, #7
+ 102 0012 1C40     		ands	r4, r3
+ 103              	.LVL11:
+  49:Src/usb_pd_policy.c **** #endif
+ 104              		.loc 1 49 0
+ 105 0014 0C4B     		ldr	r3, .L11
+ 106 0016 1968     		ldr	r1, [r3]
+ 107              	.LVL12:
+  53:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL;
+ 108              		.loc 1 53 0
+ 109 0018 FFF7FEFF 		bl	pd_board_check_request
+ 110              	.LVL13:
+ 111 001c 0028     		cmp	r0, #0
+ 112 001e 0ED1     		bne	.L8
+  57:Src/usb_pd_policy.c **** 	pdo_ma = (pdo & 0x3ff);
+ 113              		.loc 1 57 0
+ 114 0020 0A4B     		ldr	r3, .L11+4
+ 115 0022 E318     		adds	r3, r4, r3
+ 116 0024 9B00     		lsls	r3, r3, #2
+ 117 0026 0A4A     		ldr	r2, .L11+8
+ 118 0028 D358     		ldr	r3, [r2, r3]
+ 119              	.LVL14:
+  58:Src/usb_pd_policy.c **** 	if (op_ma > pdo_ma)
+ 120              		.loc 1 58 0
+ 121 002a 9B05     		lsls	r3, r3, #22
+ 122              	.LVL15:
+ 123 002c 9B0D     		lsrs	r3, r3, #22
+ 124              	.LVL16:
+  59:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL; /* too much op current */
+ 125              		.loc 1 59 0
+ 126 002e 9D42     		cmp	r5, r3
+ 127 0030 07D8     		bhi	.L9
+  61:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL; /* too much max current */
+ 128              		.loc 1 61 0
+ 129 0032 9F42     		cmp	r7, r3
+ 130 0034 04D9     		bls	.L6
+  61:Src/usb_pd_policy.c **** 		return EC_ERROR_INVAL; /* too much max current */
+ 131              		.loc 1 61 0 is_stmt 0 discriminator 1
+ 132 0036 7301     		lsls	r3, r6, #5
+ 133 0038 02D4     		bmi	.L6
+ 134              	.LVL17:
+  62:Src/usb_pd_policy.c **** 
+ 135              		.loc 1 62 0 is_stmt 1
+ 136 003a 0520     		movs	r0, #5
+ 137 003c 00E0     		b	.L6
+ 138              	.LVL18:
+ARM GAS  /tmp/cc4k6GfE.s 			page 5
+
+
+ 139              	.L8:
+  54:Src/usb_pd_policy.c **** 
+ 140              		.loc 1 54 0
+ 141 003e 0520     		movs	r0, #5
+ 142              	.L6:
+  70:Src/usb_pd_policy.c **** 
+ 143              		.loc 1 70 0
+ 144              		@ sp needed
+ 145              	.LVL19:
+ 146              	.LVL20:
+ 147              	.LVL21:
+ 148              	.LVL22:
+ 149 0040 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 150              	.LVL23:
+ 151              	.L9:
+  60:Src/usb_pd_policy.c **** 	if (max_ma > pdo_ma && !(rdo & RDO_CAP_MISMATCH))
+ 152              		.loc 1 60 0
+ 153 0042 0520     		movs	r0, #5
+ 154 0044 FCE7     		b	.L6
+ 155              	.L12:
+ 156 0046 C046     		.align	2
+ 157              	.L11:
+ 158 0048 00000000 		.word	pd_src_pdo_cnt
+ 159 004c FFFFFF3F 		.word	1073741823
+ 160 0050 00000000 		.word	pd_src_pdo
+ 161              		.cfi_endproc
+ 162              	.LFE18:
+ 164              		.section	.text.pd_find_pdo_index,"ax",%progbits
+ 165              		.align	1
+ 166              		.global	pd_find_pdo_index
+ 167              		.syntax unified
+ 168              		.code	16
+ 169              		.thumb_func
+ 170              		.fpu softvfp
+ 172              	pd_find_pdo_index:
+ 173              	.LFB20:
+  80:Src/usb_pd_policy.c **** int pd_board_check_request(uint32_t, int)
+  81:Src/usb_pd_policy.c **** 	__attribute__((weak, alias("stub_pd_board_check_request")));
+  82:Src/usb_pd_policy.c **** 
+  83:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_DUAL_ROLE
+  84:Src/usb_pd_policy.c **** /* Last received source cap */
+  85:Src/usb_pd_policy.c **** static uint32_t pd_src_caps[CONFIG_USB_PD_PORT_COUNT][PDO_MAX_OBJECTS];
+  86:Src/usb_pd_policy.c **** static uint8_t pd_src_cap_cnt[CONFIG_USB_PD_PORT_COUNT];
+  87:Src/usb_pd_policy.c **** 
+  88:Src/usb_pd_policy.c **** /* Cap on the max voltage requested as a sink (in millivolts) */
+  89:Src/usb_pd_policy.c **** static unsigned max_request_mv = PD_MAX_VOLTAGE_MV; /* no cap */
+  90:Src/usb_pd_policy.c **** 
+  91:Src/usb_pd_policy.c **** int pd_find_pdo_index(int port, int max_mv, uint32_t *selected_pdo)
+  92:Src/usb_pd_policy.c **** {
+ 174              		.loc 1 92 0
+ 175              		.cfi_startproc
+ 176              		@ args = 0, pretend = 0, frame = 8
+ 177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 178              	.LVL24:
+ 179 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 180              	.LCFI1:
+ 181              		.cfi_def_cfa_offset 20
+ARM GAS  /tmp/cc4k6GfE.s 			page 6
+
+
+ 182              		.cfi_offset 4, -20
+ 183              		.cfi_offset 5, -16
+ 184              		.cfi_offset 6, -12
+ 185              		.cfi_offset 7, -8
+ 186              		.cfi_offset 14, -4
+ 187 0002 DE46     		mov	lr, fp
+ 188 0004 5746     		mov	r7, r10
+ 189 0006 4E46     		mov	r6, r9
+ 190 0008 4546     		mov	r5, r8
+ 191 000a E0B5     		push	{r5, r6, r7, lr}
+ 192              	.LCFI2:
+ 193              		.cfi_def_cfa_offset 36
+ 194              		.cfi_offset 8, -36
+ 195              		.cfi_offset 9, -32
+ 196              		.cfi_offset 10, -28
+ 197              		.cfi_offset 11, -24
+ 198 000c 83B0     		sub	sp, sp, #12
+ 199              	.LCFI3:
+ 200              		.cfi_def_cfa_offset 48
+ 201 000e 8046     		mov	r8, r0
+ 202 0010 9346     		mov	fp, r2
+ 203              	.LVL25:
+  93:Src/usb_pd_policy.c **** 	int i, uw, mv, ma;
+  94:Src/usb_pd_policy.c **** 	int ret = 0;
+  95:Src/usb_pd_policy.c **** 	int __attribute__((unused)) cur_mv = 0;
+  96:Src/usb_pd_policy.c **** 	int cur_uw = 0;
+  97:Src/usb_pd_policy.c **** 	int prefer_cur;
+  98:Src/usb_pd_policy.c **** 	const uint32_t *src_caps = pd_src_caps[port];
+ 204              		.loc 1 98 0
+ 205 0012 C300     		lsls	r3, r0, #3
+ 206 0014 1B1A     		subs	r3, r3, r0
+ 207 0016 9F00     		lsls	r7, r3, #2
+ 208 0018 2E4B     		ldr	r3, .L26
+ 209 001a DF19     		adds	r7, r3, r7
+ 210              	.LVL26:
+ 211              	.LBB2:
+  99:Src/usb_pd_policy.c **** 
+ 100:Src/usb_pd_policy.c **** 	/* max voltage is always limited by this boards max request */
+ 101:Src/usb_pd_policy.c **** 	max_mv = MIN(max_mv, PD_MAX_VOLTAGE_MV);
+ 212              		.loc 1 101 0
+ 213 001c 8A46     		mov	r10, r1
+ 214 001e 2E4B     		ldr	r3, .L26+4
+ 215 0020 9942     		cmp	r1, r3
+ 216 0022 00DD     		ble	.L14
+ 217 0024 9A46     		mov	r10, r3
+ 218              	.L14:
+ 219              	.LVL27:
+ 220              	.LBE2:
+  96:Src/usb_pd_policy.c **** 	int prefer_cur;
+ 221              		.loc 1 96 0
+ 222 0026 0023     		movs	r3, #0
+ 223 0028 9946     		mov	r9, r3
+  94:Src/usb_pd_policy.c **** 	int __attribute__((unused)) cur_mv = 0;
+ 224              		.loc 1 94 0
+ 225 002a 0193     		str	r3, [sp, #4]
+ 102:Src/usb_pd_policy.c **** 
+ 103:Src/usb_pd_policy.c **** 	/* Get max power that is under our max voltage input */
+ARM GAS  /tmp/cc4k6GfE.s 			page 7
+
+
+ 104:Src/usb_pd_policy.c **** 	for (i = 0; i < pd_src_cap_cnt[port]; i++) {
+ 226              		.loc 1 104 0
+ 227 002c 0024     		movs	r4, #0
+ 228 002e 15E0     		b	.L15
+ 229              	.LVL28:
+ 230              	.L25:
+ 105:Src/usb_pd_policy.c **** 		/* its an unsupported Augmented PDO (PD3.0) */
+ 106:Src/usb_pd_policy.c **** 		if ((src_caps[i] & PDO_TYPE_MASK) == PDO_TYPE_AUGMENTED)
+ 107:Src/usb_pd_policy.c **** 			continue;
+ 108:Src/usb_pd_policy.c **** 
+ 109:Src/usb_pd_policy.c **** 		mv = ((src_caps[i] >> 10) & 0x3FF) * 50;
+ 110:Src/usb_pd_policy.c **** 		/* Skip invalid voltage */
+ 111:Src/usb_pd_policy.c **** 		if (!mv)
+ 112:Src/usb_pd_policy.c **** 			continue;
+ 113:Src/usb_pd_policy.c **** 		/* Skip any voltage not supported by this board */
+ 114:Src/usb_pd_policy.c **** 		if (!pd_is_valid_input_voltage(mv))
+ 115:Src/usb_pd_policy.c **** 			continue;
+ 116:Src/usb_pd_policy.c **** 
+ 117:Src/usb_pd_policy.c **** 		if ((src_caps[i] & PDO_TYPE_MASK) == PDO_TYPE_BATTERY) {
+ 118:Src/usb_pd_policy.c **** 			uw = 250000 * (src_caps[i] & 0x3FF);
+ 231              		.loc 1 118 0
+ 232 0030 9B05     		lsls	r3, r3, #22
+ 233 0032 9B0D     		lsrs	r3, r3, #22
+ 234 0034 5901     		lsls	r1, r3, #5
+ 235 0036 C91A     		subs	r1, r1, r3
+ 236 0038 8A01     		lsls	r2, r1, #6
+ 237 003a 521A     		subs	r2, r2, r1
+ 238 003c D200     		lsls	r2, r2, #3
+ 239 003e D218     		adds	r2, r2, r3
+ 240 0040 1301     		lsls	r3, r2, #4
+ 241              	.LVL29:
+ 242 0042 00E0     		b	.L18
+ 243              	.LVL30:
+ 244              	.L19:
+ 119:Src/usb_pd_policy.c **** 		} else {
+ 120:Src/usb_pd_policy.c **** 			ma = (src_caps[i] & 0x3FF) * 10;
+ 121:Src/usb_pd_policy.c **** 			ma = MIN(ma, PD_MAX_CURRENT_MA);
+ 122:Src/usb_pd_policy.c **** 			uw = ma * mv;
+ 245              		.loc 1 122 0
+ 246 0044 7343     		muls	r3, r6
+ 247              	.LVL31:
+ 248              	.L18:
+ 123:Src/usb_pd_policy.c **** 		}
+ 124:Src/usb_pd_policy.c **** 
+ 125:Src/usb_pd_policy.c **** 		if (mv > max_mv)
+ 249              		.loc 1 125 0
+ 250 0046 B245     		cmp	r10, r6
+ 251 0048 07DB     		blt	.L16
+ 252              	.LVL32:
+ 253              	.LBB3:
+ 126:Src/usb_pd_policy.c **** 			continue;
+ 127:Src/usb_pd_policy.c **** 		uw = MIN(uw, PD_MAX_POWER_MW * 1000);
+ 254              		.loc 1 127 0
+ 255 004a 244A     		ldr	r2, .L26+8
+ 256 004c 9342     		cmp	r3, r2
+ 257 004e 00DD     		ble	.L20
+ 258 0050 1300     		movs	r3, r2
+ARM GAS  /tmp/cc4k6GfE.s 			page 8
+
+
+ 259              	.LVL33:
+ 260              	.L20:
+ 261              	.LBE3:
+ 128:Src/usb_pd_policy.c **** 		prefer_cur = 0;
+ 129:Src/usb_pd_policy.c **** 
+ 130:Src/usb_pd_policy.c **** 		/* Apply special rules in case of 'tie' */
+ 131:Src/usb_pd_policy.c **** #ifdef PD_PREFER_LOW_VOLTAGE
+ 132:Src/usb_pd_policy.c **** 		if (uw == cur_uw && mv < cur_mv)
+ 133:Src/usb_pd_policy.c **** 			prefer_cur = 1;
+ 134:Src/usb_pd_policy.c **** #elif defined(PD_PREFER_HIGH_VOLTAGE)
+ 135:Src/usb_pd_policy.c **** 		if (uw == cur_uw && mv > cur_mv)
+ 136:Src/usb_pd_policy.c **** 			prefer_cur = 1;
+ 137:Src/usb_pd_policy.c **** #endif
+ 138:Src/usb_pd_policy.c **** 		/* Prefer higher power, except for tiebreaker */
+ 139:Src/usb_pd_policy.c **** 		if (uw > cur_uw || prefer_cur) {
+ 262              		.loc 1 139 0
+ 263 0052 9945     		cmp	r9, r3
+ 264 0054 01DA     		bge	.L16
+ 140:Src/usb_pd_policy.c **** 			ret = i;
+ 141:Src/usb_pd_policy.c **** 			cur_uw = uw;
+ 265              		.loc 1 141 0
+ 266 0056 9946     		mov	r9, r3
+ 267              	.LVL34:
+ 140:Src/usb_pd_policy.c **** 			ret = i;
+ 268              		.loc 1 140 0
+ 269 0058 0194     		str	r4, [sp, #4]
+ 270              	.LVL35:
+ 271              	.L16:
+ 104:Src/usb_pd_policy.c **** 		/* its an unsupported Augmented PDO (PD3.0) */
+ 272              		.loc 1 104 0 discriminator 2
+ 273 005a 0134     		adds	r4, r4, #1
+ 274              	.LVL36:
+ 275              	.L15:
+ 104:Src/usb_pd_policy.c **** 		/* its an unsupported Augmented PDO (PD3.0) */
+ 276              		.loc 1 104 0 is_stmt 0 discriminator 1
+ 277 005c 204B     		ldr	r3, .L26+12
+ 278 005e 4246     		mov	r2, r8
+ 279 0060 9B5C     		ldrb	r3, [r3, r2]
+ 280 0062 A342     		cmp	r3, r4
+ 281 0064 25DD     		ble	.L24
+ 282              	.LVL37:
+ 106:Src/usb_pd_policy.c **** 			continue;
+ 283              		.loc 1 106 0 is_stmt 1
+ 284 0066 A500     		lsls	r5, r4, #2
+ 285 0068 7D19     		adds	r5, r7, r5
+ 286 006a 2E68     		ldr	r6, [r5]
+ 287 006c B30F     		lsrs	r3, r6, #30
+ 288 006e 9B07     		lsls	r3, r3, #30
+ 289 0070 C022     		movs	r2, #192
+ 290              	.LVL38:
+ 291 0072 1206     		lsls	r2, r2, #24
+ 292 0074 9342     		cmp	r3, r2
+ 293 0076 F0D0     		beq	.L16
+ 109:Src/usb_pd_policy.c **** 		/* Skip invalid voltage */
+ 294              		.loc 1 109 0
+ 295 0078 B60A     		lsrs	r6, r6, #10
+ 296 007a B605     		lsls	r6, r6, #22
+ARM GAS  /tmp/cc4k6GfE.s 			page 9
+
+
+ 297 007c B60D     		lsrs	r6, r6, #22
+ 298 007e 3223     		movs	r3, #50
+ 299 0080 5E43     		muls	r6, r3
+ 300              	.LVL39:
+ 111:Src/usb_pd_policy.c **** 			continue;
+ 301              		.loc 1 111 0
+ 302 0082 002E     		cmp	r6, #0
+ 303 0084 E9D0     		beq	.L16
+ 114:Src/usb_pd_policy.c **** 			continue;
+ 304              		.loc 1 114 0
+ 305 0086 3000     		movs	r0, r6
+ 306 0088 FFF7FEFF 		bl	pd_is_valid_input_voltage
+ 307              	.LVL40:
+ 308 008c 0028     		cmp	r0, #0
+ 309 008e E4D0     		beq	.L16
+ 117:Src/usb_pd_policy.c **** 			uw = 250000 * (src_caps[i] & 0x3FF);
+ 310              		.loc 1 117 0
+ 311 0090 2B68     		ldr	r3, [r5]
+ 312 0092 9A0F     		lsrs	r2, r3, #30
+ 313 0094 9207     		lsls	r2, r2, #30
+ 314 0096 8021     		movs	r1, #128
+ 315 0098 C905     		lsls	r1, r1, #23
+ 316 009a 8A42     		cmp	r2, r1
+ 317 009c C8D0     		beq	.L25
+ 120:Src/usb_pd_policy.c **** 			ma = MIN(ma, PD_MAX_CURRENT_MA);
+ 318              		.loc 1 120 0
+ 319 009e 9B05     		lsls	r3, r3, #22
+ 320 00a0 9B0D     		lsrs	r3, r3, #22
+ 321 00a2 9A00     		lsls	r2, r3, #2
+ 322 00a4 D218     		adds	r2, r2, r3
+ 323 00a6 5300     		lsls	r3, r2, #1
+ 324              	.LVL41:
+ 325              	.LBB4:
+ 121:Src/usb_pd_policy.c **** 			uw = ma * mv;
+ 326              		.loc 1 121 0
+ 327 00a8 0E4A     		ldr	r2, .L26+16
+ 328 00aa 9342     		cmp	r3, r2
+ 329 00ac CADD     		ble	.L19
+ 330 00ae 1300     		movs	r3, r2
+ 331              	.LVL42:
+ 332 00b0 C8E7     		b	.L19
+ 333              	.LVL43:
+ 334              	.L24:
+ 335              	.LBE4:
+ 142:Src/usb_pd_policy.c **** 			cur_mv = mv;
+ 143:Src/usb_pd_policy.c **** 		}
+ 144:Src/usb_pd_policy.c **** 	}
+ 145:Src/usb_pd_policy.c **** 
+ 146:Src/usb_pd_policy.c **** 	if (selected_pdo)
+ 336              		.loc 1 146 0
+ 337 00b2 5B46     		mov	r3, fp
+ 338 00b4 002B     		cmp	r3, #0
+ 339 00b6 04D0     		beq	.L13
+ 340              	.LVL44:
+ 147:Src/usb_pd_policy.c **** 		*selected_pdo = src_caps[ret];
+ 341              		.loc 1 147 0
+ 342 00b8 019B     		ldr	r3, [sp, #4]
+ARM GAS  /tmp/cc4k6GfE.s 			page 10
+
+
+ 343              	.LVL45:
+ 344 00ba 9B00     		lsls	r3, r3, #2
+ 345 00bc 5A46     		mov	r2, fp
+ 346              	.LVL46:
+ 347 00be DB59     		ldr	r3, [r3, r7]
+ 348 00c0 1360     		str	r3, [r2]
+ 349              	.L13:
+ 148:Src/usb_pd_policy.c **** 
+ 149:Src/usb_pd_policy.c **** 	return ret;
+ 150:Src/usb_pd_policy.c **** }
+ 350              		.loc 1 150 0
+ 351 00c2 0198     		ldr	r0, [sp, #4]
+ 352 00c4 03B0     		add	sp, sp, #12
+ 353              		@ sp needed
+ 354              	.LVL47:
+ 355              	.LVL48:
+ 356              	.LVL49:
+ 357              	.LVL50:
+ 358              	.LVL51:
+ 359              	.LVL52:
+ 360 00c6 3CBC     		pop	{r2, r3, r4, r5}
+ 361 00c8 9046     		mov	r8, r2
+ 362 00ca 9946     		mov	r9, r3
+ 363 00cc A246     		mov	r10, r4
+ 364 00ce AB46     		mov	fp, r5
+ 365 00d0 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 366              	.L27:
+ 367 00d2 C046     		.align	2
+ 368              	.L26:
+ 369 00d4 00000000 		.word	.LANCHOR0
+ 370 00d8 204E0000 		.word	20000
+ 371 00dc 00E1F505 		.word	100000000
+ 372 00e0 00000000 		.word	.LANCHOR1
+ 373 00e4 88130000 		.word	5000
+ 374              		.cfi_endproc
+ 375              	.LFE20:
+ 377              		.global	__aeabi_uidiv
+ 378              		.section	.text.pd_extract_pdo_power,"ax",%progbits
+ 379              		.align	1
+ 380              		.global	pd_extract_pdo_power
+ 381              		.syntax unified
+ 382              		.code	16
+ 383              		.thumb_func
+ 384              		.fpu softvfp
+ 386              	pd_extract_pdo_power:
+ 387              	.LFB21:
+ 151:Src/usb_pd_policy.c **** 
+ 152:Src/usb_pd_policy.c **** void pd_extract_pdo_power(uint32_t pdo, uint32_t *ma, uint32_t *mv)
+ 153:Src/usb_pd_policy.c **** {
+ 388              		.loc 1 153 0
+ 389              		.cfi_startproc
+ 390              		@ args = 0, pretend = 0, frame = 0
+ 391              		@ frame_needed = 0, uses_anonymous_args = 0
+ 392              	.LVL53:
+ 393 0000 70B5     		push	{r4, r5, r6, lr}
+ 394              	.LCFI4:
+ 395              		.cfi_def_cfa_offset 16
+ARM GAS  /tmp/cc4k6GfE.s 			page 11
+
+
+ 396              		.cfi_offset 4, -16
+ 397              		.cfi_offset 5, -12
+ 398              		.cfi_offset 6, -8
+ 399              		.cfi_offset 14, -4
+ 400 0002 0C00     		movs	r4, r1
+ 154:Src/usb_pd_policy.c **** 	int max_ma, uw;
+ 155:Src/usb_pd_policy.c **** 
+ 156:Src/usb_pd_policy.c **** 	*mv = ((pdo >> 10) & 0x3FF) * 50;
+ 401              		.loc 1 156 0
+ 402 0004 810A     		lsrs	r1, r0, #10
+ 403              	.LVL54:
+ 404 0006 8905     		lsls	r1, r1, #22
+ 405 0008 890D     		lsrs	r1, r1, #22
+ 406 000a 3223     		movs	r3, #50
+ 407 000c 5943     		muls	r1, r3
+ 408 000e 1160     		str	r1, [r2]
+ 157:Src/usb_pd_policy.c **** 
+ 158:Src/usb_pd_policy.c **** 	if (*mv == 0) {
+ 409              		.loc 1 158 0
+ 410 0010 0029     		cmp	r1, #0
+ 411 0012 18D0     		beq	.L36
+ 159:Src/usb_pd_policy.c **** 		CPRINTF("ERR:PDO mv=0\n");
+ 160:Src/usb_pd_policy.c **** 		*ma = 0;
+ 161:Src/usb_pd_policy.c **** 		return;
+ 162:Src/usb_pd_policy.c **** 	}
+ 163:Src/usb_pd_policy.c **** 
+ 164:Src/usb_pd_policy.c **** 	if ((pdo & PDO_TYPE_MASK) == PDO_TYPE_BATTERY) {
+ 412              		.loc 1 164 0
+ 413 0014 830F     		lsrs	r3, r0, #30
+ 414 0016 9B07     		lsls	r3, r3, #30
+ 415 0018 8022     		movs	r2, #128
+ 416              	.LVL55:
+ 417 001a D205     		lsls	r2, r2, #23
+ 418 001c 9342     		cmp	r3, r2
+ 419 001e 15D0     		beq	.L37
+ 165:Src/usb_pd_policy.c **** 		uw = 250000 * (pdo & 0x3FF);
+ 166:Src/usb_pd_policy.c **** 		max_ma = 1000 * MIN(1000 * uw, PD_MAX_POWER_MW) / *mv;
+ 167:Src/usb_pd_policy.c **** 	} else {
+ 168:Src/usb_pd_policy.c **** 		max_ma = 10 * (pdo & 0x3FF);
+ 420              		.loc 1 168 0
+ 421 0020 8005     		lsls	r0, r0, #22
+ 422              	.LVL56:
+ 423 0022 800D     		lsrs	r0, r0, #22
+ 424 0024 8300     		lsls	r3, r0, #2
+ 425 0026 1818     		adds	r0, r3, r0
+ 426 0028 4500     		lsls	r5, r0, #1
+ 427              	.LVL57:
+ 428              	.LBB5:
+ 169:Src/usb_pd_policy.c **** 		max_ma = MIN(max_ma, PD_MAX_POWER_MW * 1000 / *mv);
+ 429              		.loc 1 169 0
+ 430 002a 1648     		ldr	r0, .L38
+ 431 002c FFF7FEFF 		bl	__aeabi_uidiv
+ 432              	.LVL58:
+ 433 0030 2B00     		movs	r3, r5
+ 434 0032 8542     		cmp	r5, r0
+ 435 0034 00D9     		bls	.L34
+ 436 0036 0300     		movs	r3, r0
+ARM GAS  /tmp/cc4k6GfE.s 			page 12
+
+
+ 437              	.L34:
+ 438              	.LBE5:
+ 439 0038 1800     		movs	r0, r3
+ 440              	.LVL59:
+ 441              	.L33:
+ 442              	.LBB6:
+ 170:Src/usb_pd_policy.c **** 	}
+ 171:Src/usb_pd_policy.c **** 
+ 172:Src/usb_pd_policy.c **** 	*ma = MIN(max_ma, PD_MAX_CURRENT_MA);
+ 443              		.loc 1 172 0
+ 444 003a 134B     		ldr	r3, .L38+4
+ 445 003c 9842     		cmp	r0, r3
+ 446 003e 00DD     		ble	.L35
+ 447 0040 1800     		movs	r0, r3
+ 448              	.LVL60:
+ 449              	.L35:
+ 450              	.LBE6:
+ 451 0042 2060     		str	r0, [r4]
+ 452              	.LVL61:
+ 453              	.L28:
+ 173:Src/usb_pd_policy.c **** }
+ 454              		.loc 1 173 0
+ 455              		@ sp needed
+ 456              	.LVL62:
+ 457 0044 70BD     		pop	{r4, r5, r6, pc}
+ 458              	.LVL63:
+ 459              	.L36:
+ 160:Src/usb_pd_policy.c **** 		return;
+ 460              		.loc 1 160 0
+ 461 0046 0023     		movs	r3, #0
+ 462 0048 2360     		str	r3, [r4]
+ 161:Src/usb_pd_policy.c **** 	}
+ 463              		.loc 1 161 0
+ 464 004a FBE7     		b	.L28
+ 465              	.LVL64:
+ 466              	.L37:
+ 165:Src/usb_pd_policy.c **** 		max_ma = 1000 * MIN(1000 * uw, PD_MAX_POWER_MW) / *mv;
+ 467              		.loc 1 165 0
+ 468 004c 8005     		lsls	r0, r0, #22
+ 469              	.LVL65:
+ 470 004e 800D     		lsrs	r0, r0, #22
+ 471 0050 4201     		lsls	r2, r0, #5
+ 472 0052 121A     		subs	r2, r2, r0
+ 473 0054 9301     		lsls	r3, r2, #6
+ 474 0056 9B1A     		subs	r3, r3, r2
+ 475 0058 DB00     		lsls	r3, r3, #3
+ 476 005a 1818     		adds	r0, r3, r0
+ 477 005c 0301     		lsls	r3, r0, #4
+ 478              	.LVL66:
+ 479              	.LBB7:
+ 166:Src/usb_pd_policy.c **** 	} else {
+ 480              		.loc 1 166 0
+ 481 005e 5A01     		lsls	r2, r3, #5
+ 482 0060 D21A     		subs	r2, r2, r3
+ 483 0062 9200     		lsls	r2, r2, #2
+ 484 0064 D218     		adds	r2, r2, r3
+ 485 0066 D300     		lsls	r3, r2, #3
+ARM GAS  /tmp/cc4k6GfE.s 			page 13
+
+
+ 486              	.LVL67:
+ 487 0068 1A00     		movs	r2, r3
+ 488              	.LVL68:
+ 489 006a 084B     		ldr	r3, .L38+8
+ 490 006c 9A42     		cmp	r2, r3
+ 491 006e 00DD     		ble	.L32
+ 492 0070 1A00     		movs	r2, r3
+ 493              	.LVL69:
+ 494              	.L32:
+ 495              	.LBE7:
+ 496 0072 5301     		lsls	r3, r2, #5
+ 497 0074 9B1A     		subs	r3, r3, r2
+ 498 0076 9B00     		lsls	r3, r3, #2
+ 499 0078 9B18     		adds	r3, r3, r2
+ 500 007a D800     		lsls	r0, r3, #3
+ 501              	.LVL70:
+ 502 007c FFF7FEFF 		bl	__aeabi_uidiv
+ 503              	.LVL71:
+ 504 0080 DBE7     		b	.L33
+ 505              	.L39:
+ 506 0082 C046     		.align	2
+ 507              	.L38:
+ 508 0084 00E1F505 		.word	100000000
+ 509 0088 88130000 		.word	5000
+ 510 008c A0860100 		.word	100000
+ 511              		.cfi_endproc
+ 512              	.LFE21:
+ 514              		.global	__aeabi_idiv
+ 515              		.section	.text.pd_build_request,"ax",%progbits
+ 516              		.align	1
+ 517              		.global	pd_build_request
+ 518              		.syntax unified
+ 519              		.code	16
+ 520              		.thumb_func
+ 521              		.fpu softvfp
+ 523              	pd_build_request:
+ 524              	.LFB22:
+ 174:Src/usb_pd_policy.c **** 
+ 175:Src/usb_pd_policy.c **** int pd_build_request(int port, uint32_t *rdo, uint32_t *ma, uint32_t *mv,
+ 176:Src/usb_pd_policy.c **** 		     enum pd_request_type req_type)
+ 177:Src/usb_pd_policy.c **** {
+ 525              		.loc 1 177 0
+ 526              		.cfi_startproc
+ 527              		@ args = 4, pretend = 0, frame = 8
+ 528              		@ frame_needed = 0, uses_anonymous_args = 0
+ 529              	.LVL72:
+ 530 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 531              	.LCFI5:
+ 532              		.cfi_def_cfa_offset 20
+ 533              		.cfi_offset 4, -20
+ 534              		.cfi_offset 5, -16
+ 535              		.cfi_offset 6, -12
+ 536              		.cfi_offset 7, -8
+ 537              		.cfi_offset 14, -4
+ 538 0002 83B0     		sub	sp, sp, #12
+ 539              	.LCFI6:
+ 540              		.cfi_def_cfa_offset 32
+ARM GAS  /tmp/cc4k6GfE.s 			page 14
+
+
+ 541 0004 0D00     		movs	r5, r1
+ 542 0006 1600     		movs	r6, r2
+ 543 0008 1F00     		movs	r7, r3
+ 544 000a 08AB     		add	r3, sp, #32
+ 545              	.LVL73:
+ 546 000c 1B78     		ldrb	r3, [r3]
+ 547              	.LVL74:
+ 178:Src/usb_pd_policy.c **** 	uint32_t pdo;
+ 179:Src/usb_pd_policy.c **** 	int pdo_index, flags = 0;
+ 180:Src/usb_pd_policy.c **** 	int uw;
+ 181:Src/usb_pd_policy.c **** 	int max_or_min_ma;
+ 182:Src/usb_pd_policy.c **** 	int max_or_min_mw;
+ 183:Src/usb_pd_policy.c **** 
+ 184:Src/usb_pd_policy.c **** 	if (req_type == PD_REQUEST_VSAFE5V) {
+ 548              		.loc 1 184 0
+ 549 000e 002B     		cmp	r3, #0
+ 550 0010 32D1     		bne	.L41
+ 551              	.LVL75:
+ 185:Src/usb_pd_policy.c **** 		/* src cap 0 should be vSafe5V */
+ 186:Src/usb_pd_policy.c **** 		pdo_index = 0;
+ 187:Src/usb_pd_policy.c **** 		pdo = pd_src_caps[port][0];
+ 552              		.loc 1 187 0
+ 553 0012 C300     		lsls	r3, r0, #3
+ 554 0014 181A     		subs	r0, r3, r0
+ 555              	.LVL76:
+ 556 0016 8300     		lsls	r3, r0, #2
+ 557 0018 244A     		ldr	r2, .L48
+ 558              	.LVL77:
+ 559 001a 9B58     		ldr	r3, [r3, r2]
+ 560 001c 0193     		str	r3, [sp, #4]
+ 186:Src/usb_pd_policy.c **** 		pdo = pd_src_caps[port][0];
+ 561              		.loc 1 186 0
+ 562 001e 0024     		movs	r4, #0
+ 563              	.LVL78:
+ 564              	.L42:
+ 188:Src/usb_pd_policy.c **** 	} else {
+ 189:Src/usb_pd_policy.c **** 		/* find pdo index for max voltage we can request */
+ 190:Src/usb_pd_policy.c **** 		pdo_index = pd_find_pdo_index(port, max_request_mv, &pdo);
+ 191:Src/usb_pd_policy.c **** 	}
+ 192:Src/usb_pd_policy.c **** 
+ 193:Src/usb_pd_policy.c **** 	pd_extract_pdo_power(pdo, ma, mv);
+ 565              		.loc 1 193 0
+ 566 0020 3A00     		movs	r2, r7
+ 567 0022 3100     		movs	r1, r6
+ 568 0024 0198     		ldr	r0, [sp, #4]
+ 569 0026 FFF7FEFF 		bl	pd_extract_pdo_power
+ 570              	.LVL79:
+ 194:Src/usb_pd_policy.c **** 	uw = *ma * *mv;
+ 571              		.loc 1 194 0
+ 572 002a 3668     		ldr	r6, [r6]
+ 573              	.LVL80:
+ 574 002c 3868     		ldr	r0, [r7]
+ 575 002e 7043     		muls	r0, r6
+ 576              	.LVL81:
+ 195:Src/usb_pd_policy.c **** 	/* Mismatch bit set if less power offered than the operating power */
+ 196:Src/usb_pd_policy.c **** 	if (uw < (1000 * PD_OPERATING_POWER_MW))
+ 577              		.loc 1 196 0
+ARM GAS  /tmp/cc4k6GfE.s 			page 15
+
+
+ 578 0030 1F4B     		ldr	r3, .L48+4
+ 579 0032 9842     		cmp	r0, r3
+ 580 0034 27DD     		ble	.L46
+ 179:Src/usb_pd_policy.c **** 	int uw;
+ 581              		.loc 1 179 0
+ 582 0036 0022     		movs	r2, #0
+ 583              	.L43:
+ 584              	.LVL82:
+ 197:Src/usb_pd_policy.c **** 		flags |= RDO_CAP_MISMATCH;
+ 198:Src/usb_pd_policy.c **** 
+ 199:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_GIVE_BACK
+ 200:Src/usb_pd_policy.c **** 	/* Tell source we are give back capable. */
+ 201:Src/usb_pd_policy.c **** 	flags |= RDO_GIVE_BACK;
+ 202:Src/usb_pd_policy.c **** 
+ 203:Src/usb_pd_policy.c **** 	/*
+ 204:Src/usb_pd_policy.c **** 	 * BATTERY PDO: Inform the source that the sink will reduce
+ 205:Src/usb_pd_policy.c **** 	 * power to this minimum level on receipt of a GotoMin Request.
+ 206:Src/usb_pd_policy.c **** 	 */
+ 207:Src/usb_pd_policy.c **** 	max_or_min_mw = PD_MIN_POWER_MW;
+ 208:Src/usb_pd_policy.c **** 
+ 209:Src/usb_pd_policy.c **** 	/*
+ 210:Src/usb_pd_policy.c **** 	 * FIXED or VARIABLE PDO: Inform the source that the sink will reduce
+ 211:Src/usb_pd_policy.c **** 	 * current to this minimum level on receipt of a GotoMin Request.
+ 212:Src/usb_pd_policy.c **** 	 */
+ 213:Src/usb_pd_policy.c **** 	max_or_min_ma = PD_MIN_CURRENT_MA;
+ 214:Src/usb_pd_policy.c **** #else
+ 215:Src/usb_pd_policy.c **** 	/*
+ 216:Src/usb_pd_policy.c **** 	 * Can't give back, so set maximum current and power to operating
+ 217:Src/usb_pd_policy.c **** 	 * level.
+ 218:Src/usb_pd_policy.c **** 	 */
+ 219:Src/usb_pd_policy.c **** 	max_or_min_ma = *ma;
+ 220:Src/usb_pd_policy.c **** 	max_or_min_mw = uw / 1000;
+ 221:Src/usb_pd_policy.c **** #endif
+ 222:Src/usb_pd_policy.c **** 
+ 223:Src/usb_pd_policy.c **** 	if ((pdo & PDO_TYPE_MASK) == PDO_TYPE_BATTERY) {
+ 585              		.loc 1 223 0
+ 586 0038 019B     		ldr	r3, [sp, #4]
+ 587 003a 9B0F     		lsrs	r3, r3, #30
+ 588 003c 9B07     		lsls	r3, r3, #30
+ 589 003e 8021     		movs	r1, #128
+ 590 0040 C905     		lsls	r1, r1, #23
+ 591 0042 8B42     		cmp	r3, r1
+ 592 0044 22D0     		beq	.L47
+ 224:Src/usb_pd_policy.c **** 		int mw = uw / 1000;
+ 225:Src/usb_pd_policy.c **** 		*rdo = RDO_BATT(pdo_index + 1, mw, max_or_min_mw, flags);
+ 226:Src/usb_pd_policy.c **** 	} else {
+ 227:Src/usb_pd_policy.c **** 		*rdo = RDO_FIXED(pdo_index + 1, *ma, max_or_min_ma, flags);
+ 593              		.loc 1 227 0
+ 594 0046 0134     		adds	r4, r4, #1
+ 595              	.LVL83:
+ 596 0048 2407     		lsls	r4, r4, #28
+ 597              	.LVL84:
+ 598 004a E020     		movs	r0, #224
+ 599              	.LVL85:
+ 600 004c C005     		lsls	r0, r0, #23
+ 601 004e 0440     		ands	r4, r0
+ 602 0050 1443     		orrs	r4, r2
+ARM GAS  /tmp/cc4k6GfE.s 			page 16
+
+
+ 603 0052 0A21     		movs	r1, #10
+ 604 0054 3000     		movs	r0, r6
+ 605 0056 FFF7FEFF 		bl	__aeabi_uidiv
+ 606              	.LVL86:
+ 607 005a 8002     		lsls	r0, r0, #10
+ 608 005c 154B     		ldr	r3, .L48+8
+ 609 005e 1840     		ands	r0, r3
+ 610 0060 0443     		orrs	r4, r0
+ 611 0062 0A21     		movs	r1, #10
+ 612 0064 3000     		movs	r0, r6
+ 613 0066 FFF7FEFF 		bl	__aeabi_idiv
+ 614              	.LVL87:
+ 615 006a 8005     		lsls	r0, r0, #22
+ 616 006c 800D     		lsrs	r0, r0, #22
+ 617 006e 0443     		orrs	r4, r0
+ 618 0070 2C60     		str	r4, [r5]
+ 619              	.L45:
+ 228:Src/usb_pd_policy.c **** 	}
+ 229:Src/usb_pd_policy.c **** 	return EC_SUCCESS;
+ 230:Src/usb_pd_policy.c **** }
+ 620              		.loc 1 230 0
+ 621 0072 0020     		movs	r0, #0
+ 622 0074 03B0     		add	sp, sp, #12
+ 623              		@ sp needed
+ 624              	.LVL88:
+ 625              	.LVL89:
+ 626              	.LVL90:
+ 627 0076 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 628              	.LVL91:
+ 629              	.L41:
+ 190:Src/usb_pd_policy.c **** 	}
+ 630              		.loc 1 190 0
+ 631 0078 0F4B     		ldr	r3, .L48+12
+ 632 007a 1968     		ldr	r1, [r3]
+ 633              	.LVL92:
+ 634 007c 01AA     		add	r2, sp, #4
+ 635              	.LVL93:
+ 636 007e FFF7FEFF 		bl	pd_find_pdo_index
+ 637              	.LVL94:
+ 638 0082 0400     		movs	r4, r0
+ 639              	.LVL95:
+ 640 0084 CCE7     		b	.L42
+ 641              	.LVL96:
+ 642              	.L46:
+ 197:Src/usb_pd_policy.c **** 
+ 643              		.loc 1 197 0
+ 644 0086 8022     		movs	r2, #128
+ 645 0088 D204     		lsls	r2, r2, #19
+ 646 008a D5E7     		b	.L43
+ 647              	.LVL97:
+ 648              	.L47:
+ 649              	.LBB8:
+ 225:Src/usb_pd_policy.c **** 	} else {
+ 650              		.loc 1 225 0
+ 651 008c 0134     		adds	r4, r4, #1
+ 652              	.LVL98:
+ 653 008e 2407     		lsls	r4, r4, #28
+ARM GAS  /tmp/cc4k6GfE.s 			page 17
+
+
+ 654              	.LVL99:
+ 655 0090 E023     		movs	r3, #224
+ 656 0092 DB05     		lsls	r3, r3, #23
+ 657 0094 1C40     		ands	r4, r3
+ 658 0096 1443     		orrs	r4, r2
+ 659 0098 0849     		ldr	r1, .L48+16
+ 660 009a FFF7FEFF 		bl	__aeabi_idiv
+ 661              	.LVL100:
+ 662 009e 8002     		lsls	r0, r0, #10
+ 663 00a0 044B     		ldr	r3, .L48+8
+ 664 00a2 1840     		ands	r0, r3
+ 665 00a4 0443     		orrs	r4, r0
+ 666 00a6 2C60     		str	r4, [r5]
+ 667              	.LBE8:
+ 668 00a8 E3E7     		b	.L45
+ 669              	.L49:
+ 670 00aa C046     		.align	2
+ 671              	.L48:
+ 672 00ac 00000000 		.word	.LANCHOR0
+ 673 00b0 BFE1E400 		.word	14999999
+ 674 00b4 00FC0F00 		.word	1047552
+ 675 00b8 00000000 		.word	.LANCHOR2
+ 676 00bc 90D00300 		.word	250000
+ 677              		.cfi_endproc
+ 678              	.LFE22:
+ 680              		.section	.text.pd_process_source_cap,"ax",%progbits
+ 681              		.align	1
+ 682              		.global	pd_process_source_cap
+ 683              		.syntax unified
+ 684              		.code	16
+ 685              		.thumb_func
+ 686              		.fpu softvfp
+ 688              	pd_process_source_cap:
+ 689              	.LFB23:
+ 231:Src/usb_pd_policy.c **** 
+ 232:Src/usb_pd_policy.c **** void pd_process_source_cap(int port, int cnt, uint32_t *src_caps)
+ 233:Src/usb_pd_policy.c **** {
+ 690              		.loc 1 233 0
+ 691              		.cfi_startproc
+ 692              		@ args = 0, pretend = 0, frame = 16
+ 693              		@ frame_needed = 0, uses_anonymous_args = 0
+ 694              	.LVL101:
+ 695 0000 70B5     		push	{r4, r5, r6, lr}
+ 696              	.LCFI7:
+ 697              		.cfi_def_cfa_offset 16
+ 698              		.cfi_offset 4, -16
+ 699              		.cfi_offset 5, -12
+ 700              		.cfi_offset 6, -8
+ 701              		.cfi_offset 14, -4
+ 702 0002 84B0     		sub	sp, sp, #16
+ 703              	.LCFI8:
+ 704              		.cfi_def_cfa_offset 32
+ 705 0004 0400     		movs	r4, r0
+ 234:Src/usb_pd_policy.c **** #ifdef CONFIG_CHARGE_MANAGER
+ 235:Src/usb_pd_policy.c **** 	uint32_t ma, mv, pdo;
+ 236:Src/usb_pd_policy.c **** #endif
+ 237:Src/usb_pd_policy.c **** 	int i;
+ARM GAS  /tmp/cc4k6GfE.s 			page 18
+
+
+ 238:Src/usb_pd_policy.c **** 
+ 239:Src/usb_pd_policy.c **** 	pd_src_cap_cnt[port] = cnt;
+ 706              		.loc 1 239 0
+ 707 0006 104B     		ldr	r3, .L53
+ 708 0008 1954     		strb	r1, [r3, r0]
+ 709              	.LVL102:
+ 240:Src/usb_pd_policy.c **** 	for (i = 0; i < cnt; i++)
+ 710              		.loc 1 240 0
+ 711 000a 0020     		movs	r0, #0
+ 712              	.LVL103:
+ 713 000c 08E0     		b	.L51
+ 714              	.LVL104:
+ 715              	.L52:
+ 241:Src/usb_pd_policy.c **** 		pd_src_caps[port][i] = *src_caps++;
+ 716              		.loc 1 241 0 discriminator 3
+ 717 000e E300     		lsls	r3, r4, #3
+ 718 0010 1B1B     		subs	r3, r3, r4
+ 719 0012 1B18     		adds	r3, r3, r0
+ 720 0014 9B00     		lsls	r3, r3, #2
+ 721 0016 0D4D     		ldr	r5, .L53+4
+ 722 0018 1668     		ldr	r6, [r2]
+ 723 001a 5E51     		str	r6, [r3, r5]
+ 240:Src/usb_pd_policy.c **** 	for (i = 0; i < cnt; i++)
+ 724              		.loc 1 240 0 discriminator 3
+ 725 001c 0130     		adds	r0, r0, #1
+ 726              	.LVL105:
+ 727              		.loc 1 241 0 discriminator 3
+ 728 001e 0432     		adds	r2, r2, #4
+ 729              	.LVL106:
+ 730              	.L51:
+ 240:Src/usb_pd_policy.c **** 	for (i = 0; i < cnt; i++)
+ 731              		.loc 1 240 0 discriminator 1
+ 732 0020 8842     		cmp	r0, r1
+ 733 0022 F4DB     		blt	.L52
+ 242:Src/usb_pd_policy.c **** 
+ 243:Src/usb_pd_policy.c **** #ifdef CONFIG_CHARGE_MANAGER
+ 244:Src/usb_pd_policy.c **** 	/* Get max power info that we could request */
+ 245:Src/usb_pd_policy.c **** 	pd_find_pdo_index(port, PD_MAX_VOLTAGE_MV, &pdo);
+ 734              		.loc 1 245 0
+ 735 0024 01AA     		add	r2, sp, #4
+ 736              	.LVL107:
+ 737 0026 0A49     		ldr	r1, .L53+8
+ 738              	.LVL108:
+ 739 0028 2000     		movs	r0, r4
+ 740              	.LVL109:
+ 741 002a FFF7FEFF 		bl	pd_find_pdo_index
+ 742              	.LVL110:
+ 246:Src/usb_pd_policy.c **** 	pd_extract_pdo_power(pdo, &ma, &mv);
+ 743              		.loc 1 246 0
+ 744 002e 02AA     		add	r2, sp, #8
+ 745 0030 03A9     		add	r1, sp, #12
+ 746 0032 0198     		ldr	r0, [sp, #4]
+ 747 0034 FFF7FEFF 		bl	pd_extract_pdo_power
+ 748              	.LVL111:
+ 247:Src/usb_pd_policy.c **** 
+ 248:Src/usb_pd_policy.c **** 	/* Set max. limit, but apply 500mA ceiling */
+ 249:Src/usb_pd_policy.c **** 	//charge_manager_set_ceil(port, CEIL_REQUESTOR_PD, PD_MIN_MA);
+ARM GAS  /tmp/cc4k6GfE.s 			page 19
+
+
+ 250:Src/usb_pd_policy.c **** 	pd_set_input_current_limit(port, ma, mv);
+ 749              		.loc 1 250 0
+ 750 0038 029A     		ldr	r2, [sp, #8]
+ 751 003a 0399     		ldr	r1, [sp, #12]
+ 752 003c 2000     		movs	r0, r4
+ 753 003e FFF7FEFF 		bl	pd_set_input_current_limit
+ 754              	.LVL112:
+ 251:Src/usb_pd_policy.c **** #endif
+ 252:Src/usb_pd_policy.c **** }
+ 755              		.loc 1 252 0
+ 756 0042 04B0     		add	sp, sp, #16
+ 757              		@ sp needed
+ 758              	.LVL113:
+ 759 0044 70BD     		pop	{r4, r5, r6, pc}
+ 760              	.L54:
+ 761 0046 C046     		.align	2
+ 762              	.L53:
+ 763 0048 00000000 		.word	.LANCHOR1
+ 764 004c 00000000 		.word	.LANCHOR0
+ 765 0050 204E0000 		.word	20000
+ 766              		.cfi_endproc
+ 767              	.LFE23:
+ 769              		.section	.text.pd_process_source_cap_callback,"ax",%progbits
+ 770              		.align	1
+ 771              		.weak	pd_process_source_cap_callback
+ 772              		.syntax unified
+ 773              		.code	16
+ 774              		.thumb_func
+ 775              		.fpu softvfp
+ 777              	pd_process_source_cap_callback:
+ 778              	.LFB24:
+ 253:Src/usb_pd_policy.c **** 
+ 254:Src/usb_pd_policy.c **** #pragma weak pd_process_source_cap_callback
+ 255:Src/usb_pd_policy.c **** void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps) {}
+ 779              		.loc 1 255 0
+ 780              		.cfi_startproc
+ 781              		@ args = 0, pretend = 0, frame = 0
+ 782              		@ frame_needed = 0, uses_anonymous_args = 0
+ 783              		@ link register save eliminated.
+ 784              	.LVL114:
+ 785              		.loc 1 255 0
+ 786              		@ sp needed
+ 787 0000 7047     		bx	lr
+ 788              		.cfi_endproc
+ 789              	.LFE24:
+ 791              		.section	.text.pd_set_max_voltage,"ax",%progbits
+ 792              		.align	1
+ 793              		.global	pd_set_max_voltage
+ 794              		.syntax unified
+ 795              		.code	16
+ 796              		.thumb_func
+ 797              		.fpu softvfp
+ 799              	pd_set_max_voltage:
+ 800              	.LFB25:
+ 256:Src/usb_pd_policy.c **** 
+ 257:Src/usb_pd_policy.c **** void pd_set_max_voltage(unsigned mv)
+ 258:Src/usb_pd_policy.c **** {
+ARM GAS  /tmp/cc4k6GfE.s 			page 20
+
+
+ 801              		.loc 1 258 0
+ 802              		.cfi_startproc
+ 803              		@ args = 0, pretend = 0, frame = 0
+ 804              		@ frame_needed = 0, uses_anonymous_args = 0
+ 805              		@ link register save eliminated.
+ 806              	.LVL115:
+ 259:Src/usb_pd_policy.c **** 	max_request_mv = mv;
+ 807              		.loc 1 259 0
+ 808 0000 014B     		ldr	r3, .L57
+ 809 0002 1860     		str	r0, [r3]
+ 260:Src/usb_pd_policy.c **** }
+ 810              		.loc 1 260 0
+ 811              		@ sp needed
+ 812 0004 7047     		bx	lr
+ 813              	.L58:
+ 814 0006 C046     		.align	2
+ 815              	.L57:
+ 816 0008 00000000 		.word	.LANCHOR2
+ 817              		.cfi_endproc
+ 818              	.LFE25:
+ 820              		.section	.text.pd_get_max_voltage,"ax",%progbits
+ 821              		.align	1
+ 822              		.global	pd_get_max_voltage
+ 823              		.syntax unified
+ 824              		.code	16
+ 825              		.thumb_func
+ 826              		.fpu softvfp
+ 828              	pd_get_max_voltage:
+ 829              	.LFB26:
+ 261:Src/usb_pd_policy.c **** 
+ 262:Src/usb_pd_policy.c **** unsigned pd_get_max_voltage(void)
+ 263:Src/usb_pd_policy.c **** {
+ 830              		.loc 1 263 0
+ 831              		.cfi_startproc
+ 832              		@ args = 0, pretend = 0, frame = 0
+ 833              		@ frame_needed = 0, uses_anonymous_args = 0
+ 834              		@ link register save eliminated.
+ 264:Src/usb_pd_policy.c **** 	return max_request_mv;
+ 835              		.loc 1 264 0
+ 836 0000 014B     		ldr	r3, .L60
+ 837 0002 1868     		ldr	r0, [r3]
+ 265:Src/usb_pd_policy.c **** }
+ 838              		.loc 1 265 0
+ 839              		@ sp needed
+ 840 0004 7047     		bx	lr
+ 841              	.L61:
+ 842 0006 C046     		.align	2
+ 843              	.L60:
+ 844 0008 00000000 		.word	.LANCHOR2
+ 845              		.cfi_endproc
+ 846              	.LFE26:
+ 848              		.section	.text.pd_charge_from_device,"ax",%progbits
+ 849              		.align	1
+ 850              		.global	pd_charge_from_device
+ 851              		.syntax unified
+ 852              		.code	16
+ 853              		.thumb_func
+ARM GAS  /tmp/cc4k6GfE.s 			page 21
+
+
+ 854              		.fpu softvfp
+ 856              	pd_charge_from_device:
+ 857              	.LFB27:
+ 266:Src/usb_pd_policy.c **** 
+ 267:Src/usb_pd_policy.c **** int pd_charge_from_device(uint16_t vid, uint16_t pid)
+ 268:Src/usb_pd_policy.c **** {
+ 858              		.loc 1 268 0
+ 859              		.cfi_startproc
+ 860              		@ args = 0, pretend = 0, frame = 0
+ 861              		@ frame_needed = 0, uses_anonymous_args = 0
+ 862              		@ link register save eliminated.
+ 863              	.LVL116:
+ 269:Src/usb_pd_policy.c **** 	/* TODO: rewrite into table if we get more of these */
+ 270:Src/usb_pd_policy.c **** 	/*
+ 271:Src/usb_pd_policy.c **** 	 * White-list Apple charge-through accessory since it doesn't set
+ 272:Src/usb_pd_policy.c **** 	 * externally powered bit, but we still need to charge from it when
+ 273:Src/usb_pd_policy.c **** 	 * we are a sink.
+ 274:Src/usb_pd_policy.c **** 	 */
+ 275:Src/usb_pd_policy.c **** 	return (vid == USB_VID_APPLE && (pid == 0x1012 || pid == 0x1013));
+ 864              		.loc 1 275 0
+ 865 0000 074B     		ldr	r3, .L67
+ 866 0002 9842     		cmp	r0, r3
+ 867 0004 01D0     		beq	.L66
+ 868 0006 0020     		movs	r0, #0
+ 869              	.LVL117:
+ 870              	.L62:
+ 276:Src/usb_pd_policy.c **** }
+ 871              		.loc 1 276 0
+ 872              		@ sp needed
+ 873 0008 7047     		bx	lr
+ 874              	.LVL118:
+ 875              	.L66:
+ 275:Src/usb_pd_policy.c **** }
+ 876              		.loc 1 275 0 discriminator 1
+ 877 000a 064B     		ldr	r3, .L67+4
+ 878 000c 9C46     		mov	ip, r3
+ 879 000e 6144     		add	r1, r1, ip
+ 880              	.LVL119:
+ 881 0010 89B2     		uxth	r1, r1
+ 882 0012 0129     		cmp	r1, #1
+ 883 0014 01D9     		bls	.L65
+ 275:Src/usb_pd_policy.c **** }
+ 884              		.loc 1 275 0 is_stmt 0
+ 885 0016 0020     		movs	r0, #0
+ 886              	.LVL120:
+ 887 0018 F6E7     		b	.L62
+ 888              	.LVL121:
+ 889              	.L65:
+ 890 001a 0120     		movs	r0, #1
+ 891              	.LVL122:
+ 892 001c F4E7     		b	.L62
+ 893              	.L68:
+ 894 001e C046     		.align	2
+ 895              	.L67:
+ 896 0020 AC050000 		.word	1452
+ 897 0024 EEEFFFFF 		.word	-4114
+ 898              		.cfi_endproc
+ARM GAS  /tmp/cc4k6GfE.s 			page 22
+
+
+ 899              	.LFE27:
+ 901              		.section	.text.pd_svdm,"ax",%progbits
+ 902              		.align	1
+ 903              		.global	pd_svdm
+ 904              		.syntax unified
+ 905              		.code	16
+ 906              		.thumb_func
+ 907              		.fpu softvfp
+ 909              	pd_svdm:
+ 910              	.LFB28:
+ 277:Src/usb_pd_policy.c **** #endif /* CONFIG_USB_PD_DUAL_ROLE */
+ 278:Src/usb_pd_policy.c **** 
+ 279:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE
+ 280:Src/usb_pd_policy.c **** 
+ 281:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE_DFP
+ 282:Src/usb_pd_policy.c **** 
+ 283:Src/usb_pd_policy.c **** static struct pd_policy pe[CONFIG_USB_PD_PORT_COUNT];
+ 284:Src/usb_pd_policy.c **** 
+ 285:Src/usb_pd_policy.c **** void pd_dfp_pe_init(int port)
+ 286:Src/usb_pd_policy.c **** {
+ 287:Src/usb_pd_policy.c **** 	memset(&pe[port], 0, sizeof(struct pd_policy));
+ 288:Src/usb_pd_policy.c **** }
+ 289:Src/usb_pd_policy.c **** 
+ 290:Src/usb_pd_policy.c **** static void dfp_consume_identity(int port, int cnt, uint32_t *payload)
+ 291:Src/usb_pd_policy.c **** {
+ 292:Src/usb_pd_policy.c **** 	int ptype = PD_IDH_PTYPE(payload[VDO_I(IDH)]);
+ 293:Src/usb_pd_policy.c **** 	size_t identity_size = MIN(sizeof(pe[port].identity),
+ 294:Src/usb_pd_policy.c **** 				   (cnt - 1) * sizeof(uint32_t));
+ 295:Src/usb_pd_policy.c **** 	pd_dfp_pe_init(port);
+ 296:Src/usb_pd_policy.c **** 	memcpy(&pe[port].identity, payload + 1, identity_size);
+ 297:Src/usb_pd_policy.c **** 	switch (ptype) {
+ 298:Src/usb_pd_policy.c **** 	case IDH_PTYPE_AMA:
+ 299:Src/usb_pd_policy.c **** 		/* TODO(tbroch) do I disable VBUS here if power contract
+ 300:Src/usb_pd_policy.c **** 		 * requested it
+ 301:Src/usb_pd_policy.c **** 		 */
+ 302:Src/usb_pd_policy.c **** 		if (!PD_VDO_AMA_VBUS_REQ(payload[VDO_I(AMA)]))
+ 303:Src/usb_pd_policy.c **** 			pd_power_supply_reset(port);
+ 304:Src/usb_pd_policy.c **** 
+ 305:Src/usb_pd_policy.c **** #if defined(CONFIG_USB_PD_DUAL_ROLE) && defined(CONFIG_USBC_VCONN_SWAP)
+ 306:Src/usb_pd_policy.c **** 		/* Adapter is requesting vconn, try to supply it */
+ 307:Src/usb_pd_policy.c **** 		if (PD_VDO_AMA_VCONN_REQ(payload[VDO_I(AMA)]))
+ 308:Src/usb_pd_policy.c **** 			pd_try_vconn_src(port);
+ 309:Src/usb_pd_policy.c **** #endif
+ 310:Src/usb_pd_policy.c **** 		break;
+ 311:Src/usb_pd_policy.c **** 	default:
+ 312:Src/usb_pd_policy.c **** 		break;
+ 313:Src/usb_pd_policy.c **** 	}
+ 314:Src/usb_pd_policy.c **** }
+ 315:Src/usb_pd_policy.c **** 
+ 316:Src/usb_pd_policy.c **** static int dfp_discover_svids(int port, uint32_t *payload)
+ 317:Src/usb_pd_policy.c **** {
+ 318:Src/usb_pd_policy.c **** 	payload[0] = VDO(USB_SID_PD, 1, CMD_DISCOVER_SVID);
+ 319:Src/usb_pd_policy.c **** 	return 1;
+ 320:Src/usb_pd_policy.c **** }
+ 321:Src/usb_pd_policy.c **** 
+ 322:Src/usb_pd_policy.c **** static void dfp_consume_svids(int port, uint32_t *payload)
+ 323:Src/usb_pd_policy.c **** {
+ARM GAS  /tmp/cc4k6GfE.s 			page 23
+
+
+ 324:Src/usb_pd_policy.c **** 	int i;
+ 325:Src/usb_pd_policy.c **** 	uint32_t *ptr = payload + 1;
+ 326:Src/usb_pd_policy.c **** 	uint16_t svid0, svid1;
+ 327:Src/usb_pd_policy.c **** 
+ 328:Src/usb_pd_policy.c **** 	for (i = pe[port].svid_cnt; i < pe[port].svid_cnt + 12; i += 2) {
+ 329:Src/usb_pd_policy.c **** 		if (i == SVID_DISCOVERY_MAX) {
+ 330:Src/usb_pd_policy.c **** 			CPRINTF("ERR:SVIDCNT\n");
+ 331:Src/usb_pd_policy.c **** 			break;
+ 332:Src/usb_pd_policy.c **** 		}
+ 333:Src/usb_pd_policy.c **** 
+ 334:Src/usb_pd_policy.c **** 		svid0 = PD_VDO_SVID_SVID0(*ptr);
+ 335:Src/usb_pd_policy.c **** 		if (!svid0)
+ 336:Src/usb_pd_policy.c **** 			break;
+ 337:Src/usb_pd_policy.c **** 		pe[port].svids[i].svid = svid0;
+ 338:Src/usb_pd_policy.c **** 		pe[port].svid_cnt++;
+ 339:Src/usb_pd_policy.c **** 
+ 340:Src/usb_pd_policy.c **** 		svid1 = PD_VDO_SVID_SVID1(*ptr);
+ 341:Src/usb_pd_policy.c **** 		if (!svid1)
+ 342:Src/usb_pd_policy.c **** 			break;
+ 343:Src/usb_pd_policy.c **** 		pe[port].svids[i + 1].svid = svid1;
+ 344:Src/usb_pd_policy.c **** 		pe[port].svid_cnt++;
+ 345:Src/usb_pd_policy.c **** 		ptr++;
+ 346:Src/usb_pd_policy.c **** 	}
+ 347:Src/usb_pd_policy.c **** 	/* TODO(tbroch) need to re-issue discover svids if > 12 */
+ 348:Src/usb_pd_policy.c **** 	if (i && ((i % 12) == 0))
+ 349:Src/usb_pd_policy.c **** 		CPRINTF("ERR:SVID+12\n");
+ 350:Src/usb_pd_policy.c **** }
+ 351:Src/usb_pd_policy.c **** 
+ 352:Src/usb_pd_policy.c **** static int dfp_discover_modes(int port, uint32_t *payload)
+ 353:Src/usb_pd_policy.c **** {
+ 354:Src/usb_pd_policy.c **** 	uint16_t svid = pe[port].svids[pe[port].svid_idx].svid;
+ 355:Src/usb_pd_policy.c **** 	if (pe[port].svid_idx >= pe[port].svid_cnt)
+ 356:Src/usb_pd_policy.c **** 		return 0;
+ 357:Src/usb_pd_policy.c **** 	payload[0] = VDO(svid, 1, CMD_DISCOVER_MODES);
+ 358:Src/usb_pd_policy.c **** 	return 1;
+ 359:Src/usb_pd_policy.c **** }
+ 360:Src/usb_pd_policy.c **** 
+ 361:Src/usb_pd_policy.c **** static void dfp_consume_modes(int port, int cnt, uint32_t *payload)
+ 362:Src/usb_pd_policy.c **** {
+ 363:Src/usb_pd_policy.c **** 	int idx = pe[port].svid_idx;
+ 364:Src/usb_pd_policy.c **** 	pe[port].svids[idx].mode_cnt = cnt - 1;
+ 365:Src/usb_pd_policy.c **** 	if (pe[port].svids[idx].mode_cnt < 0) {
+ 366:Src/usb_pd_policy.c **** 		CPRINTF("ERR:NOMODE\n");
+ 367:Src/usb_pd_policy.c **** 	} else {
+ 368:Src/usb_pd_policy.c **** 		memcpy(pe[port].svids[pe[port].svid_idx].mode_vdo, &payload[1],
+ 369:Src/usb_pd_policy.c **** 		       sizeof(uint32_t) * pe[port].svids[idx].mode_cnt);
+ 370:Src/usb_pd_policy.c **** 	}
+ 371:Src/usb_pd_policy.c **** 
+ 372:Src/usb_pd_policy.c **** 	pe[port].svid_idx++;
+ 373:Src/usb_pd_policy.c **** }
+ 374:Src/usb_pd_policy.c **** 
+ 375:Src/usb_pd_policy.c **** static int get_mode_idx(int port, uint16_t svid)
+ 376:Src/usb_pd_policy.c **** {
+ 377:Src/usb_pd_policy.c **** 	int i;
+ 378:Src/usb_pd_policy.c **** 
+ 379:Src/usb_pd_policy.c **** 	for (i = 0; i < PD_AMODE_COUNT; i++) {
+ 380:Src/usb_pd_policy.c **** 		if (pe[port].amodes[i].fx->svid == svid)
+ARM GAS  /tmp/cc4k6GfE.s 			page 24
+
+
+ 381:Src/usb_pd_policy.c **** 			return i;
+ 382:Src/usb_pd_policy.c **** 	}
+ 383:Src/usb_pd_policy.c **** 	return -1;
+ 384:Src/usb_pd_policy.c **** }
+ 385:Src/usb_pd_policy.c **** 
+ 386:Src/usb_pd_policy.c **** static struct svdm_amode_data *get_modep(int port, uint16_t svid)
+ 387:Src/usb_pd_policy.c **** {
+ 388:Src/usb_pd_policy.c **** 	int idx = get_mode_idx(port, svid);
+ 389:Src/usb_pd_policy.c **** 
+ 390:Src/usb_pd_policy.c **** 	return (idx == -1) ? NULL : &pe[port].amodes[idx];
+ 391:Src/usb_pd_policy.c **** }
+ 392:Src/usb_pd_policy.c **** 
+ 393:Src/usb_pd_policy.c **** int pd_alt_mode(int port, uint16_t svid)
+ 394:Src/usb_pd_policy.c **** {
+ 395:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep = get_modep(port, svid);
+ 396:Src/usb_pd_policy.c **** 
+ 397:Src/usb_pd_policy.c **** 	return (modep) ? modep->opos : -1;
+ 398:Src/usb_pd_policy.c **** }
+ 399:Src/usb_pd_policy.c **** 
+ 400:Src/usb_pd_policy.c **** int allocate_mode(int port, uint16_t svid)
+ 401:Src/usb_pd_policy.c **** {
+ 402:Src/usb_pd_policy.c **** 	int i, j;
+ 403:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep;
+ 404:Src/usb_pd_policy.c **** 	int mode_idx = get_mode_idx(port, svid);
+ 405:Src/usb_pd_policy.c **** 
+ 406:Src/usb_pd_policy.c **** 	if (mode_idx != -1)
+ 407:Src/usb_pd_policy.c **** 		return mode_idx;
+ 408:Src/usb_pd_policy.c **** 
+ 409:Src/usb_pd_policy.c **** 	/* There's no space to enter another mode */
+ 410:Src/usb_pd_policy.c **** 	if (pe[port].amode_idx == PD_AMODE_COUNT) {
+ 411:Src/usb_pd_policy.c **** 		CPRINTF("ERR:NO AMODE SPACE\n");
+ 412:Src/usb_pd_policy.c **** 		return -1;
+ 413:Src/usb_pd_policy.c **** 	}
+ 414:Src/usb_pd_policy.c **** 
+ 415:Src/usb_pd_policy.c **** 	/* Allocate ...  if SVID == 0 enter default supported policy */
+ 416:Src/usb_pd_policy.c **** 	for (i = 0; i < supported_modes_cnt; i++) {
+ 417:Src/usb_pd_policy.c **** 		if (!&supported_modes[i])
+ 418:Src/usb_pd_policy.c **** 			continue;
+ 419:Src/usb_pd_policy.c **** 
+ 420:Src/usb_pd_policy.c **** 		for (j = 0; j < pe[port].svid_cnt; j++) {
+ 421:Src/usb_pd_policy.c **** 			struct svdm_svid_data *svidp = &pe[port].svids[j];
+ 422:Src/usb_pd_policy.c **** 			if ((svidp->svid != supported_modes[i].svid) ||
+ 423:Src/usb_pd_policy.c **** 			    (svid && (svidp->svid != svid)))
+ 424:Src/usb_pd_policy.c **** 				continue;
+ 425:Src/usb_pd_policy.c **** 
+ 426:Src/usb_pd_policy.c **** 			modep = &pe[port].amodes[pe[port].amode_idx];
+ 427:Src/usb_pd_policy.c **** 			modep->fx = &supported_modes[i];
+ 428:Src/usb_pd_policy.c **** 			modep->data = &pe[port].svids[j];
+ 429:Src/usb_pd_policy.c **** 			pe[port].amode_idx++;
+ 430:Src/usb_pd_policy.c **** 			return pe[port].amode_idx - 1;
+ 431:Src/usb_pd_policy.c **** 		}
+ 432:Src/usb_pd_policy.c **** 	}
+ 433:Src/usb_pd_policy.c **** 	return -1;
+ 434:Src/usb_pd_policy.c **** }
+ 435:Src/usb_pd_policy.c **** 
+ 436:Src/usb_pd_policy.c **** /*
+ 437:Src/usb_pd_policy.c ****  * Enter default mode ( payload[0] == 0 ) or attempt to enter mode via svid &
+ARM GAS  /tmp/cc4k6GfE.s 			page 25
+
+
+ 438:Src/usb_pd_policy.c ****  * opos
+ 439:Src/usb_pd_policy.c **** */
+ 440:Src/usb_pd_policy.c **** uint32_t pd_dfp_enter_mode(int port, uint16_t svid, int opos)
+ 441:Src/usb_pd_policy.c **** {
+ 442:Src/usb_pd_policy.c **** 	int mode_idx = allocate_mode(port, svid);
+ 443:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep;
+ 444:Src/usb_pd_policy.c **** 	uint32_t mode_caps;
+ 445:Src/usb_pd_policy.c **** 
+ 446:Src/usb_pd_policy.c **** 	if (mode_idx == -1)
+ 447:Src/usb_pd_policy.c **** 		return 0;
+ 448:Src/usb_pd_policy.c **** 	modep = &pe[port].amodes[mode_idx];
+ 449:Src/usb_pd_policy.c **** 
+ 450:Src/usb_pd_policy.c **** 	if (!opos) {
+ 451:Src/usb_pd_policy.c **** 		/* choose the lowest as default */
+ 452:Src/usb_pd_policy.c **** 		modep->opos = 1;
+ 453:Src/usb_pd_policy.c **** 	} else if (opos <= modep->data->mode_cnt) {
+ 454:Src/usb_pd_policy.c **** 		modep->opos = opos;
+ 455:Src/usb_pd_policy.c **** 	} else {
+ 456:Src/usb_pd_policy.c **** 		CPRINTF("opos error\n");
+ 457:Src/usb_pd_policy.c **** 		return 0;
+ 458:Src/usb_pd_policy.c **** 	}
+ 459:Src/usb_pd_policy.c **** 
+ 460:Src/usb_pd_policy.c **** 	mode_caps = modep->data->mode_vdo[modep->opos - 1];
+ 461:Src/usb_pd_policy.c **** 	if (modep->fx->enter(port, mode_caps) == -1)
+ 462:Src/usb_pd_policy.c **** 		return 0;
+ 463:Src/usb_pd_policy.c **** 
+ 464:Src/usb_pd_policy.c **** 	/* SVDM to send to UFP for mode entry */
+ 465:Src/usb_pd_policy.c **** 	return VDO(modep->fx->svid, 1, CMD_ENTER_MODE | VDO_OPOS(modep->opos));
+ 466:Src/usb_pd_policy.c **** }
+ 467:Src/usb_pd_policy.c **** 
+ 468:Src/usb_pd_policy.c **** static int validate_mode_request(struct svdm_amode_data *modep,
+ 469:Src/usb_pd_policy.c **** 				 uint16_t svid, int opos)
+ 470:Src/usb_pd_policy.c **** {
+ 471:Src/usb_pd_policy.c **** 	if (!modep->fx)
+ 472:Src/usb_pd_policy.c **** 		return 0;
+ 473:Src/usb_pd_policy.c **** 
+ 474:Src/usb_pd_policy.c **** 	if (svid != modep->fx->svid) {
+ 475:Src/usb_pd_policy.c **** 		CPRINTF("ERR:svid r:0x%04x != c:0x%04x\n",
+ 476:Src/usb_pd_policy.c **** 			svid, modep->fx->svid);
+ 477:Src/usb_pd_policy.c **** 		return 0;
+ 478:Src/usb_pd_policy.c **** 	}
+ 479:Src/usb_pd_policy.c **** 
+ 480:Src/usb_pd_policy.c **** 	if (opos != modep->opos) {
+ 481:Src/usb_pd_policy.c **** 		CPRINTF("ERR:opos r:%d != c:%d\n",
+ 482:Src/usb_pd_policy.c **** 			opos, modep->opos);
+ 483:Src/usb_pd_policy.c **** 		return 0;
+ 484:Src/usb_pd_policy.c **** 	}
+ 485:Src/usb_pd_policy.c **** 
+ 486:Src/usb_pd_policy.c **** 	return 1;
+ 487:Src/usb_pd_policy.c **** }
+ 488:Src/usb_pd_policy.c **** 
+ 489:Src/usb_pd_policy.c **** static void dfp_consume_attention(int port, uint32_t *payload)
+ 490:Src/usb_pd_policy.c **** {
+ 491:Src/usb_pd_policy.c **** 	uint16_t svid = PD_VDO_VID(payload[0]);
+ 492:Src/usb_pd_policy.c **** 	int opos = PD_VDO_OPOS(payload[0]);
+ 493:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep = get_modep(port, svid);
+ 494:Src/usb_pd_policy.c **** 
+ARM GAS  /tmp/cc4k6GfE.s 			page 26
+
+
+ 495:Src/usb_pd_policy.c **** 	if (!modep || !validate_mode_request(modep, svid, opos))
+ 496:Src/usb_pd_policy.c **** 		return;
+ 497:Src/usb_pd_policy.c **** 
+ 498:Src/usb_pd_policy.c **** 	if (modep->fx->attention)
+ 499:Src/usb_pd_policy.c **** 		modep->fx->attention(port, payload);
+ 500:Src/usb_pd_policy.c **** }
+ 501:Src/usb_pd_policy.c **** 
+ 502:Src/usb_pd_policy.c **** /*
+ 503:Src/usb_pd_policy.c ****  * This algorithm defaults to choosing higher pin config over lower ones in
+ 504:Src/usb_pd_policy.c ****  * order to prefer multi-function if desired.
+ 505:Src/usb_pd_policy.c ****  *
+ 506:Src/usb_pd_policy.c ****  *  NAME | SIGNALING | OUTPUT TYPE | MULTI-FUNCTION | PIN CONFIG
+ 507:Src/usb_pd_policy.c ****  * -------------------------------------------------------------
+ 508:Src/usb_pd_policy.c ****  *  A    |  USB G2   |  ?          | no             | 00_0001
+ 509:Src/usb_pd_policy.c ****  *  B    |  USB G2   |  ?          | yes            | 00_0010
+ 510:Src/usb_pd_policy.c ****  *  C    |  DP       |  CONVERTED  | no             | 00_0100
+ 511:Src/usb_pd_policy.c ****  *  D    |  PD       |  CONVERTED  | yes            | 00_1000
+ 512:Src/usb_pd_policy.c ****  *  E    |  DP       |  DP         | no             | 01_0000
+ 513:Src/usb_pd_policy.c ****  *  F    |  PD       |  DP         | yes            | 10_0000
+ 514:Src/usb_pd_policy.c ****  *
+ 515:Src/usb_pd_policy.c ****  * if UFP has NOT asserted multi-function preferred code masks away B/D/F
+ 516:Src/usb_pd_policy.c ****  * leaving only A/C/E.  For single-output dongles that should leave only one
+ 517:Src/usb_pd_policy.c ****  * possible pin config depending on whether its a converter DP->(VGA|HDMI) or DP
+ 518:Src/usb_pd_policy.c ****  * output.  If UFP is a USB-C receptacle it may assert C/D/E/F.  The DFP USB-C
+ 519:Src/usb_pd_policy.c ****  * receptacle must always choose C/D in those cases.
+ 520:Src/usb_pd_policy.c ****  */
+ 521:Src/usb_pd_policy.c **** int pd_dfp_dp_get_pin_mode(int port, uint32_t status)
+ 522:Src/usb_pd_policy.c **** {
+ 523:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep = get_modep(port, USB_SID_DISPLAYPORT);
+ 524:Src/usb_pd_policy.c **** 	uint32_t mode_caps;
+ 525:Src/usb_pd_policy.c **** 	uint32_t pin_caps;
+ 526:Src/usb_pd_policy.c **** 	if (!modep)
+ 527:Src/usb_pd_policy.c **** 		return 0;
+ 528:Src/usb_pd_policy.c **** 
+ 529:Src/usb_pd_policy.c **** 	mode_caps = modep->data->mode_vdo[modep->opos - 1];
+ 530:Src/usb_pd_policy.c **** 
+ 531:Src/usb_pd_policy.c **** 	/* TODO(crosbug.com/p/39656) revisit with DFP that can be a sink */
+ 532:Src/usb_pd_policy.c **** 	pin_caps = PD_DP_PIN_CAPS(mode_caps);
+ 533:Src/usb_pd_policy.c **** 
+ 534:Src/usb_pd_policy.c **** 	/* if don't want multi-function then ignore those pin configs */
+ 535:Src/usb_pd_policy.c **** 	if (!PD_VDO_DPSTS_MF_PREF(status))
+ 536:Src/usb_pd_policy.c **** 		pin_caps &= ~MODE_DP_PIN_MF_MASK;
+ 537:Src/usb_pd_policy.c **** 
+ 538:Src/usb_pd_policy.c **** 	/* TODO(crosbug.com/p/39656) revisit if DFP drives USB Gen 2 signals */
+ 539:Src/usb_pd_policy.c **** 	pin_caps &= ~MODE_DP_PIN_BR2_MASK;
+ 540:Src/usb_pd_policy.c **** 
+ 541:Src/usb_pd_policy.c **** 	/* if C/D present they have precedence over E/F for USB-C->USB-C */
+ 542:Src/usb_pd_policy.c **** 	if (pin_caps & (MODE_DP_PIN_C | MODE_DP_PIN_D))
+ 543:Src/usb_pd_policy.c **** 		pin_caps &= ~(MODE_DP_PIN_E | MODE_DP_PIN_F);
+ 544:Src/usb_pd_policy.c **** 
+ 545:Src/usb_pd_policy.c **** 	/* get_next_bit returns undefined for zero */
+ 546:Src/usb_pd_policy.c **** 	if (!pin_caps)
+ 547:Src/usb_pd_policy.c **** 		return 0;
+ 548:Src/usb_pd_policy.c **** 
+ 549:Src/usb_pd_policy.c **** 	return 1 << get_next_bit(&pin_caps);
+ 550:Src/usb_pd_policy.c **** }
+ 551:Src/usb_pd_policy.c **** 
+ARM GAS  /tmp/cc4k6GfE.s 			page 27
+
+
+ 552:Src/usb_pd_policy.c **** int pd_dfp_exit_mode(int port, uint16_t svid, int opos)
+ 553:Src/usb_pd_policy.c **** {
+ 554:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep;
+ 555:Src/usb_pd_policy.c **** 	int idx;
+ 556:Src/usb_pd_policy.c **** 
+ 557:Src/usb_pd_policy.c **** 	/*
+ 558:Src/usb_pd_policy.c **** 	 * Empty svid signals we should reset DFP VDM state by exiting all
+ 559:Src/usb_pd_policy.c **** 	 * entered modes then clearing state.  This occurs when we've
+ 560:Src/usb_pd_policy.c **** 	 * disconnected or for hard reset.
+ 561:Src/usb_pd_policy.c **** 	 */
+ 562:Src/usb_pd_policy.c **** 	if (!svid) {
+ 563:Src/usb_pd_policy.c **** 		for (idx = 0; idx < PD_AMODE_COUNT; idx++)
+ 564:Src/usb_pd_policy.c **** 			if (pe[port].amodes[idx].fx)
+ 565:Src/usb_pd_policy.c **** 				pe[port].amodes[idx].fx->exit(port);
+ 566:Src/usb_pd_policy.c **** 
+ 567:Src/usb_pd_policy.c **** 		pd_dfp_pe_init(port);
+ 568:Src/usb_pd_policy.c **** 		return 0;
+ 569:Src/usb_pd_policy.c **** 	}
+ 570:Src/usb_pd_policy.c **** 
+ 571:Src/usb_pd_policy.c **** 	/*
+ 572:Src/usb_pd_policy.c **** 	 * TODO(crosbug.com/p/33946) : below needs revisited to allow multiple
+ 573:Src/usb_pd_policy.c **** 	 * mode exit.  Additionally it should honor OPOS == 7 as DFP's request
+ 574:Src/usb_pd_policy.c **** 	 * to exit all modes.  We currently don't have any UFPs that support
+ 575:Src/usb_pd_policy.c **** 	 * multiple modes on one SVID.
+ 576:Src/usb_pd_policy.c **** 	 */
+ 577:Src/usb_pd_policy.c **** 	modep = get_modep(port, svid);
+ 578:Src/usb_pd_policy.c **** 	if (!modep || !validate_mode_request(modep, svid, opos))
+ 579:Src/usb_pd_policy.c **** 		return 0;
+ 580:Src/usb_pd_policy.c **** 
+ 581:Src/usb_pd_policy.c **** 	/* call DFPs exit function */
+ 582:Src/usb_pd_policy.c **** 	modep->fx->exit(port);
+ 583:Src/usb_pd_policy.c **** 	/* exit the mode */
+ 584:Src/usb_pd_policy.c **** 	modep->opos = 0;
+ 585:Src/usb_pd_policy.c **** 	return 1;
+ 586:Src/usb_pd_policy.c **** }
+ 587:Src/usb_pd_policy.c **** 
+ 588:Src/usb_pd_policy.c **** uint16_t pd_get_identity_vid(int port)
+ 589:Src/usb_pd_policy.c **** {
+ 590:Src/usb_pd_policy.c **** 	return PD_IDH_VID(pe[port].identity[0]);
+ 591:Src/usb_pd_policy.c **** }
+ 592:Src/usb_pd_policy.c **** 
+ 593:Src/usb_pd_policy.c **** uint16_t pd_get_identity_pid(int port)
+ 594:Src/usb_pd_policy.c **** {
+ 595:Src/usb_pd_policy.c **** 	return PD_PRODUCT_PID(pe[port].identity[2]);
+ 596:Src/usb_pd_policy.c **** }
+ 597:Src/usb_pd_policy.c **** 
+ 598:Src/usb_pd_policy.c **** #ifdef CONFIG_CMD_USB_PD_PE
+ 599:Src/usb_pd_policy.c **** static void dump_pe(int port)
+ 600:Src/usb_pd_policy.c **** {
+ 601:Src/usb_pd_policy.c **** 	const char * const idh_ptype_names[]  = {
+ 602:Src/usb_pd_policy.c **** 		"UNDEF", "Hub", "Periph", "PCable", "ACable", "AMA",
+ 603:Src/usb_pd_policy.c **** 		"RSV6", "RSV7"};
+ 604:Src/usb_pd_policy.c **** 
+ 605:Src/usb_pd_policy.c **** 	int i, j, idh_ptype;
+ 606:Src/usb_pd_policy.c **** 	struct svdm_amode_data *modep;
+ 607:Src/usb_pd_policy.c **** 	uint32_t mode_caps;
+ 608:Src/usb_pd_policy.c **** 
+ARM GAS  /tmp/cc4k6GfE.s 			page 28
+
+
+ 609:Src/usb_pd_policy.c **** 	if (pe[port].identity[0] == 0) {
+ 610:Src/usb_pd_policy.c **** 		ccprintf("No identity discovered yet.\n");
+ 611:Src/usb_pd_policy.c **** 		return;
+ 612:Src/usb_pd_policy.c **** 	}
+ 613:Src/usb_pd_policy.c **** 	idh_ptype = PD_IDH_PTYPE(pe[port].identity[0]);
+ 614:Src/usb_pd_policy.c **** 	ccprintf("IDENT:\n");
+ 615:Src/usb_pd_policy.c **** 	ccprintf("\t[ID Header] %08x :: %s, VID:%04x\n", pe[port].identity[0],
+ 616:Src/usb_pd_policy.c **** 		 idh_ptype_names[idh_ptype], pd_get_identity_vid(port));
+ 617:Src/usb_pd_policy.c **** 	ccprintf("\t[Cert Stat] %08x\n", pe[port].identity[1]);
+ 618:Src/usb_pd_policy.c **** 	for (i = 2; i < ARRAY_SIZE(pe[port].identity); i++) {
+ 619:Src/usb_pd_policy.c **** 		ccprintf("\t");
+ 620:Src/usb_pd_policy.c **** 		if (pe[port].identity[i])
+ 621:Src/usb_pd_policy.c **** 			ccprintf("[%d] %08x ", i, pe[port].identity[i]);
+ 622:Src/usb_pd_policy.c **** 	}
+ 623:Src/usb_pd_policy.c **** 	ccprintf("\n");
+ 624:Src/usb_pd_policy.c **** 
+ 625:Src/usb_pd_policy.c **** 	if (pe[port].svid_cnt < 1) {
+ 626:Src/usb_pd_policy.c **** 		ccprintf("No SVIDS discovered yet.\n");
+ 627:Src/usb_pd_policy.c **** 		return;
+ 628:Src/usb_pd_policy.c **** 	}
+ 629:Src/usb_pd_policy.c **** 
+ 630:Src/usb_pd_policy.c **** 	for (i = 0; i < pe[port].svid_cnt; i++) {
+ 631:Src/usb_pd_policy.c **** 		ccprintf("SVID[%d]: %04x MODES:", i, pe[port].svids[i].svid);
+ 632:Src/usb_pd_policy.c **** 		for (j = 0; j < pe[port].svids[j].mode_cnt; j++)
+ 633:Src/usb_pd_policy.c **** 			ccprintf(" [%d] %08x", j + 1,
+ 634:Src/usb_pd_policy.c **** 				 pe[port].svids[i].mode_vdo[j]);
+ 635:Src/usb_pd_policy.c **** 		ccprintf("\n");
+ 636:Src/usb_pd_policy.c **** 		modep = get_modep(port, pe[port].svids[i].svid);
+ 637:Src/usb_pd_policy.c **** 		if (modep) {
+ 638:Src/usb_pd_policy.c **** 			mode_caps = modep->data->mode_vdo[modep->opos - 1];
+ 639:Src/usb_pd_policy.c **** 			ccprintf("MODE[%d]: svid:%04x caps:%08x\n", modep->opos,
+ 640:Src/usb_pd_policy.c **** 				 modep->fx->svid, mode_caps);
+ 641:Src/usb_pd_policy.c **** 		}
+ 642:Src/usb_pd_policy.c **** 	}
+ 643:Src/usb_pd_policy.c **** }
+ 644:Src/usb_pd_policy.c **** 
+ 645:Src/usb_pd_policy.c **** static int command_pe(int argc, char **argv)
+ 646:Src/usb_pd_policy.c **** {
+ 647:Src/usb_pd_policy.c **** 	int port;
+ 648:Src/usb_pd_policy.c **** 	char *e;
+ 649:Src/usb_pd_policy.c **** 	if (argc < 3)
+ 650:Src/usb_pd_policy.c **** 		return EC_ERROR_PARAM_COUNT;
+ 651:Src/usb_pd_policy.c **** 	/* command: pe <port> <subcmd> <args> */
+ 652:Src/usb_pd_policy.c **** 	port = strtoi(argv[1], &e, 10);
+ 653:Src/usb_pd_policy.c **** 	if (*e || port >= CONFIG_USB_PD_PORT_COUNT)
+ 654:Src/usb_pd_policy.c **** 		return EC_ERROR_PARAM2;
+ 655:Src/usb_pd_policy.c **** 	if (!strncasecmp(argv[2], "dump", 4))
+ 656:Src/usb_pd_policy.c **** 		dump_pe(port);
+ 657:Src/usb_pd_policy.c **** 
+ 658:Src/usb_pd_policy.c **** 	return EC_SUCCESS;
+ 659:Src/usb_pd_policy.c **** }
+ 660:Src/usb_pd_policy.c **** 
+ 661:Src/usb_pd_policy.c **** DECLARE_CONSOLE_COMMAND(pe, command_pe,
+ 662:Src/usb_pd_policy.c **** 			"<port> dump",
+ 663:Src/usb_pd_policy.c **** 			"USB PE");
+ 664:Src/usb_pd_policy.c **** #endif /* CONFIG_CMD_USB_PD_PE */
+ 665:Src/usb_pd_policy.c **** 
+ARM GAS  /tmp/cc4k6GfE.s 			page 29
+
+
+ 666:Src/usb_pd_policy.c **** #endif /* CONFIG_USB_PD_ALT_MODE_DFP */
+ 667:Src/usb_pd_policy.c **** 
+ 668:Src/usb_pd_policy.c **** int pd_svdm(int port, int cnt, uint32_t *payload, uint32_t **rpayload)
+ 669:Src/usb_pd_policy.c **** {
+ 670:Src/usb_pd_policy.c **** 	int cmd = PD_VDO_CMD(payload[0]);
+ 671:Src/usb_pd_policy.c **** 	int cmd_type = PD_VDO_CMDT(payload[0]);
+ 672:Src/usb_pd_policy.c **** 	int (*func)(int port, uint32_t *payload) = NULL;
+ 673:Src/usb_pd_policy.c **** 
+ 674:Src/usb_pd_policy.c **** 	int rsize = 1; /* VDM header at a minimum */
+ 675:Src/usb_pd_policy.c **** 
+ 676:Src/usb_pd_policy.c **** 	payload[0] &= ~VDO_CMDT_MASK;
+ 677:Src/usb_pd_policy.c **** 	*rpayload = payload;
+ 678:Src/usb_pd_policy.c **** 
+ 679:Src/usb_pd_policy.c **** 	if (cmd_type == CMDT_INIT) {
+ 680:Src/usb_pd_policy.c **** 		switch (cmd) {
+ 681:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_IDENT:
+ 682:Src/usb_pd_policy.c **** 			func = svdm_rsp.identity;
+ 683:Src/usb_pd_policy.c **** 			break;
+ 684:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_SVID:
+ 685:Src/usb_pd_policy.c **** 			func = svdm_rsp.svids;
+ 686:Src/usb_pd_policy.c **** 			break;
+ 687:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_MODES:
+ 688:Src/usb_pd_policy.c **** 			func = svdm_rsp.modes;
+ 689:Src/usb_pd_policy.c **** 			break;
+ 690:Src/usb_pd_policy.c **** 		case CMD_ENTER_MODE:
+ 691:Src/usb_pd_policy.c **** 			func = svdm_rsp.enter_mode;
+ 692:Src/usb_pd_policy.c **** 			break;
+ 693:Src/usb_pd_policy.c **** 		case CMD_DP_STATUS:
+ 694:Src/usb_pd_policy.c **** 			func = svdm_rsp.amode->status;
+ 695:Src/usb_pd_policy.c **** 			break;
+ 696:Src/usb_pd_policy.c **** 		case CMD_DP_CONFIG:
+ 697:Src/usb_pd_policy.c **** 			func = svdm_rsp.amode->config;
+ 698:Src/usb_pd_policy.c **** 			break;
+ 699:Src/usb_pd_policy.c **** 		case CMD_EXIT_MODE:
+ 700:Src/usb_pd_policy.c **** 			func = svdm_rsp.exit_mode;
+ 701:Src/usb_pd_policy.c **** 			break;
+ 702:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE_DFP
+ 703:Src/usb_pd_policy.c **** 		case CMD_ATTENTION:
+ 704:Src/usb_pd_policy.c **** 			/*
+ 705:Src/usb_pd_policy.c **** 			 * attention is only SVDM with no response
+ 706:Src/usb_pd_policy.c **** 			 * (just goodCRC) return zero here.
+ 707:Src/usb_pd_policy.c **** 			 */
+ 708:Src/usb_pd_policy.c **** 			dfp_consume_attention(port, payload);
+ 709:Src/usb_pd_policy.c **** 			return 0;
+ 710:Src/usb_pd_policy.c **** #endif
+ 711:Src/usb_pd_policy.c **** 		default:
+ 712:Src/usb_pd_policy.c **** 			CPRINTF("ERR:CMD:%d\n", cmd);
+ 713:Src/usb_pd_policy.c **** 			rsize = 0;
+ 714:Src/usb_pd_policy.c **** 		}
+ 715:Src/usb_pd_policy.c **** 		if (func)
+ 716:Src/usb_pd_policy.c **** 			rsize = func(port, payload);
+ 717:Src/usb_pd_policy.c **** 		else /* not supported : NACK it */
+ 718:Src/usb_pd_policy.c **** 			rsize = 0;
+ 719:Src/usb_pd_policy.c **** 		if (rsize >= 1)
+ 720:Src/usb_pd_policy.c **** 			payload[0] |= VDO_CMDT(CMDT_RSP_ACK);
+ 721:Src/usb_pd_policy.c **** 		else if (!rsize) {
+ 722:Src/usb_pd_policy.c **** 			payload[0] |= VDO_CMDT(CMDT_RSP_NAK);
+ARM GAS  /tmp/cc4k6GfE.s 			page 30
+
+
+ 723:Src/usb_pd_policy.c **** 			rsize = 1;
+ 724:Src/usb_pd_policy.c **** 		} else {
+ 725:Src/usb_pd_policy.c **** 			payload[0] |= VDO_CMDT(CMDT_RSP_BUSY);
+ 726:Src/usb_pd_policy.c **** 			rsize = 1;
+ 727:Src/usb_pd_policy.c **** 		}
+ 728:Src/usb_pd_policy.c **** 		payload[0] |= VDO_SVDM_VERS(pd_get_vdo_ver(port));
+ 729:Src/usb_pd_policy.c **** 	} else if (cmd_type == CMDT_RSP_ACK) {
+ 730:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE_DFP
+ 731:Src/usb_pd_policy.c **** 		struct svdm_amode_data *modep;
+ 732:Src/usb_pd_policy.c **** 
+ 733:Src/usb_pd_policy.c **** 		modep = get_modep(port, PD_VDO_VID(payload[0]));
+ 734:Src/usb_pd_policy.c **** #endif
+ 735:Src/usb_pd_policy.c **** 		switch (cmd) {
+ 736:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE_DFP
+ 737:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_IDENT:
+ 738:Src/usb_pd_policy.c **** 			dfp_consume_identity(port, cnt, payload);
+ 739:Src/usb_pd_policy.c **** 			rsize = dfp_discover_svids(port, payload);
+ 740:Src/usb_pd_policy.c **** #ifdef CONFIG_CHARGE_MANAGER
+ 741:Src/usb_pd_policy.c **** 			if (pd_charge_from_device(pd_get_identity_vid(port),
+ 742:Src/usb_pd_policy.c **** 						  pd_get_identity_pid(port)))
+ 743:Src/usb_pd_policy.c **** 				charge_manager_update_dualrole(port,
+ 744:Src/usb_pd_policy.c **** 							       CAP_DEDICATED);
+ 745:Src/usb_pd_policy.c **** #endif
+ 746:Src/usb_pd_policy.c **** 			break;
+ 747:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_SVID:
+ 748:Src/usb_pd_policy.c **** 			dfp_consume_svids(port, payload);
+ 749:Src/usb_pd_policy.c **** 			rsize = dfp_discover_modes(port, payload);
+ 750:Src/usb_pd_policy.c **** 			break;
+ 751:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_MODES:
+ 752:Src/usb_pd_policy.c **** 			dfp_consume_modes(port, cnt, payload);
+ 753:Src/usb_pd_policy.c **** 			rsize = dfp_discover_modes(port, payload);
+ 754:Src/usb_pd_policy.c **** 			/* enter the default mode for DFP */
+ 755:Src/usb_pd_policy.c **** 			if (!rsize) {
+ 756:Src/usb_pd_policy.c **** 				payload[0] = pd_dfp_enter_mode(port, 0, 0);
+ 757:Src/usb_pd_policy.c **** 				if (payload[0])
+ 758:Src/usb_pd_policy.c **** 					rsize = 1;
+ 759:Src/usb_pd_policy.c **** 			}
+ 760:Src/usb_pd_policy.c **** 			break;
+ 761:Src/usb_pd_policy.c **** 		case CMD_ENTER_MODE:
+ 762:Src/usb_pd_policy.c **** 			if (!modep) {
+ 763:Src/usb_pd_policy.c **** 				rsize = 0;
+ 764:Src/usb_pd_policy.c **** 			} else {
+ 765:Src/usb_pd_policy.c **** 				if (!modep->opos)
+ 766:Src/usb_pd_policy.c **** 					pd_dfp_enter_mode(port, 0, 0);
+ 767:Src/usb_pd_policy.c **** 
+ 768:Src/usb_pd_policy.c **** 				if (modep->opos) {
+ 769:Src/usb_pd_policy.c **** 					rsize = modep->fx->status(port,
+ 770:Src/usb_pd_policy.c **** 								  payload);
+ 771:Src/usb_pd_policy.c **** 					payload[0] |= PD_VDO_OPOS(modep->opos);
+ 772:Src/usb_pd_policy.c **** 				}
+ 773:Src/usb_pd_policy.c **** 			}
+ 774:Src/usb_pd_policy.c **** 			break;
+ 775:Src/usb_pd_policy.c **** 		case CMD_DP_STATUS:
+ 776:Src/usb_pd_policy.c **** 			/* DP status response & UFP's DP attention have same
+ 777:Src/usb_pd_policy.c **** 			   payload */
+ 778:Src/usb_pd_policy.c **** 			dfp_consume_attention(port, payload);
+ 779:Src/usb_pd_policy.c **** 			if (modep && modep->opos)
+ARM GAS  /tmp/cc4k6GfE.s 			page 31
+
+
+ 780:Src/usb_pd_policy.c **** 				rsize = modep->fx->config(port, payload);
+ 781:Src/usb_pd_policy.c **** 			else
+ 782:Src/usb_pd_policy.c **** 				rsize = 0;
+ 783:Src/usb_pd_policy.c **** 			break;
+ 784:Src/usb_pd_policy.c **** 		case CMD_DP_CONFIG:
+ 785:Src/usb_pd_policy.c **** 			if (modep && modep->opos && modep->fx->post_config)
+ 786:Src/usb_pd_policy.c **** 				modep->fx->post_config(port);
+ 787:Src/usb_pd_policy.c **** 			/* no response after DFPs ack */
+ 788:Src/usb_pd_policy.c **** 			rsize = 0;
+ 789:Src/usb_pd_policy.c **** 			break;
+ 790:Src/usb_pd_policy.c **** 		case CMD_EXIT_MODE:
+ 791:Src/usb_pd_policy.c **** 			/* no response after DFPs ack */
+ 792:Src/usb_pd_policy.c **** 			rsize = 0;
+ 793:Src/usb_pd_policy.c **** 			break;
+ 794:Src/usb_pd_policy.c **** #endif
+ 795:Src/usb_pd_policy.c **** 		case CMD_ATTENTION:
+ 796:Src/usb_pd_policy.c **** 			/* no response after DFPs ack */
+ 797:Src/usb_pd_policy.c **** 			rsize = 0;
+ 798:Src/usb_pd_policy.c **** 			break;
+ 799:Src/usb_pd_policy.c **** 		default:
+ 800:Src/usb_pd_policy.c **** 			CPRINTF("ERR:CMD:%d\n", cmd);
+ 801:Src/usb_pd_policy.c **** 			rsize = 0;
+ 802:Src/usb_pd_policy.c **** 		}
+ 803:Src/usb_pd_policy.c **** 
+ 804:Src/usb_pd_policy.c **** 		payload[0] |= VDO_CMDT(CMDT_INIT);
+ 805:Src/usb_pd_policy.c **** 		payload[0] |= VDO_SVDM_VERS(pd_get_vdo_ver(port));
+ 806:Src/usb_pd_policy.c **** #ifdef CONFIG_USB_PD_ALT_MODE_DFP
+ 807:Src/usb_pd_policy.c **** 	} else if (cmd_type == CMDT_RSP_BUSY) {
+ 808:Src/usb_pd_policy.c **** 		switch (cmd) {
+ 809:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_IDENT:
+ 810:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_SVID:
+ 811:Src/usb_pd_policy.c **** 		case CMD_DISCOVER_MODES:
+ 812:Src/usb_pd_policy.c **** 			/* resend if its discovery */
+ 813:Src/usb_pd_policy.c **** 			rsize = 1;
+ 814:Src/usb_pd_policy.c **** 			break;
+ 815:Src/usb_pd_policy.c **** 		case CMD_ENTER_MODE:
+ 816:Src/usb_pd_policy.c **** 			/* Error */
+ 817:Src/usb_pd_policy.c **** 			CPRINTF("ERR:ENTBUSY\n");
+ 818:Src/usb_pd_policy.c **** 			rsize = 0;
+ 819:Src/usb_pd_policy.c **** 			break;
+ 820:Src/usb_pd_policy.c **** 		case CMD_EXIT_MODE:
+ 821:Src/usb_pd_policy.c **** 			rsize = 0;
+ 822:Src/usb_pd_policy.c **** 			break;
+ 823:Src/usb_pd_policy.c **** 		default:
+ 824:Src/usb_pd_policy.c **** 			rsize = 0;
+ 825:Src/usb_pd_policy.c **** 		}
+ 826:Src/usb_pd_policy.c **** 	} else if (cmd_type == CMDT_RSP_NAK) {
+ 827:Src/usb_pd_policy.c **** 		/* nothing to do */
+ 828:Src/usb_pd_policy.c **** 		rsize = 0;
+ 829:Src/usb_pd_policy.c **** #endif /* CONFIG_USB_PD_ALT_MODE_DFP */
+ 830:Src/usb_pd_policy.c **** 	} else {
+ 831:Src/usb_pd_policy.c **** 		CPRINTF("ERR:CMDT:%d\n", cmd);
+ 832:Src/usb_pd_policy.c **** 		/* do not answer */
+ 833:Src/usb_pd_policy.c **** 		rsize = 0;
+ 834:Src/usb_pd_policy.c **** 	}
+ 835:Src/usb_pd_policy.c **** 	return rsize;
+ 836:Src/usb_pd_policy.c **** }
+ARM GAS  /tmp/cc4k6GfE.s 			page 32
+
+
+ 837:Src/usb_pd_policy.c **** 
+ 838:Src/usb_pd_policy.c **** #else
+ 839:Src/usb_pd_policy.c **** 
+ 840:Src/usb_pd_policy.c **** int pd_svdm(int port, int cnt, uint32_t *payload, uint32_t **rpayload)
+ 841:Src/usb_pd_policy.c **** {
+ 911              		.loc 1 841 0 is_stmt 1
+ 912              		.cfi_startproc
+ 913              		@ args = 0, pretend = 0, frame = 0
+ 914              		@ frame_needed = 0, uses_anonymous_args = 0
+ 915              		@ link register save eliminated.
+ 916              	.LVL123:
+ 842:Src/usb_pd_policy.c **** 	return 0;
+ 843:Src/usb_pd_policy.c **** }
+ 917              		.loc 1 843 0
+ 918 0000 0020     		movs	r0, #0
+ 919              	.LVL124:
+ 920              		@ sp needed
+ 921 0002 7047     		bx	lr
+ 922              		.cfi_endproc
+ 923              	.LFE28:
+ 925              		.section	.text.pd_vdm,"ax",%progbits
+ 926              		.align	1
+ 927              		.global	pd_vdm
+ 928              		.syntax unified
+ 929              		.code	16
+ 930              		.thumb_func
+ 931              		.fpu softvfp
+ 933              	pd_vdm:
+ 934              	.LFB29:
+ 844:Src/usb_pd_policy.c **** 
+ 845:Src/usb_pd_policy.c **** #endif /* CONFIG_USB_PD_ALT_MODE */
+ 846:Src/usb_pd_policy.c **** 
+ 847:Src/usb_pd_policy.c **** #ifndef CONFIG_USB_PD_CUSTOM_VDM
+ 848:Src/usb_pd_policy.c **** int pd_vdm(int port, int cnt, uint32_t *payload, uint32_t **rpayload)
+ 849:Src/usb_pd_policy.c **** {
+ 935              		.loc 1 849 0
+ 936              		.cfi_startproc
+ 937              		@ args = 0, pretend = 0, frame = 0
+ 938              		@ frame_needed = 0, uses_anonymous_args = 0
+ 939              		@ link register save eliminated.
+ 940              	.LVL125:
+ 850:Src/usb_pd_policy.c **** 	return 0;
+ 851:Src/usb_pd_policy.c **** }
+ 941              		.loc 1 851 0
+ 942 0000 0020     		movs	r0, #0
+ 943              	.LVL126:
+ 944              		@ sp needed
+ 945 0002 7047     		bx	lr
+ 946              		.cfi_endproc
+ 947              	.LFE29:
+ 949              		.section	.bss.pd_src_cap_cnt,"aw",%nobits
+ 950              		.align	2
+ 951              		.set	.LANCHOR1,. + 0
+ 954              	pd_src_cap_cnt:
+ 955 0000 00       		.space	1
+ 956              		.section	.bss.pd_src_caps,"aw",%nobits
+ 957              		.align	2
+ARM GAS  /tmp/cc4k6GfE.s 			page 33
+
+
+ 958              		.set	.LANCHOR0,. + 0
+ 961              	pd_src_caps:
+ 962 0000 00000000 		.space	28
+ 962      00000000 
+ 962      00000000 
+ 962      00000000 
+ 962      00000000 
+ 963              		.section	.data.max_request_mv,"aw",%progbits
+ 964              		.align	2
+ 965              		.set	.LANCHOR2,. + 0
+ 968              	max_request_mv:
+ 969 0000 204E0000 		.word	20000
+ 970              		.text
+ 971              	.Letext0:
+ 972              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 973              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 974              		.file 4 "Inc/usb_pd_tcpm.h"
+ 975              		.file 5 "Inc/usb_pd.h"
+ 976              		.file 6 "Inc/FUSB302.h"
+ 977              		.file 7 "Inc/tcpm_driver.h"
+ 978              		.file 8 "Inc/tcpm.h"
+ARM GAS  /tmp/cc4k6GfE.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usb_pd_policy.c
+     /tmp/cc4k6GfE.s:16     .text.stub_pd_board_check_request:0000000000000000 $t
+     /tmp/cc4k6GfE.s:22     .text.stub_pd_board_check_request:0000000000000000 stub_pd_board_check_request
+     /tmp/cc4k6GfE.s:22     .text.stub_pd_board_check_request:0000000000000000 pd_board_check_request
+     /tmp/cc4k6GfE.s:66     .text.pd_check_requested_voltage:0000000000000000 $t
+     /tmp/cc4k6GfE.s:73     .text.pd_check_requested_voltage:0000000000000000 pd_check_requested_voltage
+     /tmp/cc4k6GfE.s:158    .text.pd_check_requested_voltage:0000000000000048 $d
+     /tmp/cc4k6GfE.s:165    .text.pd_find_pdo_index:0000000000000000 $t
+     /tmp/cc4k6GfE.s:172    .text.pd_find_pdo_index:0000000000000000 pd_find_pdo_index
+     /tmp/cc4k6GfE.s:369    .text.pd_find_pdo_index:00000000000000d4 $d
+     /tmp/cc4k6GfE.s:379    .text.pd_extract_pdo_power:0000000000000000 $t
+     /tmp/cc4k6GfE.s:386    .text.pd_extract_pdo_power:0000000000000000 pd_extract_pdo_power
+     /tmp/cc4k6GfE.s:508    .text.pd_extract_pdo_power:0000000000000084 $d
+     /tmp/cc4k6GfE.s:516    .text.pd_build_request:0000000000000000 $t
+     /tmp/cc4k6GfE.s:523    .text.pd_build_request:0000000000000000 pd_build_request
+     /tmp/cc4k6GfE.s:672    .text.pd_build_request:00000000000000ac $d
+     /tmp/cc4k6GfE.s:681    .text.pd_process_source_cap:0000000000000000 $t
+     /tmp/cc4k6GfE.s:688    .text.pd_process_source_cap:0000000000000000 pd_process_source_cap
+     /tmp/cc4k6GfE.s:763    .text.pd_process_source_cap:0000000000000048 $d
+     /tmp/cc4k6GfE.s:770    .text.pd_process_source_cap_callback:0000000000000000 $t
+     /tmp/cc4k6GfE.s:777    .text.pd_process_source_cap_callback:0000000000000000 pd_process_source_cap_callback
+     /tmp/cc4k6GfE.s:792    .text.pd_set_max_voltage:0000000000000000 $t
+     /tmp/cc4k6GfE.s:799    .text.pd_set_max_voltage:0000000000000000 pd_set_max_voltage
+     /tmp/cc4k6GfE.s:816    .text.pd_set_max_voltage:0000000000000008 $d
+     /tmp/cc4k6GfE.s:821    .text.pd_get_max_voltage:0000000000000000 $t
+     /tmp/cc4k6GfE.s:828    .text.pd_get_max_voltage:0000000000000000 pd_get_max_voltage
+     /tmp/cc4k6GfE.s:844    .text.pd_get_max_voltage:0000000000000008 $d
+     /tmp/cc4k6GfE.s:849    .text.pd_charge_from_device:0000000000000000 $t
+     /tmp/cc4k6GfE.s:856    .text.pd_charge_from_device:0000000000000000 pd_charge_from_device
+     /tmp/cc4k6GfE.s:896    .text.pd_charge_from_device:0000000000000020 $d
+     /tmp/cc4k6GfE.s:902    .text.pd_svdm:0000000000000000 $t
+     /tmp/cc4k6GfE.s:909    .text.pd_svdm:0000000000000000 pd_svdm
+     /tmp/cc4k6GfE.s:926    .text.pd_vdm:0000000000000000 $t
+     /tmp/cc4k6GfE.s:933    .text.pd_vdm:0000000000000000 pd_vdm
+     /tmp/cc4k6GfE.s:950    .bss.pd_src_cap_cnt:0000000000000000 $d
+     /tmp/cc4k6GfE.s:954    .bss.pd_src_cap_cnt:0000000000000000 pd_src_cap_cnt
+     /tmp/cc4k6GfE.s:957    .bss.pd_src_caps:0000000000000000 $d
+     /tmp/cc4k6GfE.s:961    .bss.pd_src_caps:0000000000000000 pd_src_caps
+     /tmp/cc4k6GfE.s:964    .data.max_request_mv:0000000000000000 $d
+     /tmp/cc4k6GfE.s:968    .data.max_request_mv:0000000000000000 max_request_mv
+
+UNDEFINED SYMBOLS
+pd_src_pdo_cnt
+pd_src_pdo
+pd_is_valid_input_voltage
+__aeabi_uidiv
+__aeabi_idiv
+pd_set_input_current_limit

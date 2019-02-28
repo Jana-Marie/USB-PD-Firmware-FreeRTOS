@@ -1,0 +1,748 @@
+ARM GAS  /tmp/ccFkZzMB.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"usb_pd_driver.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.pd_task_set_event,"ax",%progbits
+  16              		.align	1
+  17              		.global	pd_task_set_event
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	pd_task_set_event:
+  24              	.LFB18:
+  25              		.file 1 "Src/usb_pd_driver.c"
+   1:Src/usb_pd_driver.c **** /*
+   2:Src/usb_pd_driver.c ****  * usb_pd_driver.c
+   3:Src/usb_pd_driver.c ****  *
+   4:Src/usb_pd_driver.c ****  * Created: 11/11/2017 23:55:12
+   5:Src/usb_pd_driver.c ****  *  Author: jason
+   6:Src/usb_pd_driver.c ****  */ 
+   7:Src/usb_pd_driver.c **** 
+   8:Src/usb_pd_driver.c **** #include "usb_pd_driver.h"
+   9:Src/usb_pd_driver.c **** #include "usb_pd.h"
+  10:Src/usb_pd_driver.c **** 
+  11:Src/usb_pd_driver.c **** #ifndef ARRAY_SIZE
+  12:Src/usb_pd_driver.c **** #define ARRAY_SIZE(t) (sizeof(t) / sizeof(t[0]))
+  13:Src/usb_pd_driver.c **** #endif
+  14:Src/usb_pd_driver.c **** 
+  15:Src/usb_pd_driver.c **** extern struct tc_module tc_instance;
+  16:Src/usb_pd_driver.c **** extern uint32_t g_us_timestamp_upper_32bit;
+  17:Src/usb_pd_driver.c **** 
+  18:Src/usb_pd_driver.c **** uint32_t pd_task_set_event(uint32_t event, int wait_for_reply)
+  19:Src/usb_pd_driver.c **** {
+  26              		.loc 1 19 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31              	.LVL0:
+  20:Src/usb_pd_driver.c **** 	switch (event)
+  21:Src/usb_pd_driver.c **** 	{
+  22:Src/usb_pd_driver.c **** 		case PD_EVENT_TX:
+  23:Src/usb_pd_driver.c **** 			break;
+  24:Src/usb_pd_driver.c **** 		default:
+  25:Src/usb_pd_driver.c **** 			break;
+  26:Src/usb_pd_driver.c **** 	}
+  27:Src/usb_pd_driver.c **** 	return 0;
+ARM GAS  /tmp/ccFkZzMB.s 			page 2
+
+
+  28:Src/usb_pd_driver.c **** }
+  32              		.loc 1 28 0
+  33 0000 0020     		movs	r0, #0
+  34              	.LVL1:
+  35              		@ sp needed
+  36 0002 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE18:
+  40              		.section	.text.pd_set_input_current_limit,"ax",%progbits
+  41              		.align	1
+  42              		.global	pd_set_input_current_limit
+  43              		.syntax unified
+  44              		.code	16
+  45              		.thumb_func
+  46              		.fpu softvfp
+  48              	pd_set_input_current_limit:
+  49              	.LFB19:
+  29:Src/usb_pd_driver.c **** 
+  30:Src/usb_pd_driver.c **** const uint32_t pd_src_pdo[] = {
+  31:Src/usb_pd_driver.c **** 	PDO_FIXED(5000, 1500, PDO_FIXED_FLAGS),
+  32:Src/usb_pd_driver.c **** };
+  33:Src/usb_pd_driver.c **** const int pd_src_pdo_cnt = ARRAY_SIZE(pd_src_pdo);
+  34:Src/usb_pd_driver.c **** 
+  35:Src/usb_pd_driver.c **** const uint32_t pd_snk_pdo[] = {
+  36:Src/usb_pd_driver.c **** 	PDO_FIXED(5000, 500, PDO_FIXED_FLAGS),
+  37:Src/usb_pd_driver.c **** 	PDO_FIXED(9000, 500, PDO_FIXED_FLAGS),
+  38:Src/usb_pd_driver.c **** 	PDO_FIXED(20000, 500, PDO_FIXED_FLAGS),
+  39:Src/usb_pd_driver.c **** };
+  40:Src/usb_pd_driver.c **** const int pd_snk_pdo_cnt = ARRAY_SIZE(pd_snk_pdo);
+  41:Src/usb_pd_driver.c **** 
+  42:Src/usb_pd_driver.c **** void pd_set_input_current_limit(int port, uint32_t max_ma,
+  43:Src/usb_pd_driver.c **** 	uint32_t supply_voltage)
+  44:Src/usb_pd_driver.c **** {
+  50              		.loc 1 44 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              		@ link register save eliminated.
+  55              	.LVL2:
+  45:Src/usb_pd_driver.c **** 
+  46:Src/usb_pd_driver.c **** }
+  56              		.loc 1 46 0
+  57              		@ sp needed
+  58 0000 7047     		bx	lr
+  59              		.cfi_endproc
+  60              	.LFE19:
+  62              		.section	.text.pd_is_valid_input_voltage,"ax",%progbits
+  63              		.align	1
+  64              		.global	pd_is_valid_input_voltage
+  65              		.syntax unified
+  66              		.code	16
+  67              		.thumb_func
+  68              		.fpu softvfp
+  70              	pd_is_valid_input_voltage:
+  71              	.LFB20:
+  47:Src/usb_pd_driver.c **** 
+  48:Src/usb_pd_driver.c **** int pd_is_valid_input_voltage(int mv)
+ARM GAS  /tmp/ccFkZzMB.s 			page 3
+
+
+  49:Src/usb_pd_driver.c **** {
+  72              		.loc 1 49 0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  77              	.LVL3:
+  50:Src/usb_pd_driver.c **** 	return 1;
+  51:Src/usb_pd_driver.c **** }
+  78              		.loc 1 51 0
+  79 0000 0120     		movs	r0, #1
+  80              	.LVL4:
+  81              		@ sp needed
+  82 0002 7047     		bx	lr
+  83              		.cfi_endproc
+  84              	.LFE20:
+  86              		.section	.text.pd_snk_is_vbus_provided,"ax",%progbits
+  87              		.align	1
+  88              		.global	pd_snk_is_vbus_provided
+  89              		.syntax unified
+  90              		.code	16
+  91              		.thumb_func
+  92              		.fpu softvfp
+  94              	pd_snk_is_vbus_provided:
+  95              	.LFB21:
+  52:Src/usb_pd_driver.c **** 
+  53:Src/usb_pd_driver.c **** int pd_snk_is_vbus_provided(int port)
+  54:Src/usb_pd_driver.c **** {
+  96              		.loc 1 54 0
+  97              		.cfi_startproc
+  98              		@ args = 0, pretend = 0, frame = 0
+  99              		@ frame_needed = 0, uses_anonymous_args = 0
+ 100              		@ link register save eliminated.
+ 101              	.LVL5:
+  55:Src/usb_pd_driver.c **** 	return 1;
+  56:Src/usb_pd_driver.c **** }
+ 102              		.loc 1 56 0
+ 103 0000 0120     		movs	r0, #1
+ 104              	.LVL6:
+ 105              		@ sp needed
+ 106 0002 7047     		bx	lr
+ 107              		.cfi_endproc
+ 108              	.LFE21:
+ 110              		.section	.text.get_time,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	get_time
+ 113              		.syntax unified
+ 114              		.code	16
+ 115              		.thumb_func
+ 116              		.fpu softvfp
+ 118              	get_time:
+ 119              	.LFB22:
+  57:Src/usb_pd_driver.c **** 
+  58:Src/usb_pd_driver.c **** timestamp_t get_time(void)
+  59:Src/usb_pd_driver.c **** {
+ 120              		.loc 1 59 0
+ 121              		.cfi_startproc
+ARM GAS  /tmp/ccFkZzMB.s 			page 4
+
+
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 0, uses_anonymous_args = 0
+ 124              	.LVL7:
+ 125 0000 10B5     		push	{r4, lr}
+ 126              	.LCFI0:
+ 127              		.cfi_def_cfa_offset 8
+ 128              		.cfi_offset 4, -8
+ 129              		.cfi_offset 14, -4
+ 130 0002 0400     		movs	r4, r0
+  60:Src/usb_pd_driver.c **** 	timestamp_t t;
+  61:Src/usb_pd_driver.c **** 	
+  62:Src/usb_pd_driver.c **** 	t.val = xTaskGetTickCount();
+ 131              		.loc 1 62 0
+ 132 0004 FFF7FEFF 		bl	xTaskGetTickCount
+ 133              	.LVL8:
+ 134 0008 C317     		asrs	r3, r0, #31
+ 135 000a 2060     		str	r0, [r4]
+ 136 000c 6360     		str	r3, [r4, #4]
+  63:Src/usb_pd_driver.c **** 	t.le.lo = t.val;
+  64:Src/usb_pd_driver.c **** 	t.le.hi = (t.val >> 32);
+  65:Src/usb_pd_driver.c **** 	
+  66:Src/usb_pd_driver.c **** 	return t;
+  67:Src/usb_pd_driver.c **** }
+ 137              		.loc 1 67 0
+ 138 000e 2000     		movs	r0, r4
+ 139              		@ sp needed
+ 140              	.LVL9:
+ 141 0010 10BD     		pop	{r4, pc}
+ 142              		.cfi_endproc
+ 143              	.LFE22:
+ 145              		.section	.text.pd_power_supply_reset,"ax",%progbits
+ 146              		.align	1
+ 147              		.global	pd_power_supply_reset
+ 148              		.syntax unified
+ 149              		.code	16
+ 150              		.thumb_func
+ 151              		.fpu softvfp
+ 153              	pd_power_supply_reset:
+ 154              	.LFB23:
+  68:Src/usb_pd_driver.c **** 
+  69:Src/usb_pd_driver.c **** 
+  70:Src/usb_pd_driver.c **** void pd_power_supply_reset(int port)
+  71:Src/usb_pd_driver.c **** {
+ 155              		.loc 1 71 0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              		@ link register save eliminated.
+ 160              	.LVL10:
+  72:Src/usb_pd_driver.c **** 	return;
+  73:Src/usb_pd_driver.c **** }
+ 161              		.loc 1 73 0
+ 162              		@ sp needed
+ 163 0000 7047     		bx	lr
+ 164              		.cfi_endproc
+ 165              	.LFE23:
+ 167              		.section	.text.pd_custom_vdm,"ax",%progbits
+ARM GAS  /tmp/ccFkZzMB.s 			page 5
+
+
+ 168              		.align	1
+ 169              		.global	pd_custom_vdm
+ 170              		.syntax unified
+ 171              		.code	16
+ 172              		.thumb_func
+ 173              		.fpu softvfp
+ 175              	pd_custom_vdm:
+ 176              	.LFB24:
+  74:Src/usb_pd_driver.c **** 
+  75:Src/usb_pd_driver.c **** int pd_custom_vdm(int port, int cnt, uint32_t *payload,
+  76:Src/usb_pd_driver.c **** 		  uint32_t **rpayload)
+  77:Src/usb_pd_driver.c **** {
+ 177              		.loc 1 77 0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		@ link register save eliminated.
+ 182              	.LVL11:
+  78:Src/usb_pd_driver.c **** #if 0
+  79:Src/usb_pd_driver.c **** 	int cmd = PD_VDO_CMD(payload[0]);
+  80:Src/usb_pd_driver.c **** 	uint16_t dev_id = 0;
+  81:Src/usb_pd_driver.c **** 	int is_rw, is_latest;
+  82:Src/usb_pd_driver.c **** 
+  83:Src/usb_pd_driver.c **** 	/* make sure we have some payload */
+  84:Src/usb_pd_driver.c **** 	if (cnt == 0)
+  85:Src/usb_pd_driver.c **** 		return 0;
+  86:Src/usb_pd_driver.c **** 
+  87:Src/usb_pd_driver.c **** 	switch (cmd) {
+  88:Src/usb_pd_driver.c **** 	case VDO_CMD_VERSION:
+  89:Src/usb_pd_driver.c **** 		/* guarantee last byte of payload is null character */
+  90:Src/usb_pd_driver.c **** 		*(payload + cnt - 1) = 0;
+  91:Src/usb_pd_driver.c **** 		//CPRINTF("version: %s\n", (char *)(payload+1));
+  92:Src/usb_pd_driver.c **** 		break;
+  93:Src/usb_pd_driver.c **** 	case VDO_CMD_READ_INFO:
+  94:Src/usb_pd_driver.c **** 	case VDO_CMD_SEND_INFO:
+  95:Src/usb_pd_driver.c **** 		/* copy hash */
+  96:Src/usb_pd_driver.c **** 		if (cnt == 7) {
+  97:Src/usb_pd_driver.c **** 			dev_id = VDO_INFO_HW_DEV_ID(payload[6]);
+  98:Src/usb_pd_driver.c **** 			is_rw = VDO_INFO_IS_RW(payload[6]);
+  99:Src/usb_pd_driver.c **** 
+ 100:Src/usb_pd_driver.c **** 			is_latest = pd_dev_store_rw_hash(port,
+ 101:Src/usb_pd_driver.c **** 							 dev_id,
+ 102:Src/usb_pd_driver.c **** 							 payload + 1,
+ 103:Src/usb_pd_driver.c **** 							 is_rw ?
+ 104:Src/usb_pd_driver.c **** 							 SYSTEM_IMAGE_RW :
+ 105:Src/usb_pd_driver.c **** 							 SYSTEM_IMAGE_RO);
+ 106:Src/usb_pd_driver.c **** 
+ 107:Src/usb_pd_driver.c **** 			/*
+ 108:Src/usb_pd_driver.c **** 			 * Send update host event unless our RW hash is
+ 109:Src/usb_pd_driver.c **** 			 * already known to be the latest update RW.
+ 110:Src/usb_pd_driver.c **** 			 */
+ 111:Src/usb_pd_driver.c **** 			if (!is_rw || !is_latest)
+ 112:Src/usb_pd_driver.c **** 				pd_send_host_event(PD_EVENT_UPDATE_DEVICE);
+ 113:Src/usb_pd_driver.c **** 
+ 114:Src/usb_pd_driver.c **** 			//CPRINTF("DevId:%d.%d SW:%d RW:%d\n",
+ 115:Src/usb_pd_driver.c **** 			//	HW_DEV_ID_MAJ(dev_id),
+ 116:Src/usb_pd_driver.c **** 			//	HW_DEV_ID_MIN(dev_id),
+ARM GAS  /tmp/ccFkZzMB.s 			page 6
+
+
+ 117:Src/usb_pd_driver.c **** 			//	VDO_INFO_SW_DBG_VER(payload[6]),
+ 118:Src/usb_pd_driver.c **** 			//	is_rw);
+ 119:Src/usb_pd_driver.c **** 		} else if (cnt == 6) {
+ 120:Src/usb_pd_driver.c **** 			/* really old devices don't have last byte */
+ 121:Src/usb_pd_driver.c **** 			pd_dev_store_rw_hash(port, dev_id, payload + 1,
+ 122:Src/usb_pd_driver.c **** 					     SYSTEM_IMAGE_UNKNOWN);
+ 123:Src/usb_pd_driver.c **** 		}
+ 124:Src/usb_pd_driver.c **** 		break;
+ 125:Src/usb_pd_driver.c **** 	case VDO_CMD_CURRENT:
+ 126:Src/usb_pd_driver.c **** 		CPRINTF("Current: %dmA\n", payload[1]);
+ 127:Src/usb_pd_driver.c **** 		break;
+ 128:Src/usb_pd_driver.c **** 	case VDO_CMD_FLIP:
+ 129:Src/usb_pd_driver.c **** 		/* TODO: usb_mux_flip(port); */
+ 130:Src/usb_pd_driver.c **** 		break;
+ 131:Src/usb_pd_driver.c **** #ifdef CONFIG_USB_PD_LOGGING
+ 132:Src/usb_pd_driver.c **** 	case VDO_CMD_GET_LOG:
+ 133:Src/usb_pd_driver.c **** 		pd_log_recv_vdm(port, cnt, payload);
+ 134:Src/usb_pd_driver.c **** 		break;
+ 135:Src/usb_pd_driver.c **** #endif /* CONFIG_USB_PD_LOGGING */
+ 136:Src/usb_pd_driver.c **** 	}
+ 137:Src/usb_pd_driver.c **** #endif // if 0
+ 138:Src/usb_pd_driver.c **** 
+ 139:Src/usb_pd_driver.c **** 	return 0;
+ 140:Src/usb_pd_driver.c **** }
+ 183              		.loc 1 140 0
+ 184 0000 0020     		movs	r0, #0
+ 185              	.LVL12:
+ 186              		@ sp needed
+ 187 0002 7047     		bx	lr
+ 188              		.cfi_endproc
+ 189              	.LFE24:
+ 191              		.section	.text.pd_execute_data_swap,"ax",%progbits
+ 192              		.align	1
+ 193              		.global	pd_execute_data_swap
+ 194              		.syntax unified
+ 195              		.code	16
+ 196              		.thumb_func
+ 197              		.fpu softvfp
+ 199              	pd_execute_data_swap:
+ 200              	.LFB25:
+ 141:Src/usb_pd_driver.c **** 
+ 142:Src/usb_pd_driver.c **** void pd_execute_data_swap(int port, int data_role)
+ 143:Src/usb_pd_driver.c **** {
+ 201              		.loc 1 143 0
+ 202              		.cfi_startproc
+ 203              		@ args = 0, pretend = 0, frame = 0
+ 204              		@ frame_needed = 0, uses_anonymous_args = 0
+ 205              		@ link register save eliminated.
+ 206              	.LVL13:
+ 144:Src/usb_pd_driver.c **** 	/* Do nothing */
+ 145:Src/usb_pd_driver.c **** }
+ 207              		.loc 1 145 0
+ 208              		@ sp needed
+ 209 0000 7047     		bx	lr
+ 210              		.cfi_endproc
+ 211              	.LFE25:
+ 213              		.section	.text.pd_check_data_swap,"ax",%progbits
+ARM GAS  /tmp/ccFkZzMB.s 			page 7
+
+
+ 214              		.align	1
+ 215              		.global	pd_check_data_swap
+ 216              		.syntax unified
+ 217              		.code	16
+ 218              		.thumb_func
+ 219              		.fpu softvfp
+ 221              	pd_check_data_swap:
+ 222              	.LFB26:
+ 146:Src/usb_pd_driver.c **** 
+ 147:Src/usb_pd_driver.c **** int pd_check_data_swap(int port, int data_role)
+ 148:Src/usb_pd_driver.c **** {
+ 223              		.loc 1 148 0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 0
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227              		@ link register save eliminated.
+ 228              	.LVL14:
+ 149:Src/usb_pd_driver.c **** 	// Never allow data swap
+ 150:Src/usb_pd_driver.c **** 	return 0;
+ 151:Src/usb_pd_driver.c **** }
+ 229              		.loc 1 151 0
+ 230 0000 0020     		movs	r0, #0
+ 231              	.LVL15:
+ 232              		@ sp needed
+ 233 0002 7047     		bx	lr
+ 234              		.cfi_endproc
+ 235              	.LFE26:
+ 237              		.section	.text.pd_check_power_swap,"ax",%progbits
+ 238              		.align	1
+ 239              		.global	pd_check_power_swap
+ 240              		.syntax unified
+ 241              		.code	16
+ 242              		.thumb_func
+ 243              		.fpu softvfp
+ 245              	pd_check_power_swap:
+ 246              	.LFB27:
+ 152:Src/usb_pd_driver.c **** 
+ 153:Src/usb_pd_driver.c **** int pd_check_power_swap(int port)
+ 154:Src/usb_pd_driver.c **** {
+ 247              		.loc 1 154 0
+ 248              		.cfi_startproc
+ 249              		@ args = 0, pretend = 0, frame = 0
+ 250              		@ frame_needed = 0, uses_anonymous_args = 0
+ 251              		@ link register save eliminated.
+ 252              	.LVL16:
+ 155:Src/usb_pd_driver.c **** 	/* Always refuse power swap */
+ 156:Src/usb_pd_driver.c **** 	return 0;
+ 157:Src/usb_pd_driver.c **** }
+ 253              		.loc 1 157 0
+ 254 0000 0020     		movs	r0, #0
+ 255              	.LVL17:
+ 256              		@ sp needed
+ 257 0002 7047     		bx	lr
+ 258              		.cfi_endproc
+ 259              	.LFE27:
+ 261              		.section	.text.pd_board_checks,"ax",%progbits
+ 262              		.align	1
+ARM GAS  /tmp/ccFkZzMB.s 			page 8
+
+
+ 263              		.global	pd_board_checks
+ 264              		.syntax unified
+ 265              		.code	16
+ 266              		.thumb_func
+ 267              		.fpu softvfp
+ 269              	pd_board_checks:
+ 270              	.LFB28:
+ 158:Src/usb_pd_driver.c **** 
+ 159:Src/usb_pd_driver.c **** int pd_board_checks(void)
+ 160:Src/usb_pd_driver.c **** {
+ 271              		.loc 1 160 0
+ 272              		.cfi_startproc
+ 273              		@ args = 0, pretend = 0, frame = 0
+ 274              		@ frame_needed = 0, uses_anonymous_args = 0
+ 275              		@ link register save eliminated.
+ 161:Src/usb_pd_driver.c **** 	return EC_SUCCESS;
+ 162:Src/usb_pd_driver.c **** }
+ 276              		.loc 1 162 0
+ 277 0000 0020     		movs	r0, #0
+ 278              		@ sp needed
+ 279 0002 7047     		bx	lr
+ 280              		.cfi_endproc
+ 281              	.LFE28:
+ 283              		.section	.text.pd_set_power_supply_ready,"ax",%progbits
+ 284              		.align	1
+ 285              		.global	pd_set_power_supply_ready
+ 286              		.syntax unified
+ 287              		.code	16
+ 288              		.thumb_func
+ 289              		.fpu softvfp
+ 291              	pd_set_power_supply_ready:
+ 292              	.LFB29:
+ 163:Src/usb_pd_driver.c **** 
+ 164:Src/usb_pd_driver.c **** int pd_set_power_supply_ready(int port)
+ 165:Src/usb_pd_driver.c **** {
+ 293              		.loc 1 165 0
+ 294              		.cfi_startproc
+ 295              		@ args = 0, pretend = 0, frame = 0
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 297              		@ link register save eliminated.
+ 298              	.LVL18:
+ 166:Src/usb_pd_driver.c **** #if 0
+ 167:Src/usb_pd_driver.c **** 	/* Disable charging */
+ 168:Src/usb_pd_driver.c **** 	gpio_set_level(GPIO_USB_C0_CHARGE_L, 1);
+ 169:Src/usb_pd_driver.c **** 
+ 170:Src/usb_pd_driver.c **** 	/* Enable VBUS source */
+ 171:Src/usb_pd_driver.c **** 	gpio_set_level(GPIO_USB_C0_5V_EN, 1);
+ 172:Src/usb_pd_driver.c **** 
+ 173:Src/usb_pd_driver.c **** 	/* notify host of power info change */
+ 174:Src/usb_pd_driver.c **** 	pd_send_host_event(PD_EVENT_POWER_CHANGE);
+ 175:Src/usb_pd_driver.c **** #endif // if 0
+ 176:Src/usb_pd_driver.c **** 	return EC_SUCCESS; /* we are ready */
+ 177:Src/usb_pd_driver.c **** }
+ 299              		.loc 1 177 0
+ 300 0000 0020     		movs	r0, #0
+ 301              	.LVL19:
+ 302              		@ sp needed
+ARM GAS  /tmp/ccFkZzMB.s 			page 9
+
+
+ 303 0002 7047     		bx	lr
+ 304              		.cfi_endproc
+ 305              	.LFE29:
+ 307              		.section	.text.pd_transition_voltage,"ax",%progbits
+ 308              		.align	1
+ 309              		.global	pd_transition_voltage
+ 310              		.syntax unified
+ 311              		.code	16
+ 312              		.thumb_func
+ 313              		.fpu softvfp
+ 315              	pd_transition_voltage:
+ 316              	.LFB30:
+ 178:Src/usb_pd_driver.c **** 
+ 179:Src/usb_pd_driver.c **** void pd_transition_voltage(int idx)
+ 180:Src/usb_pd_driver.c **** {
+ 317              		.loc 1 180 0
+ 318              		.cfi_startproc
+ 319              		@ args = 0, pretend = 0, frame = 0
+ 320              		@ frame_needed = 0, uses_anonymous_args = 0
+ 321              		@ link register save eliminated.
+ 322              	.LVL20:
+ 181:Src/usb_pd_driver.c **** 	/* No-operation: we are always 5V */
+ 182:Src/usb_pd_driver.c **** 	
+ 183:Src/usb_pd_driver.c **** #if 0
+ 184:Src/usb_pd_driver.c **** 	timestamp_t deadline;
+ 185:Src/usb_pd_driver.c **** 	uint32_t mv = src_pdo_charge[idx - 1].mv;
+ 186:Src/usb_pd_driver.c **** 
+ 187:Src/usb_pd_driver.c **** 	/* Is this a transition to a new voltage? */
+ 188:Src/usb_pd_driver.c **** 	if (charge_port_is_active() && vbus[CHG].mv != mv) {
+ 189:Src/usb_pd_driver.c **** 		/*
+ 190:Src/usb_pd_driver.c **** 		 * Alter voltage limit on charge port, this should cause
+ 191:Src/usb_pd_driver.c **** 		 * the port to select the desired PDO.
+ 192:Src/usb_pd_driver.c **** 		 */
+ 193:Src/usb_pd_driver.c **** 		pd_set_external_voltage_limit(CHG, mv);
+ 194:Src/usb_pd_driver.c **** 
+ 195:Src/usb_pd_driver.c **** 		/* Wait for CHG transition */
+ 196:Src/usb_pd_driver.c **** 		deadline.val = get_time().val + PD_T_PS_TRANSITION;
+ 197:Src/usb_pd_driver.c **** 		CPRINTS("Waiting for CHG port transition");
+ 198:Src/usb_pd_driver.c **** 		while (charge_port_is_active() &&
+ 199:Src/usb_pd_driver.c **** 		       vbus[CHG].mv != mv &&
+ 200:Src/usb_pd_driver.c **** 		       get_time().val < deadline.val)
+ 201:Src/usb_pd_driver.c **** 			msleep(10);
+ 202:Src/usb_pd_driver.c **** 
+ 203:Src/usb_pd_driver.c **** 		if (vbus[CHG].mv != mv) {
+ 204:Src/usb_pd_driver.c **** 			CPRINTS("Missed CHG transition, resetting DUT");
+ 205:Src/usb_pd_driver.c **** 			pd_power_supply_reset(DUT);
+ 206:Src/usb_pd_driver.c **** 			return;
+ 207:Src/usb_pd_driver.c **** 		}
+ 208:Src/usb_pd_driver.c **** 
+ 209:Src/usb_pd_driver.c **** 		CPRINTS("CHG transitioned");
+ 210:Src/usb_pd_driver.c **** 	}
+ 211:Src/usb_pd_driver.c **** 
+ 212:Src/usb_pd_driver.c **** 	vbus[DUT].mv = vbus[CHG].mv;
+ 213:Src/usb_pd_driver.c **** 	vbus[DUT].ma = vbus[CHG].ma;
+ 214:Src/usb_pd_driver.c **** #endif // if 0
+ 215:Src/usb_pd_driver.c **** 
+ 216:Src/usb_pd_driver.c **** }
+ARM GAS  /tmp/ccFkZzMB.s 			page 10
+
+
+ 323              		.loc 1 216 0
+ 324              		@ sp needed
+ 325 0000 7047     		bx	lr
+ 326              		.cfi_endproc
+ 327              	.LFE30:
+ 329              		.section	.text.pd_check_dr_role,"ax",%progbits
+ 330              		.align	1
+ 331              		.global	pd_check_dr_role
+ 332              		.syntax unified
+ 333              		.code	16
+ 334              		.thumb_func
+ 335              		.fpu softvfp
+ 337              	pd_check_dr_role:
+ 338              	.LFB31:
+ 217:Src/usb_pd_driver.c **** 
+ 218:Src/usb_pd_driver.c **** void pd_check_dr_role(int port, int dr_role, int flags)
+ 219:Src/usb_pd_driver.c **** {
+ 339              		.loc 1 219 0
+ 340              		.cfi_startproc
+ 341              		@ args = 0, pretend = 0, frame = 0
+ 342              		@ frame_needed = 0, uses_anonymous_args = 0
+ 343              		@ link register save eliminated.
+ 344              	.LVL21:
+ 220:Src/usb_pd_driver.c **** #if 0
+ 221:Src/usb_pd_driver.c **** 	/* If UFP, try to switch to DFP */
+ 222:Src/usb_pd_driver.c **** 	if ((flags & PD_FLAGS_PARTNER_DR_DATA) && dr_role == PD_ROLE_UFP)
+ 223:Src/usb_pd_driver.c **** 	pd_request_data_swap(port);
+ 224:Src/usb_pd_driver.c **** #endif
+ 225:Src/usb_pd_driver.c **** }
+ 345              		.loc 1 225 0
+ 346              		@ sp needed
+ 347 0000 7047     		bx	lr
+ 348              		.cfi_endproc
+ 349              	.LFE31:
+ 351              		.section	.text.pd_check_pr_role,"ax",%progbits
+ 352              		.align	1
+ 353              		.global	pd_check_pr_role
+ 354              		.syntax unified
+ 355              		.code	16
+ 356              		.thumb_func
+ 357              		.fpu softvfp
+ 359              	pd_check_pr_role:
+ 360              	.LFB32:
+ 226:Src/usb_pd_driver.c **** 
+ 227:Src/usb_pd_driver.c **** void pd_check_pr_role(int port, int pr_role, int flags)
+ 228:Src/usb_pd_driver.c **** {
+ 361              		.loc 1 228 0
+ 362              		.cfi_startproc
+ 363              		@ args = 0, pretend = 0, frame = 0
+ 364              		@ frame_needed = 0, uses_anonymous_args = 0
+ 365              		@ link register save eliminated.
+ 366              	.LVL22:
+ 229:Src/usb_pd_driver.c **** #if 0
+ 230:Src/usb_pd_driver.c **** 	/*
+ 231:Src/usb_pd_driver.c **** 	 * If partner is dual-role power and dualrole toggling is on, consider
+ 232:Src/usb_pd_driver.c **** 	 * if a power swap is necessary.
+ 233:Src/usb_pd_driver.c **** 	 */
+ARM GAS  /tmp/ccFkZzMB.s 			page 11
+
+
+ 234:Src/usb_pd_driver.c **** 	if ((flags & PD_FLAGS_PARTNER_DR_POWER) &&
+ 235:Src/usb_pd_driver.c **** 	    pd_get_dual_role() == PD_DRP_TOGGLE_ON) {
+ 236:Src/usb_pd_driver.c **** 		/*
+ 237:Src/usb_pd_driver.c **** 		 * If we are a sink and partner is not externally powered, then
+ 238:Src/usb_pd_driver.c **** 		 * swap to become a source. If we are source and partner is
+ 239:Src/usb_pd_driver.c **** 		 * externally powered, swap to become a sink.
+ 240:Src/usb_pd_driver.c **** 		 */
+ 241:Src/usb_pd_driver.c **** 		int partner_extpower = flags & PD_FLAGS_PARTNER_EXTPOWER;
+ 242:Src/usb_pd_driver.c **** 
+ 243:Src/usb_pd_driver.c **** 		if ((!partner_extpower && pr_role == PD_ROLE_SINK) ||
+ 244:Src/usb_pd_driver.c **** 		     (partner_extpower && pr_role == PD_ROLE_SOURCE))
+ 245:Src/usb_pd_driver.c **** 			pd_request_power_swap(port);
+ 246:Src/usb_pd_driver.c **** 	}
+ 247:Src/usb_pd_driver.c **** #endif // if 0
+ 248:Src/usb_pd_driver.c **** }
+ 367              		.loc 1 248 0
+ 368              		@ sp needed
+ 369 0000 7047     		bx	lr
+ 370              		.cfi_endproc
+ 371              	.LFE32:
+ 373              		.section	.text.pd_process_source_cap_callback,"ax",%progbits
+ 374              		.align	1
+ 375              		.global	pd_process_source_cap_callback
+ 376              		.syntax unified
+ 377              		.code	16
+ 378              		.thumb_func
+ 379              		.fpu softvfp
+ 381              	pd_process_source_cap_callback:
+ 382              	.LFB33:
+ 249:Src/usb_pd_driver.c **** 
+ 250:Src/usb_pd_driver.c **** void pd_process_source_cap_callback(int port, int cnt, uint32_t *src_caps)
+ 251:Src/usb_pd_driver.c **** {
+ 383              		.loc 1 251 0
+ 384              		.cfi_startproc
+ 385              		@ args = 0, pretend = 0, frame = 0
+ 386              		@ frame_needed = 0, uses_anonymous_args = 0
+ 387              		@ link register save eliminated.
+ 388              	.LVL23:
+ 252:Src/usb_pd_driver.c **** 	//har str[256];
+ 253:Src/usb_pd_driver.c **** 	//int i;
+ 254:Src/usb_pd_driver.c **** 	//uint32_t ma, mv, pdo;
+ 255:Src/usb_pd_driver.c **** 	/*
+ 256:Src/usb_pd_driver.c **** 	memset(display_buffer, 0x00, DISP_MEM_SIZE);
+ 257:Src/usb_pd_driver.c **** 	
+ 258:Src/usb_pd_driver.c **** 	sprintf(str, "Has Power Delivery");
+ 259:Src/usb_pd_driver.c **** 	UG_PutString(0, 8, str);
+ 260:Src/usb_pd_driver.c **** 	
+ 261:Src/usb_pd_driver.c **** 	for (i = 0; i < cnt; i++)
+ 262:Src/usb_pd_driver.c **** 	{
+ 263:Src/usb_pd_driver.c **** 		pd_extract_pdo_power(src_caps[i], &ma, &mv);
+ 264:Src/usb_pd_driver.c **** 		sprintf(str, "%5.2f V, %5.2f A", (float)mv/1000, (float)ma/1000);
+ 265:Src/usb_pd_driver.c **** 		UG_PutString(0, 8*(i+2), str);
+ 266:Src/usb_pd_driver.c **** 	}
+ 267:Src/usb_pd_driver.c **** 	
+ 268:Src/usb_pd_driver.c **** 	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
+ 269:Src/usb_pd_driver.c **** 	*/
+ 270:Src/usb_pd_driver.c **** }
+ARM GAS  /tmp/ccFkZzMB.s 			page 12
+
+
+ 389              		.loc 1 270 0
+ 390              		@ sp needed
+ 391 0000 7047     		bx	lr
+ 392              		.cfi_endproc
+ 393              	.LFE33:
+ 395              		.global	pd_snk_pdo_cnt
+ 396              		.global	pd_snk_pdo
+ 397              		.global	pd_src_pdo_cnt
+ 398              		.global	pd_src_pdo
+ 399              		.section	.rodata.pd_snk_pdo,"a",%progbits
+ 400              		.align	2
+ 403              	pd_snk_pdo:
+ 404 0000 32900126 		.word	637636658
+ 405 0004 32D00226 		.word	637718578
+ 406 0008 32400626 		.word	637943858
+ 407              		.section	.rodata.pd_snk_pdo_cnt,"a",%progbits
+ 408              		.align	2
+ 411              	pd_snk_pdo_cnt:
+ 412 0000 03000000 		.word	3
+ 413              		.section	.rodata.pd_src_pdo,"a",%progbits
+ 414              		.align	2
+ 417              	pd_src_pdo:
+ 418 0000 96900126 		.word	637636758
+ 419              		.section	.rodata.pd_src_pdo_cnt,"a",%progbits
+ 420              		.align	2
+ 423              	pd_src_pdo_cnt:
+ 424 0000 01000000 		.word	1
+ 425              		.text
+ 426              	.Letext0:
+ 427              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 428              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 429              		.file 4 "Inc/usb_pd_tcpm.h"
+ 430              		.file 5 "Inc/tcpm.h"
+ 431              		.file 6 "Inc/FUSB302.h"
+ 432              		.file 7 "Inc/tcpm_driver.h"
+ 433              		.file 8 "Inc/usb_pd.h"
+ 434              		.file 9 "Inc/usb_pd_driver.h"
+ARM GAS  /tmp/ccFkZzMB.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usb_pd_driver.c
+     /tmp/ccFkZzMB.s:16     .text.pd_task_set_event:0000000000000000 $t
+     /tmp/ccFkZzMB.s:23     .text.pd_task_set_event:0000000000000000 pd_task_set_event
+     /tmp/ccFkZzMB.s:41     .text.pd_set_input_current_limit:0000000000000000 $t
+     /tmp/ccFkZzMB.s:48     .text.pd_set_input_current_limit:0000000000000000 pd_set_input_current_limit
+     /tmp/ccFkZzMB.s:63     .text.pd_is_valid_input_voltage:0000000000000000 $t
+     /tmp/ccFkZzMB.s:70     .text.pd_is_valid_input_voltage:0000000000000000 pd_is_valid_input_voltage
+     /tmp/ccFkZzMB.s:87     .text.pd_snk_is_vbus_provided:0000000000000000 $t
+     /tmp/ccFkZzMB.s:94     .text.pd_snk_is_vbus_provided:0000000000000000 pd_snk_is_vbus_provided
+     /tmp/ccFkZzMB.s:111    .text.get_time:0000000000000000 $t
+     /tmp/ccFkZzMB.s:118    .text.get_time:0000000000000000 get_time
+     /tmp/ccFkZzMB.s:146    .text.pd_power_supply_reset:0000000000000000 $t
+     /tmp/ccFkZzMB.s:153    .text.pd_power_supply_reset:0000000000000000 pd_power_supply_reset
+     /tmp/ccFkZzMB.s:168    .text.pd_custom_vdm:0000000000000000 $t
+     /tmp/ccFkZzMB.s:175    .text.pd_custom_vdm:0000000000000000 pd_custom_vdm
+     /tmp/ccFkZzMB.s:192    .text.pd_execute_data_swap:0000000000000000 $t
+     /tmp/ccFkZzMB.s:199    .text.pd_execute_data_swap:0000000000000000 pd_execute_data_swap
+     /tmp/ccFkZzMB.s:214    .text.pd_check_data_swap:0000000000000000 $t
+     /tmp/ccFkZzMB.s:221    .text.pd_check_data_swap:0000000000000000 pd_check_data_swap
+     /tmp/ccFkZzMB.s:238    .text.pd_check_power_swap:0000000000000000 $t
+     /tmp/ccFkZzMB.s:245    .text.pd_check_power_swap:0000000000000000 pd_check_power_swap
+     /tmp/ccFkZzMB.s:262    .text.pd_board_checks:0000000000000000 $t
+     /tmp/ccFkZzMB.s:269    .text.pd_board_checks:0000000000000000 pd_board_checks
+     /tmp/ccFkZzMB.s:284    .text.pd_set_power_supply_ready:0000000000000000 $t
+     /tmp/ccFkZzMB.s:291    .text.pd_set_power_supply_ready:0000000000000000 pd_set_power_supply_ready
+     /tmp/ccFkZzMB.s:308    .text.pd_transition_voltage:0000000000000000 $t
+     /tmp/ccFkZzMB.s:315    .text.pd_transition_voltage:0000000000000000 pd_transition_voltage
+     /tmp/ccFkZzMB.s:330    .text.pd_check_dr_role:0000000000000000 $t
+     /tmp/ccFkZzMB.s:337    .text.pd_check_dr_role:0000000000000000 pd_check_dr_role
+     /tmp/ccFkZzMB.s:352    .text.pd_check_pr_role:0000000000000000 $t
+     /tmp/ccFkZzMB.s:359    .text.pd_check_pr_role:0000000000000000 pd_check_pr_role
+     /tmp/ccFkZzMB.s:374    .text.pd_process_source_cap_callback:0000000000000000 $t
+     /tmp/ccFkZzMB.s:381    .text.pd_process_source_cap_callback:0000000000000000 pd_process_source_cap_callback
+     /tmp/ccFkZzMB.s:411    .rodata.pd_snk_pdo_cnt:0000000000000000 pd_snk_pdo_cnt
+     /tmp/ccFkZzMB.s:403    .rodata.pd_snk_pdo:0000000000000000 pd_snk_pdo
+     /tmp/ccFkZzMB.s:423    .rodata.pd_src_pdo_cnt:0000000000000000 pd_src_pdo_cnt
+     /tmp/ccFkZzMB.s:417    .rodata.pd_src_pdo:0000000000000000 pd_src_pdo
+     /tmp/ccFkZzMB.s:400    .rodata.pd_snk_pdo:0000000000000000 $d
+     /tmp/ccFkZzMB.s:408    .rodata.pd_snk_pdo_cnt:0000000000000000 $d
+     /tmp/ccFkZzMB.s:414    .rodata.pd_src_pdo:0000000000000000 $d
+     /tmp/ccFkZzMB.s:420    .rodata.pd_src_pdo_cnt:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+xTaskGetTickCount

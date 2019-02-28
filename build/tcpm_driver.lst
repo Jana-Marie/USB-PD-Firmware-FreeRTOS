@@ -1,0 +1,538 @@
+ARM GAS  /tmp/cc4tdINv.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"tcpm_driver.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.tcpc_write,"ax",%progbits
+  16              		.align	1
+  17              		.global	tcpc_write
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	tcpc_write:
+  24              	.LFB55:
+  25              		.file 1 "Src/tcpm_driver.c"
+   1:Src/tcpm_driver.c **** /*
+   2:Src/tcpm_driver.c ****  * tcpm_driver.c
+   3:Src/tcpm_driver.c ****  *
+   4:Src/tcpm_driver.c ****  * Created: 11/11/2017 18:42:26
+   5:Src/tcpm_driver.c ****  *  Author: jason
+   6:Src/tcpm_driver.c ****  */ 
+   7:Src/tcpm_driver.c **** 
+   8:Src/tcpm_driver.c **** #include "tcpm_driver.h"
+   9:Src/tcpm_driver.c **** #include "main.h"
+  10:Src/tcpm_driver.c **** 
+  11:Src/tcpm_driver.c **** extern I2C_HandleTypeDef hi2c1;
+  12:Src/tcpm_driver.c **** extern const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT];
+  13:Src/tcpm_driver.c **** 
+  14:Src/tcpm_driver.c **** 
+  15:Src/tcpm_driver.c **** /* I2C wrapper functions - get I2C port / slave addr from config struct. */
+  16:Src/tcpm_driver.c **** int tcpc_write(int port, int reg, int val)
+  17:Src/tcpm_driver.c **** {
+  26              		.loc 1 17 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 8
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              	.LVL0:
+  31 0000 10B5     		push	{r4, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  36 0002 84B0     		sub	sp, sp, #16
+  37              	.LCFI1:
+  38              		.cfi_def_cfa_offset 24
+  18:Src/tcpm_driver.c **** 	uint8_t data[2];
+  19:Src/tcpm_driver.c **** 	data[0] = (0xFF) & reg;
+  39              		.loc 1 19 0
+ARM GAS  /tmp/cc4tdINv.s 			page 2
+
+
+  40 0004 03AC     		add	r4, sp, #12
+  41 0006 2170     		strb	r1, [r4]
+  20:Src/tcpm_driver.c **** 	data[1] = (0xFF) & val;
+  42              		.loc 1 20 0
+  43 0008 6270     		strb	r2, [r4, #1]
+  21:Src/tcpm_driver.c **** 
+  22:Src/tcpm_driver.c **** 	return HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);
+  44              		.loc 1 22 0
+  45 000a 0301     		lsls	r3, r0, #4
+  46 000c 0548     		ldr	r0, .L2
+  47              	.LVL1:
+  48 000e C018     		adds	r0, r0, r3
+  49 0010 8188     		ldrh	r1, [r0, #4]
+  50              	.LVL2:
+  51 0012 0123     		movs	r3, #1
+  52 0014 0093     		str	r3, [sp]
+  53 0016 0133     		adds	r3, r3, #1
+  54 0018 2200     		movs	r2, r4
+  55              	.LVL3:
+  56 001a 0348     		ldr	r0, .L2+4
+  57 001c FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+  58              	.LVL4:
+  23:Src/tcpm_driver.c **** }
+  59              		.loc 1 23 0
+  60 0020 04B0     		add	sp, sp, #16
+  61              		@ sp needed
+  62 0022 10BD     		pop	{r4, pc}
+  63              	.L3:
+  64              		.align	2
+  65              	.L2:
+  66 0024 00000000 		.word	tcpc_config
+  67 0028 00000000 		.word	hi2c1
+  68              		.cfi_endproc
+  69              	.LFE55:
+  71              		.section	.text.tcpc_write16,"ax",%progbits
+  72              		.align	1
+  73              		.global	tcpc_write16
+  74              		.syntax unified
+  75              		.code	16
+  76              		.thumb_func
+  77              		.fpu softvfp
+  79              	tcpc_write16:
+  80              	.LFB56:
+  24:Src/tcpm_driver.c **** 
+  25:Src/tcpm_driver.c **** int tcpc_write16(int port, int reg, int val)
+  26:Src/tcpm_driver.c **** {
+  81              		.loc 1 26 0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 8
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              	.LVL5:
+  86 0000 10B5     		push	{r4, lr}
+  87              	.LCFI2:
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 4, -8
+  90              		.cfi_offset 14, -4
+  91 0002 84B0     		sub	sp, sp, #16
+ARM GAS  /tmp/cc4tdINv.s 			page 3
+
+
+  92              	.LCFI3:
+  93              		.cfi_def_cfa_offset 24
+  27:Src/tcpm_driver.c **** 	uint8_t data[3];
+  28:Src/tcpm_driver.c **** 	data[0] = (0xFF) & reg;
+  94              		.loc 1 28 0
+  95 0004 03AC     		add	r4, sp, #12
+  96 0006 2170     		strb	r1, [r4]
+  29:Src/tcpm_driver.c **** 	data[1] = (0xFF) & val;
+  97              		.loc 1 29 0
+  98 0008 6270     		strb	r2, [r4, #1]
+  30:Src/tcpm_driver.c **** 	data[2] = (0xFF) & (val >> 8);
+  99              		.loc 1 30 0
+ 100 000a 1212     		asrs	r2, r2, #8
+ 101              	.LVL6:
+ 102 000c A270     		strb	r2, [r4, #2]
+  31:Src/tcpm_driver.c **** 		
+  32:Src/tcpm_driver.c **** 	return HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);//i
+ 103              		.loc 1 32 0
+ 104 000e 0301     		lsls	r3, r0, #4
+ 105 0010 0548     		ldr	r0, .L5
+ 106              	.LVL7:
+ 107 0012 C018     		adds	r0, r0, r3
+ 108 0014 8188     		ldrh	r1, [r0, #4]
+ 109              	.LVL8:
+ 110 0016 0123     		movs	r3, #1
+ 111 0018 0093     		str	r3, [sp]
+ 112 001a 0233     		adds	r3, r3, #2
+ 113 001c 2200     		movs	r2, r4
+ 114 001e 0348     		ldr	r0, .L5+4
+ 115 0020 FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+ 116              	.LVL9:
+  33:Src/tcpm_driver.c **** }
+ 117              		.loc 1 33 0
+ 118 0024 04B0     		add	sp, sp, #16
+ 119              		@ sp needed
+ 120 0026 10BD     		pop	{r4, pc}
+ 121              	.L6:
+ 122              		.align	2
+ 123              	.L5:
+ 124 0028 00000000 		.word	tcpc_config
+ 125 002c 00000000 		.word	hi2c1
+ 126              		.cfi_endproc
+ 127              	.LFE56:
+ 129              		.section	.text.tcpc_read,"ax",%progbits
+ 130              		.align	1
+ 131              		.global	tcpc_read
+ 132              		.syntax unified
+ 133              		.code	16
+ 134              		.thumb_func
+ 135              		.fpu softvfp
+ 137              	tcpc_read:
+ 138              	.LFB57:
+  34:Src/tcpm_driver.c **** 
+  35:Src/tcpm_driver.c **** int tcpc_read(int port, int reg, int *val)
+  36:Src/tcpm_driver.c **** {
+ 139              		.loc 1 36 0
+ 140              		.cfi_startproc
+ARM GAS  /tmp/cc4tdINv.s 			page 4
+
+
+ 141              		@ args = 0, pretend = 0, frame = 8
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              	.LVL10:
+ 144 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 145              	.LCFI4:
+ 146              		.cfi_def_cfa_offset 20
+ 147              		.cfi_offset 4, -20
+ 148              		.cfi_offset 5, -16
+ 149              		.cfi_offset 6, -12
+ 150              		.cfi_offset 7, -8
+ 151              		.cfi_offset 14, -4
+ 152 0002 85B0     		sub	sp, sp, #20
+ 153              	.LCFI5:
+ 154              		.cfi_def_cfa_offset 40
+ 155 0004 1700     		movs	r7, r2
+  37:Src/tcpm_driver.c **** 	uint8_t data[1];
+  38:Src/tcpm_driver.c **** 	data[0] = (0xFF) & reg;
+ 156              		.loc 1 38 0
+ 157 0006 03AC     		add	r4, sp, #12
+ 158 0008 2170     		strb	r1, [r4]
+  39:Src/tcpm_driver.c **** 	
+  40:Src/tcpm_driver.c **** 	
+  41:Src/tcpm_driver.c **** 	HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);//HAL_I2C_
+ 159              		.loc 1 41 0
+ 160 000a 0301     		lsls	r3, r0, #4
+ 161 000c 0B48     		ldr	r0, .L8
+ 162              	.LVL11:
+ 163 000e C018     		adds	r0, r0, r3
+ 164 0010 8688     		ldrh	r6, [r0, #4]
+ 165 0012 0125     		movs	r5, #1
+ 166 0014 0095     		str	r5, [sp]
+ 167 0016 0123     		movs	r3, #1
+ 168 0018 2200     		movs	r2, r4
+ 169              	.LVL12:
+ 170 001a 3100     		movs	r1, r6
+ 171              	.LVL13:
+ 172 001c 0848     		ldr	r0, .L8+4
+ 173 001e FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+ 174              	.LVL14:
+  42:Src/tcpm_driver.c **** 
+  43:Src/tcpm_driver.c **** 
+  44:Src/tcpm_driver.c **** 	HAL_I2C_Master_Receive(&hi2c1,  tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);//i2c_mast
+ 175              		.loc 1 44 0
+ 176 0022 0095     		str	r5, [sp]
+ 177 0024 0123     		movs	r3, #1
+ 178 0026 2200     		movs	r2, r4
+ 179 0028 3100     		movs	r1, r6
+ 180 002a 0548     		ldr	r0, .L8+4
+ 181 002c FFF7FEFF 		bl	HAL_I2C_Master_Receive
+ 182              	.LVL15:
+  45:Src/tcpm_driver.c **** 
+  46:Src/tcpm_driver.c **** 	*val = data[0];
+ 183              		.loc 1 46 0
+ 184 0030 2378     		ldrb	r3, [r4]
+ 185 0032 3B60     		str	r3, [r7]
+  47:Src/tcpm_driver.c **** 	
+  48:Src/tcpm_driver.c **** 	return 1;
+ARM GAS  /tmp/cc4tdINv.s 			page 5
+
+
+  49:Src/tcpm_driver.c **** }
+ 186              		.loc 1 49 0
+ 187 0034 0120     		movs	r0, #1
+ 188 0036 05B0     		add	sp, sp, #20
+ 189              		@ sp needed
+ 190              	.LVL16:
+ 191 0038 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 192              	.L9:
+ 193 003a C046     		.align	2
+ 194              	.L8:
+ 195 003c 00000000 		.word	tcpc_config
+ 196 0040 00000000 		.word	hi2c1
+ 197              		.cfi_endproc
+ 198              	.LFE57:
+ 200              		.section	.text.tcpc_read16,"ax",%progbits
+ 201              		.align	1
+ 202              		.global	tcpc_read16
+ 203              		.syntax unified
+ 204              		.code	16
+ 205              		.thumb_func
+ 206              		.fpu softvfp
+ 208              	tcpc_read16:
+ 209              	.LFB58:
+  50:Src/tcpm_driver.c **** 
+  51:Src/tcpm_driver.c **** int tcpc_read16(int port, int reg, int *val)
+  52:Src/tcpm_driver.c **** {
+ 210              		.loc 1 52 0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 8
+ 213              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214              	.LVL17:
+ 215 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 216              	.LCFI6:
+ 217              		.cfi_def_cfa_offset 20
+ 218              		.cfi_offset 4, -20
+ 219              		.cfi_offset 5, -16
+ 220              		.cfi_offset 6, -12
+ 221              		.cfi_offset 7, -8
+ 222              		.cfi_offset 14, -4
+ 223 0002 85B0     		sub	sp, sp, #20
+ 224              	.LCFI7:
+ 225              		.cfi_def_cfa_offset 40
+ 226 0004 1500     		movs	r5, r2
+  53:Src/tcpm_driver.c **** 	uint8_t data[2];
+  54:Src/tcpm_driver.c **** 	data[0] = (0xFF) & reg;
+ 227              		.loc 1 54 0
+ 228 0006 03AC     		add	r4, sp, #12
+ 229 0008 2170     		strb	r1, [r4]
+  55:Src/tcpm_driver.c **** 	
+  56:Src/tcpm_driver.c **** 	
+  57:Src/tcpm_driver.c **** 	HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);//i2c_mast
+ 230              		.loc 1 57 0
+ 231 000a 0301     		lsls	r3, r0, #4
+ 232 000c 0C48     		ldr	r0, .L11
+ 233              	.LVL18:
+ 234 000e C018     		adds	r0, r0, r3
+ 235 0010 8788     		ldrh	r7, [r0, #4]
+ARM GAS  /tmp/cc4tdINv.s 			page 6
+
+
+ 236 0012 0126     		movs	r6, #1
+ 237 0014 0096     		str	r6, [sp]
+ 238 0016 0223     		movs	r3, #2
+ 239 0018 2200     		movs	r2, r4
+ 240              	.LVL19:
+ 241 001a 3900     		movs	r1, r7
+ 242              	.LVL20:
+ 243 001c 0948     		ldr	r0, .L11+4
+ 244 001e FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+ 245              	.LVL21:
+  58:Src/tcpm_driver.c **** 
+  59:Src/tcpm_driver.c **** 
+  60:Src/tcpm_driver.c **** 	HAL_I2C_Master_Receive(&hi2c1,  tcpc_config[port].i2c_slave_addr, data, sizeof(data),1);//i2c_mast
+ 246              		.loc 1 60 0
+ 247 0022 0096     		str	r6, [sp]
+ 248 0024 0223     		movs	r3, #2
+ 249 0026 2200     		movs	r2, r4
+ 250 0028 3900     		movs	r1, r7
+ 251 002a 0648     		ldr	r0, .L11+4
+ 252 002c FFF7FEFF 		bl	HAL_I2C_Master_Receive
+ 253              	.LVL22:
+  61:Src/tcpm_driver.c **** 
+  62:Src/tcpm_driver.c **** 	
+  63:Src/tcpm_driver.c **** 	*val  = data[0];
+ 254              		.loc 1 63 0
+ 255 0030 2378     		ldrb	r3, [r4]
+  64:Src/tcpm_driver.c **** 	*val |= (data[1] << 8);
+ 256              		.loc 1 64 0
+ 257 0032 6278     		ldrb	r2, [r4, #1]
+ 258 0034 1202     		lsls	r2, r2, #8
+ 259 0036 1343     		orrs	r3, r2
+ 260 0038 2B60     		str	r3, [r5]
+  65:Src/tcpm_driver.c **** 	
+  66:Src/tcpm_driver.c **** 	return 1;
+  67:Src/tcpm_driver.c **** }
+ 261              		.loc 1 67 0
+ 262 003a 0120     		movs	r0, #1
+ 263 003c 05B0     		add	sp, sp, #20
+ 264              		@ sp needed
+ 265              	.LVL23:
+ 266 003e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 267              	.L12:
+ 268              		.align	2
+ 269              	.L11:
+ 270 0040 00000000 		.word	tcpc_config
+ 271 0044 00000000 		.word	hi2c1
+ 272              		.cfi_endproc
+ 273              	.LFE58:
+ 275              		.section	.text.tcpc_xfer,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	tcpc_xfer
+ 278              		.syntax unified
+ 279              		.code	16
+ 280              		.thumb_func
+ 281              		.fpu softvfp
+ 283              	tcpc_xfer:
+ 284              	.LFB59:
+ARM GAS  /tmp/cc4tdINv.s 			page 7
+
+
+  68:Src/tcpm_driver.c **** 
+  69:Src/tcpm_driver.c **** int tcpc_xfer(int port,
+  70:Src/tcpm_driver.c **** 	uint8_t *out, int out_size,
+  71:Src/tcpm_driver.c **** 	uint8_t *in, int in_size,
+  72:Src/tcpm_driver.c **** 	int flags)
+  73:Src/tcpm_driver.c **** {
+ 285              		.loc 1 73 0
+ 286              		.cfi_startproc
+ 287              		@ args = 8, pretend = 0, frame = 0
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              	.LVL24:
+ 290 0000 30B5     		push	{r4, r5, lr}
+ 291              	.LCFI8:
+ 292              		.cfi_def_cfa_offset 12
+ 293              		.cfi_offset 4, -12
+ 294              		.cfi_offset 5, -8
+ 295              		.cfi_offset 14, -4
+ 296 0002 83B0     		sub	sp, sp, #12
+ 297              	.LCFI9:
+ 298              		.cfi_def_cfa_offset 24
+ 299 0004 0400     		movs	r4, r0
+ 300 0006 1D00     		movs	r5, r3
+  74:Src/tcpm_driver.c **** 
+  75:Src/tcpm_driver.c **** 	if (out_size != 0)
+ 301              		.loc 1 75 0
+ 302 0008 002A     		cmp	r2, #0
+ 303 000a 0ED0     		beq	.L14
+  76:Src/tcpm_driver.c **** 	{
+  77:Src/tcpm_driver.c **** 		if (flags & I2C_XFER_STOP)
+ 304              		.loc 1 77 0
+ 305 000c 079B     		ldr	r3, [sp, #28]
+ 306              	.LVL25:
+ 307 000e 9B07     		lsls	r3, r3, #30
+ 308 0010 11D5     		bpl	.L15
+  78:Src/tcpm_driver.c **** 		{
+  79:Src/tcpm_driver.c **** 			HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, out, sizeof(out_size),1);//i2c
+ 309              		.loc 1 79 0
+ 310 0012 0201     		lsls	r2, r0, #4
+ 311              	.LVL26:
+ 312 0014 144B     		ldr	r3, .L18
+ 313 0016 9B18     		adds	r3, r3, r2
+ 314 0018 9888     		ldrh	r0, [r3, #4]
+ 315              	.LVL27:
+ 316 001a 0123     		movs	r3, #1
+ 317 001c 0093     		str	r3, [sp]
+ 318 001e 0333     		adds	r3, r3, #3
+ 319 0020 0A00     		movs	r2, r1
+ 320 0022 0100     		movs	r1, r0
+ 321              	.LVL28:
+ 322 0024 1148     		ldr	r0, .L18+4
+ 323 0026 FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+ 324              	.LVL29:
+ 325              	.L14:
+  80:Src/tcpm_driver.c **** 		}
+  81:Src/tcpm_driver.c **** 		else
+  82:Src/tcpm_driver.c **** 		{
+  83:Src/tcpm_driver.c **** 			HAL_I2C_Master_Transmit(&hi2c1, tcpc_config[port].i2c_slave_addr, out, sizeof(out_size),1);//i2c
+ARM GAS  /tmp/cc4tdINv.s 			page 8
+
+
+  84:Src/tcpm_driver.c **** 		}
+  85:Src/tcpm_driver.c **** 	}
+  86:Src/tcpm_driver.c **** 
+  87:Src/tcpm_driver.c **** 	if (in_size != 0)
+ 326              		.loc 1 87 0
+ 327 002a 069B     		ldr	r3, [sp, #24]
+ 328 002c 002B     		cmp	r3, #0
+ 329 002e 0FD1     		bne	.L17
+ 330              	.LVL30:
+ 331              	.L16:
+  88:Src/tcpm_driver.c **** 	{
+  89:Src/tcpm_driver.c **** 		// We always send a stop, then another start on the next call. 
+  90:Src/tcpm_driver.c **** 		// This avoids trying to read after sending a NACK, which indicates the end of the read. 
+  91:Src/tcpm_driver.c **** 		// In the future, this could be optimized by using lower level i2c calls. 
+  92:Src/tcpm_driver.c **** 		HAL_I2C_Master_Receive(&hi2c1,  tcpc_config[port].i2c_slave_addr, in, sizeof(in_size),1);//i2c_ma
+  93:Src/tcpm_driver.c **** 	}
+  94:Src/tcpm_driver.c **** 
+  95:Src/tcpm_driver.c **** 	return 1;
+  96:Src/tcpm_driver.c **** }
+ 332              		.loc 1 96 0
+ 333 0030 0120     		movs	r0, #1
+ 334 0032 03B0     		add	sp, sp, #12
+ 335              		@ sp needed
+ 336              	.LVL31:
+ 337 0034 30BD     		pop	{r4, r5, pc}
+ 338              	.LVL32:
+ 339              	.L15:
+  83:Src/tcpm_driver.c **** 		}
+ 340              		.loc 1 83 0
+ 341 0036 0201     		lsls	r2, r0, #4
+ 342              	.LVL33:
+ 343 0038 0B4B     		ldr	r3, .L18
+ 344 003a 9B18     		adds	r3, r3, r2
+ 345 003c 9888     		ldrh	r0, [r3, #4]
+ 346              	.LVL34:
+ 347 003e 0123     		movs	r3, #1
+ 348 0040 0093     		str	r3, [sp]
+ 349 0042 0333     		adds	r3, r3, #3
+ 350 0044 0A00     		movs	r2, r1
+ 351 0046 0100     		movs	r1, r0
+ 352              	.LVL35:
+ 353 0048 0848     		ldr	r0, .L18+4
+ 354 004a FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+ 355              	.LVL36:
+ 356 004e ECE7     		b	.L14
+ 357              	.L17:
+  92:Src/tcpm_driver.c **** 	}
+ 358              		.loc 1 92 0
+ 359 0050 2401     		lsls	r4, r4, #4
+ 360              	.LVL37:
+ 361 0052 054B     		ldr	r3, .L18
+ 362 0054 1C19     		adds	r4, r3, r4
+ 363 0056 A188     		ldrh	r1, [r4, #4]
+ 364 0058 0123     		movs	r3, #1
+ 365 005a 0093     		str	r3, [sp]
+ 366 005c 0333     		adds	r3, r3, #3
+ 367 005e 2A00     		movs	r2, r5
+ARM GAS  /tmp/cc4tdINv.s 			page 9
+
+
+ 368 0060 0248     		ldr	r0, .L18+4
+ 369 0062 FFF7FEFF 		bl	HAL_I2C_Master_Receive
+ 370              	.LVL38:
+ 371 0066 E3E7     		b	.L16
+ 372              	.L19:
+ 373              		.align	2
+ 374              	.L18:
+ 375 0068 00000000 		.word	tcpc_config
+ 376 006c 00000000 		.word	hi2c1
+ 377              		.cfi_endproc
+ 378              	.LFE59:
+ 380              		.text
+ 381              	.Letext0:
+ 382              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 383              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 384              		.file 4 "Inc/usb_pd_tcpm.h"
+ 385              		.file 5 "Inc/usb_pd.h"
+ 386              		.file 6 "Inc/tcpm.h"
+ 387              		.file 7 "Inc/FUSB302.h"
+ 388              		.file 8 "Inc/tcpm_driver.h"
+ 389              		.file 9 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+ 390              		.file 10 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h"
+ 391              		.file 11 "/usr/arm-none-eabi/include/sys/lock.h"
+ 392              		.file 12 "/usr/arm-none-eabi/include/sys/_types.h"
+ 393              		.file 13 "/usr/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h"
+ 394              		.file 14 "/usr/arm-none-eabi/include/sys/reent.h"
+ 395              		.file 15 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
+ 396              		.file 16 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
+ 397              		.file 17 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_i2c.h"
+ARM GAS  /tmp/cc4tdINv.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 tcpm_driver.c
+     /tmp/cc4tdINv.s:16     .text.tcpc_write:0000000000000000 $t
+     /tmp/cc4tdINv.s:23     .text.tcpc_write:0000000000000000 tcpc_write
+     /tmp/cc4tdINv.s:66     .text.tcpc_write:0000000000000024 $d
+     /tmp/cc4tdINv.s:72     .text.tcpc_write16:0000000000000000 $t
+     /tmp/cc4tdINv.s:79     .text.tcpc_write16:0000000000000000 tcpc_write16
+     /tmp/cc4tdINv.s:124    .text.tcpc_write16:0000000000000028 $d
+     /tmp/cc4tdINv.s:130    .text.tcpc_read:0000000000000000 $t
+     /tmp/cc4tdINv.s:137    .text.tcpc_read:0000000000000000 tcpc_read
+     /tmp/cc4tdINv.s:195    .text.tcpc_read:000000000000003c $d
+     /tmp/cc4tdINv.s:201    .text.tcpc_read16:0000000000000000 $t
+     /tmp/cc4tdINv.s:208    .text.tcpc_read16:0000000000000000 tcpc_read16
+     /tmp/cc4tdINv.s:270    .text.tcpc_read16:0000000000000040 $d
+     /tmp/cc4tdINv.s:276    .text.tcpc_xfer:0000000000000000 $t
+     /tmp/cc4tdINv.s:283    .text.tcpc_xfer:0000000000000000 tcpc_xfer
+     /tmp/cc4tdINv.s:375    .text.tcpc_xfer:0000000000000068 $d
+
+UNDEFINED SYMBOLS
+HAL_I2C_Master_Transmit
+tcpc_config
+hi2c1
+HAL_I2C_Master_Receive
