@@ -71,6 +71,11 @@ Src/usb_device.c \
 Src/usbd_conf.c \
 Src/usbd_desc.c \
 Src/usbd_cdc_if.c \
+Src/tcpm_driver.c \
+Src/usb_pd_driver.c \
+Src/usb_pd_policy.c \
+Src/usb_pd_protocol.c \
+Src/FUSB302.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pcd.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pcd_ex.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \

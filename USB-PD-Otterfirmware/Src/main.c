@@ -1,7 +1,11 @@
 #include "main.h"
+#include "stddef.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
 #include "init.h"
+#include "usbd_cdc_if.h"
+#include "tcpm_driver.h"
+#include "usb_pd_driver.h"
 
 extern ADC_HandleTypeDef hadc;
 extern DMA_HandleTypeDef hdma_adc;
@@ -22,6 +26,10 @@ void MX_ADC_Init(void);
 void MX_I2C1_Init(void);
 void MX_I2C2_Init(void);
 void StartDefaultTask(void const * argument);
+
+const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
+  {&hi2c1, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
+};
 
 int main(void)
 {
@@ -61,6 +69,11 @@ void StartDefaultTask(void const * argument)
 
   HAL_GPIO_WritePin(GPIOA,LED_POWER_Pin,1);
 
+  tcpm_init(0);
+  osDelay(50);
+  pd_init(0);
+  osDelay(50);
+
   char str[100];
   uint8_t i = 0;
   for(;;)
@@ -69,7 +82,7 @@ void StartDefaultTask(void const * argument)
     osDelay(1);
     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
     sprintf(str,"Otter! %d\n\r",i);
-    CDC_Transmit_FS(str,sizeof(str));
+    CDC_Transmit_FS((unsigned char*)str,sizeof(str));
   }
 }
 
