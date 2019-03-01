@@ -43,15 +43,16 @@ build/main.o: Src/main.c Inc/main.h \
  Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  Inc/usb_device.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
- Inc/usbd_conf.h Inc/main.h Inc/init.h Inc/usbd_cdc_if.h \
+ Inc/usbd_conf.h Inc/main.h Inc/usb_pd_driver.h Inc/usb_pd.h \
+ Inc/tcpm_driver.h Inc/tcpm.h Inc/usb_pd_tcpm.h Inc/FUSB302.h \
+ Inc/usb_pd_driver.h Inc/init.h Inc/usbd_cdc_if.h \
  Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- Inc/tcpm_driver.h Inc/tcpm.h Inc/tcpm_driver.h Inc/usb_pd_tcpm.h \
- Inc/FUSB302.h Inc/usb_pd.h Inc/usb_pd_driver.h Inc/usb_pd_driver.h
+ Inc/tcpm_driver.h Inc/usb_pd.h Inc/usb_pd_tcpm.h
 
 Inc/main.h:
 
@@ -151,6 +152,20 @@ Inc/usbd_conf.h:
 
 Inc/main.h:
 
+Inc/usb_pd_driver.h:
+
+Inc/usb_pd.h:
+
+Inc/tcpm_driver.h:
+
+Inc/tcpm.h:
+
+Inc/usb_pd_tcpm.h:
+
+Inc/FUSB302.h:
+
+Inc/usb_pd_driver.h:
+
 Inc/init.h:
 
 Inc/usbd_cdc_if.h:
@@ -169,16 +184,6 @@ Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
 
 Inc/tcpm_driver.h:
 
-Inc/tcpm.h:
-
-Inc/tcpm_driver.h:
-
-Inc/usb_pd_tcpm.h:
-
-Inc/FUSB302.h:
-
 Inc/usb_pd.h:
 
-Inc/usb_pd_driver.h:
-
-Inc/usb_pd_driver.h:
+Inc/usb_pd_tcpm.h:

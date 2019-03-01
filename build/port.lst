@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccAYmrEG.s 			page 1
+ARM GAS  /tmp/ccdd1nBD.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
   32:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****      *    Help yourself get started quickly while simultaneously helping     *
   33:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****      *    to support the FreeRTOS project by purchasing a FreeRTOS           *
   34:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****      *    tutorial book, reference manual, or both:                          *
-ARM GAS  /tmp/ccAYmrEG.s 			page 2
+ARM GAS  /tmp/ccdd1nBD.s 			page 2
 
 
   35:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****      *    http://www.FreeRTOS.org/Documentation                              *
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
   89:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** #define portNVIC_SYSTICK_INT		0x00000002
   90:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** #define portNVIC_SYSTICK_ENABLE		0x00000001
   91:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** #define portNVIC_SYSTICK_COUNT_FLAG	( 1UL << 16UL )
-ARM GAS  /tmp/ccAYmrEG.s 			page 3
+ARM GAS  /tmp/ccdd1nBD.s 			page 3
 
 
   92:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** #define portNVIC_PENDSVSET			0x10000000
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  146:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
  147:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** /*
  148:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****  * The number of SysTick increments that make up one tick period.
-ARM GAS  /tmp/ccAYmrEG.s 			page 4
+ARM GAS  /tmp/ccdd1nBD.s 			page 4
 
 
  149:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****  */
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  197:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	should instead call vTaskDelete( NULL ).
  198:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
  199:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	Artificially force an assert() to be triggered if configASSERT() is
-ARM GAS  /tmp/ccAYmrEG.s 			page 5
+ARM GAS  /tmp/ccdd1nBD.s 			page 5
 
 
  200:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	defined, then stop here so application writers can catch the error. */
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
   71              		.loc 1 215 0
   72              		.cfi_startproc
   73              		@ Naked Function: prologue and epilogue provided by programmer.
-ARM GAS  /tmp/ccAYmrEG.s 			page 6
+ARM GAS  /tmp/ccdd1nBD.s 			page 6
 
 
   74              		@ args = 0, pretend = 0, frame = 0
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  103              		.section	.text.pxPortInitialiseStack,"ax",%progbits
  104              		.align	1
  105              		.global	pxPortInitialiseStack
-ARM GAS  /tmp/ccAYmrEG.s 			page 7
+ARM GAS  /tmp/ccdd1nBD.s 			page 7
 
 
  106              		.syntax unified
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  154 001c 00000000 		.word	prvTaskExitError
  155              		.cfi_endproc
  156              	.LFE0:
-ARM GAS  /tmp/ccAYmrEG.s 			page 8
+ARM GAS  /tmp/ccdd1nBD.s 			page 8
 
 
  158              		.section	.text.SVC_Handler,"ax",%progbits
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  263:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	functionality by defining configTASK_RETURN_ADDRESS. */
  264:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	prvTaskExitError();
  265:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
-ARM GAS  /tmp/ccAYmrEG.s 			page 9
+ARM GAS  /tmp/ccdd1nBD.s 			page 9
 
 
  266:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	/* Should not get here! */
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  280:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** {
  231              		.loc 1 280 0
  232              		.cfi_startproc
-ARM GAS  /tmp/ccAYmrEG.s 			page 10
+ARM GAS  /tmp/ccdd1nBD.s 			page 10
 
 
  233              		@ args = 0, pretend = 0, frame = 0
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  293:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c ****     portDISABLE_INTERRUPTS();
  277              		.loc 1 293 0
  278              		.syntax divided
-ARM GAS  /tmp/ccAYmrEG.s 			page 11
+ARM GAS  /tmp/ccdd1nBD.s 			page 11
 
 
  279              	@ 293 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c" 1
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  326 0000 064B     		ldr	r3, .L27
  327 0002 1B68     		ldr	r3, [r3]
  328 0004 002B     		cmp	r3, #0
-ARM GAS  /tmp/ccAYmrEG.s 			page 12
+ARM GAS  /tmp/ccdd1nBD.s 			page 12
 
 
  329 0006 01D1     		bne	.L24
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  375              		.loc 1 312 0
  376              		.cfi_startproc
  377              		@ Naked Function: prologue and epilogue provided by programmer.
-ARM GAS  /tmp/ccAYmrEG.s 			page 13
+ARM GAS  /tmp/ccdd1nBD.s 			page 13
 
 
  378              		@ args = 0, pretend = 0, frame = 0
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  331:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	/* Just to avoid compiler warning. */
  332:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 	( void ) ulMask;
  333:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** }
-ARM GAS  /tmp/ccAYmrEG.s 			page 14
+ARM GAS  /tmp/ccdd1nBD.s 			page 14
 
 
  416              		.loc 1 333 0
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  465 002e A946     	 	mov r9, r5							
  466 0030 B246     	 	mov r10, r6							
  467 0032 BB46     	 	mov r11, r7							
-ARM GAS  /tmp/ccAYmrEG.s 			page 15
+ARM GAS  /tmp/ccdd1nBD.s 			page 15
 
 
  468              											
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  481              		.syntax unified
  482              		.cfi_endproc
  483              	.LFE11:
-ARM GAS  /tmp/ccAYmrEG.s 			page 16
+ARM GAS  /tmp/ccdd1nBD.s 			page 16
 
 
  485              		.section	.text.xPortSysTickHandler,"ax",%progbits
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  398:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** }
  524              		.loc 1 398 0
  525              		@ sp needed
-ARM GAS  /tmp/ccAYmrEG.s 			page 17
+ARM GAS  /tmp/ccdd1nBD.s 			page 17
 
 
  526              	.LVL14:
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  435:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 		if( eTaskConfirmSleepModeStatus() == eAbortSleep )
  436:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 		{
  437:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 			/* Restart from whatever is left in the count register to complete
-ARM GAS  /tmp/ccAYmrEG.s 			page 18
+ARM GAS  /tmp/ccdd1nBD.s 			page 18
 
 
  438:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 			this tick period. */
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  492:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 				uint32_t ulCalculatedLoadValue;
  493:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
  494:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 				/* The tick interrupt has already executed, and the SysTick
-ARM GAS  /tmp/ccAYmrEG.s 			page 19
+ARM GAS  /tmp/ccdd1nBD.s 			page 19
 
 
  495:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 				count reloaded with ulReloadValue.  Reset the
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  549:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
  550:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** #endif /* #if configUSE_TICKLESS_IDLE */
  551:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** /*-----------------------------------------------------------*/
-ARM GAS  /tmp/ccAYmrEG.s 			page 20
+ARM GAS  /tmp/ccdd1nBD.s 			page 20
 
 
  552:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c **** 
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  581              		.section	.text.xPortStartScheduler,"ax",%progbits
  582              		.align	1
  583              		.global	xPortStartScheduler
-ARM GAS  /tmp/ccAYmrEG.s 			page 21
+ARM GAS  /tmp/ccdd1nBD.s 			page 21
 
 
  584              		.syntax unified
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  632              		.cfi_endproc
  633              	.LFE4:
  635              		.section	.data.uxCriticalNesting,"aw",%progbits
-ARM GAS  /tmp/ccAYmrEG.s 			page 22
+ARM GAS  /tmp/ccdd1nBD.s 			page 22
 
 
  636              		.align	2
@@ -1273,54 +1273,54 @@ ARM GAS  /tmp/ccAYmrEG.s 			page 1
  647              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h"
  648              		.file 6 "Inc/FreeRTOSConfig.h"
  649              		.file 7 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
-ARM GAS  /tmp/ccAYmrEG.s 			page 23
+ARM GAS  /tmp/ccdd1nBD.s 			page 23
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 port.c
-     /tmp/ccAYmrEG.s:16     .text.prvTaskExitError:0000000000000000 $t
-     /tmp/ccAYmrEG.s:22     .text.prvTaskExitError:0000000000000000 prvTaskExitError
-     /tmp/ccAYmrEG.s:58     .text.prvTaskExitError:0000000000000010 $d
-     /tmp/ccAYmrEG.s:63     .text.vPortStartFirstTask:0000000000000000 $t
-     /tmp/ccAYmrEG.s:69     .text.vPortStartFirstTask:0000000000000000 vPortStartFirstTask
-     /tmp/ccAYmrEG.s:95     .text.vPortStartFirstTask:0000000000000030 pxCurrentTCBConst2
-     /tmp/ccAYmrEG.s:95     .text.vPortStartFirstTask:0000000000000030 $d
-     /tmp/ccAYmrEG.s:104    .text.pxPortInitialiseStack:0000000000000000 $t
-     /tmp/ccAYmrEG.s:111    .text.pxPortInitialiseStack:0000000000000000 pxPortInitialiseStack
-     /tmp/ccAYmrEG.s:154    .text.pxPortInitialiseStack:000000000000001c $d
-     /tmp/ccAYmrEG.s:159    .text.SVC_Handler:0000000000000000 $t
-     /tmp/ccAYmrEG.s:166    .text.SVC_Handler:0000000000000000 SVC_Handler
-     /tmp/ccAYmrEG.s:180    .text.vPortEndScheduler:0000000000000000 $t
-     /tmp/ccAYmrEG.s:187    .text.vPortEndScheduler:0000000000000000 vPortEndScheduler
-     /tmp/ccAYmrEG.s:217    .text.vPortEndScheduler:0000000000000014 $d
-     /tmp/ccAYmrEG.s:222    .text.vPortYield:0000000000000000 $t
-     /tmp/ccAYmrEG.s:229    .text.vPortYield:0000000000000000 vPortYield
-     /tmp/ccAYmrEG.s:258    .text.vPortYield:0000000000000014 $d
-     /tmp/ccAYmrEG.s:263    .text.vPortEnterCritical:0000000000000000 $t
-     /tmp/ccAYmrEG.s:270    .text.vPortEnterCritical:0000000000000000 vPortEnterCritical
-     /tmp/ccAYmrEG.s:306    .text.vPortEnterCritical:0000000000000014 $d
-     /tmp/ccAYmrEG.s:311    .text.vPortExitCritical:0000000000000000 $t
-     /tmp/ccAYmrEG.s:318    .text.vPortExitCritical:0000000000000000 vPortExitCritical
-     /tmp/ccAYmrEG.s:361    .text.vPortExitCritical:000000000000001c $d
-     /tmp/ccAYmrEG.s:366    .text.ulSetInterruptMaskFromISR:0000000000000000 $t
-     /tmp/ccAYmrEG.s:373    .text.ulSetInterruptMaskFromISR:0000000000000000 ulSetInterruptMaskFromISR
-     /tmp/ccAYmrEG.s:395    .text.vClearInterruptMaskFromISR:0000000000000000 $t
-     /tmp/ccAYmrEG.s:402    .text.vClearInterruptMaskFromISR:0000000000000000 vClearInterruptMaskFromISR
-     /tmp/ccAYmrEG.s:423    .text.PendSV_Handler:0000000000000000 $t
-     /tmp/ccAYmrEG.s:430    .text.PendSV_Handler:0000000000000000 PendSV_Handler
-     /tmp/ccAYmrEG.s:477    .text.PendSV_Handler:0000000000000040 pxCurrentTCBConst
-     /tmp/ccAYmrEG.s:477    .text.PendSV_Handler:0000000000000040 $d
-     /tmp/ccAYmrEG.s:486    .text.xPortSysTickHandler:0000000000000000 $t
-     /tmp/ccAYmrEG.s:493    .text.xPortSysTickHandler:0000000000000000 xPortSysTickHandler
-     /tmp/ccAYmrEG.s:531    .text.xPortSysTickHandler:0000000000000020 $d
-     /tmp/ccAYmrEG.s:537    .text.vPortSetupTimerInterrupt:0000000000000000 $t
-     /tmp/ccAYmrEG.s:544    .text.vPortSetupTimerInterrupt:0000000000000000 vPortSetupTimerInterrupt
-     /tmp/ccAYmrEG.s:575    .text.vPortSetupTimerInterrupt:000000000000001c $d
-     /tmp/ccAYmrEG.s:582    .text.xPortStartScheduler:0000000000000000 $t
-     /tmp/ccAYmrEG.s:589    .text.xPortStartScheduler:0000000000000000 xPortStartScheduler
-     /tmp/ccAYmrEG.s:630    .text.xPortStartScheduler:000000000000002c $d
-     /tmp/ccAYmrEG.s:636    .data.uxCriticalNesting:0000000000000000 $d
-     /tmp/ccAYmrEG.s:640    .data.uxCriticalNesting:0000000000000000 uxCriticalNesting
+     /tmp/ccdd1nBD.s:16     .text.prvTaskExitError:0000000000000000 $t
+     /tmp/ccdd1nBD.s:22     .text.prvTaskExitError:0000000000000000 prvTaskExitError
+     /tmp/ccdd1nBD.s:58     .text.prvTaskExitError:0000000000000010 $d
+     /tmp/ccdd1nBD.s:63     .text.vPortStartFirstTask:0000000000000000 $t
+     /tmp/ccdd1nBD.s:69     .text.vPortStartFirstTask:0000000000000000 vPortStartFirstTask
+     /tmp/ccdd1nBD.s:95     .text.vPortStartFirstTask:0000000000000030 pxCurrentTCBConst2
+     /tmp/ccdd1nBD.s:95     .text.vPortStartFirstTask:0000000000000030 $d
+     /tmp/ccdd1nBD.s:104    .text.pxPortInitialiseStack:0000000000000000 $t
+     /tmp/ccdd1nBD.s:111    .text.pxPortInitialiseStack:0000000000000000 pxPortInitialiseStack
+     /tmp/ccdd1nBD.s:154    .text.pxPortInitialiseStack:000000000000001c $d
+     /tmp/ccdd1nBD.s:159    .text.SVC_Handler:0000000000000000 $t
+     /tmp/ccdd1nBD.s:166    .text.SVC_Handler:0000000000000000 SVC_Handler
+     /tmp/ccdd1nBD.s:180    .text.vPortEndScheduler:0000000000000000 $t
+     /tmp/ccdd1nBD.s:187    .text.vPortEndScheduler:0000000000000000 vPortEndScheduler
+     /tmp/ccdd1nBD.s:217    .text.vPortEndScheduler:0000000000000014 $d
+     /tmp/ccdd1nBD.s:222    .text.vPortYield:0000000000000000 $t
+     /tmp/ccdd1nBD.s:229    .text.vPortYield:0000000000000000 vPortYield
+     /tmp/ccdd1nBD.s:258    .text.vPortYield:0000000000000014 $d
+     /tmp/ccdd1nBD.s:263    .text.vPortEnterCritical:0000000000000000 $t
+     /tmp/ccdd1nBD.s:270    .text.vPortEnterCritical:0000000000000000 vPortEnterCritical
+     /tmp/ccdd1nBD.s:306    .text.vPortEnterCritical:0000000000000014 $d
+     /tmp/ccdd1nBD.s:311    .text.vPortExitCritical:0000000000000000 $t
+     /tmp/ccdd1nBD.s:318    .text.vPortExitCritical:0000000000000000 vPortExitCritical
+     /tmp/ccdd1nBD.s:361    .text.vPortExitCritical:000000000000001c $d
+     /tmp/ccdd1nBD.s:366    .text.ulSetInterruptMaskFromISR:0000000000000000 $t
+     /tmp/ccdd1nBD.s:373    .text.ulSetInterruptMaskFromISR:0000000000000000 ulSetInterruptMaskFromISR
+     /tmp/ccdd1nBD.s:395    .text.vClearInterruptMaskFromISR:0000000000000000 $t
+     /tmp/ccdd1nBD.s:402    .text.vClearInterruptMaskFromISR:0000000000000000 vClearInterruptMaskFromISR
+     /tmp/ccdd1nBD.s:423    .text.PendSV_Handler:0000000000000000 $t
+     /tmp/ccdd1nBD.s:430    .text.PendSV_Handler:0000000000000000 PendSV_Handler
+     /tmp/ccdd1nBD.s:477    .text.PendSV_Handler:0000000000000040 pxCurrentTCBConst
+     /tmp/ccdd1nBD.s:477    .text.PendSV_Handler:0000000000000040 $d
+     /tmp/ccdd1nBD.s:486    .text.xPortSysTickHandler:0000000000000000 $t
+     /tmp/ccdd1nBD.s:493    .text.xPortSysTickHandler:0000000000000000 xPortSysTickHandler
+     /tmp/ccdd1nBD.s:531    .text.xPortSysTickHandler:0000000000000020 $d
+     /tmp/ccdd1nBD.s:537    .text.vPortSetupTimerInterrupt:0000000000000000 $t
+     /tmp/ccdd1nBD.s:544    .text.vPortSetupTimerInterrupt:0000000000000000 vPortSetupTimerInterrupt
+     /tmp/ccdd1nBD.s:575    .text.vPortSetupTimerInterrupt:000000000000001c $d
+     /tmp/ccdd1nBD.s:582    .text.xPortStartScheduler:0000000000000000 $t
+     /tmp/ccdd1nBD.s:589    .text.xPortStartScheduler:0000000000000000 xPortStartScheduler
+     /tmp/ccdd1nBD.s:630    .text.xPortStartScheduler:000000000000002c $d
+     /tmp/ccdd1nBD.s:636    .data.uxCriticalNesting:0000000000000000 $d
+     /tmp/ccdd1nBD.s:640    .data.uxCriticalNesting:0000000000000000 uxCriticalNesting
 
 UNDEFINED SYMBOLS
 pxCurrentTCB

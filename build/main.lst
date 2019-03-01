@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccIvCswH.s 			page 1
+ARM GAS  /tmp/cc7aE6WD.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -29,41 +29,43 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
    2:Src/main.c    **** #include "stddef.h"
    3:Src/main.c    **** #include "cmsis_os.h"
    4:Src/main.c    **** #include "usb_device.h"
-   5:Src/main.c    **** #include "init.h"
-   6:Src/main.c    **** #include "usbd_cdc_if.h"
-   7:Src/main.c    **** #include "tcpm_driver.h"
-   8:Src/main.c    **** #include "usb_pd_driver.h"
-   9:Src/main.c    **** 
-  10:Src/main.c    **** extern ADC_HandleTypeDef hadc;
-  11:Src/main.c    **** extern DMA_HandleTypeDef hdma_adc;
-  12:Src/main.c    **** 
-  13:Src/main.c    **** extern I2C_HandleTypeDef hi2c1;
-  14:Src/main.c    **** extern I2C_HandleTypeDef hi2c2;
-  15:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c1_rx;
-  16:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c1_tx;
-  17:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c2_rx;
-  18:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c2_tx;
-  19:Src/main.c    **** 
-  20:Src/main.c    **** osThreadId defaultTaskHandle;
+   5:Src/main.c    **** #include "usb_pd_driver.h"
+   6:Src/main.c    **** #include "init.h"
+   7:Src/main.c    **** #include "usbd_cdc_if.h"
+   8:Src/main.c    **** #include "tcpm_driver.h"
+   9:Src/main.c    **** #include "usb_pd.h"
+  10:Src/main.c    **** #include "usb_pd_tcpm.h"
+  11:Src/main.c    **** 
+  12:Src/main.c    **** extern ADC_HandleTypeDef hadc;
+  13:Src/main.c    **** extern DMA_HandleTypeDef hdma_adc;
+  14:Src/main.c    **** 
+  15:Src/main.c    **** extern I2C_HandleTypeDef hi2c1;
+  16:Src/main.c    **** extern I2C_HandleTypeDef hi2c2;
+  17:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c1_rx;
+  18:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c1_tx;
+  19:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c2_rx;
+  20:Src/main.c    **** extern DMA_HandleTypeDef hdma_i2c2_tx;
   21:Src/main.c    **** 
-  22:Src/main.c    **** void SystemClock_Config(void);
-  23:Src/main.c    **** void MX_GPIO_Init(void);
-  24:Src/main.c    **** void MX_DMA_Init(void);
-  25:Src/main.c    **** void MX_ADC_Init(void);
-  26:Src/main.c    **** void MX_I2C1_Init(void);
-  27:Src/main.c    **** void MX_I2C2_Init(void);
-  28:Src/main.c    **** void StartDefaultTask(void const * argument);
-  29:Src/main.c    **** 
-  30:Src/main.c    **** const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
-  31:Src/main.c    ****   {&hi2c1, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
-  32:Src/main.c    **** };
-  33:Src/main.c    **** 
-ARM GAS  /tmp/ccIvCswH.s 			page 2
+  22:Src/main.c    **** osThreadId defaultTaskHandle;
+  23:Src/main.c    **** 
+  24:Src/main.c    **** void SystemClock_Config(void);
+  25:Src/main.c    **** void MX_GPIO_Init(void);
+  26:Src/main.c    **** void MX_DMA_Init(void);
+  27:Src/main.c    **** void MX_ADC_Init(void);
+  28:Src/main.c    **** void MX_I2C1_Init(void);
+  29:Src/main.c    **** void MX_I2C2_Init(void);
+  30:Src/main.c    **** void StartDefaultTask(void const * argument);
+  31:Src/main.c    **** 
+  32:Src/main.c    **** const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
+  33:Src/main.c    ****   {&hi2c1, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
+ARM GAS  /tmp/cc7aE6WD.s 			page 2
 
 
-  34:Src/main.c    **** int main(void)
-  35:Src/main.c    **** {
-  26              		.loc 1 35 0
+  34:Src/main.c    **** };
+  35:Src/main.c    **** 
+  36:Src/main.c    **** int main(void)
+  37:Src/main.c    **** {
+  26              		.loc 1 37 0
   27              		.cfi_startproc
   28              		@ Volatile: function does not return.
   29              		@ args = 0, pretend = 0, frame = 24
@@ -77,60 +79,60 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   37 0002 87B0     		sub	sp, sp, #28
   38              	.LCFI1:
   39              		.cfi_def_cfa_offset 40
-  36:Src/main.c    ****   HAL_Init();
-  40              		.loc 1 36 0
+  38:Src/main.c    ****   HAL_Init();
+  40              		.loc 1 38 0
   41 0004 FFF7FEFF 		bl	HAL_Init
   42              	.LVL0:
-  37:Src/main.c    **** 
-  38:Src/main.c    ****   SystemClock_Config();
-  43              		.loc 1 38 0
+  39:Src/main.c    **** 
+  40:Src/main.c    ****   SystemClock_Config();
+  43              		.loc 1 40 0
   44 0008 FFF7FEFF 		bl	SystemClock_Config
   45              	.LVL1:
-  39:Src/main.c    **** 
-  40:Src/main.c    ****   MX_GPIO_Init();
-  46              		.loc 1 40 0
+  41:Src/main.c    **** 
+  42:Src/main.c    ****   MX_GPIO_Init();
+  46              		.loc 1 42 0
   47 000c FFF7FEFF 		bl	MX_GPIO_Init
   48              	.LVL2:
-  41:Src/main.c    ****   MX_DMA_Init();
-  49              		.loc 1 41 0
+  43:Src/main.c    ****   MX_DMA_Init();
+  49              		.loc 1 43 0
   50 0010 FFF7FEFF 		bl	MX_DMA_Init
   51              	.LVL3:
-  42:Src/main.c    ****   MX_ADC_Init();
-  52              		.loc 1 42 0
+  44:Src/main.c    ****   MX_ADC_Init();
+  52              		.loc 1 44 0
   53 0014 FFF7FEFF 		bl	MX_ADC_Init
   54              	.LVL4:
-  43:Src/main.c    ****   MX_I2C1_Init();
-  55              		.loc 1 43 0
+  45:Src/main.c    ****   MX_I2C1_Init();
+  55              		.loc 1 45 0
   56 0018 FFF7FEFF 		bl	MX_I2C1_Init
   57              	.LVL5:
-  44:Src/main.c    ****   MX_I2C2_Init();
-  58              		.loc 1 44 0
+  46:Src/main.c    ****   MX_I2C2_Init();
+  58              		.loc 1 46 0
   59 001c FFF7FEFF 		bl	MX_I2C2_Init
   60              	.LVL6:
-  45:Src/main.c    **** 
-  46:Src/main.c    ****   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  61              		.loc 1 46 0
+  47:Src/main.c    **** 
+  48:Src/main.c    ****   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  61              		.loc 1 48 0
   62 0020 01A8     		add	r0, sp, #4
   63 0022 0749     		ldr	r1, .L3
   64 0024 0300     		movs	r3, r0
   65 0026 0A00     		movs	r2, r1
   66 0028 32CA     		ldmia	r2!, {r1, r4, r5}
   67 002a 32C3     		stmia	r3!, {r1, r4, r5}
+ARM GAS  /tmp/cc7aE6WD.s 			page 3
+
+
   68 002c 12CA     		ldmia	r2!, {r1, r4}
   69 002e 12C3     		stmia	r3!, {r1, r4}
-ARM GAS  /tmp/ccIvCswH.s 			page 3
-
-
-  47:Src/main.c    ****   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
-  70              		.loc 1 47 0
+  49:Src/main.c    ****   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  70              		.loc 1 49 0
   71 0030 0021     		movs	r1, #0
   72 0032 FFF7FEFF 		bl	osThreadCreate
   73              	.LVL7:
   74 0036 034B     		ldr	r3, .L3+4
   75 0038 1860     		str	r0, [r3]
-  48:Src/main.c    **** 
-  49:Src/main.c    ****   osKernelStart();
-  76              		.loc 1 49 0
+  50:Src/main.c    **** 
+  51:Src/main.c    ****   osKernelStart();
+  76              		.loc 1 51 0
   77 003a FFF7FEFF 		bl	osKernelStart
   78              	.LVL8:
   79              	.L2:
@@ -151,22 +153,22 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   95              		.fpu softvfp
   97              	dfu_otter_bootloader:
   98              	.LFB56:
-  50:Src/main.c    **** 
-  51:Src/main.c    ****   while (1)
-  52:Src/main.c    ****   {
-  53:Src/main.c    ****   }
-  54:Src/main.c    **** }
-  55:Src/main.c    **** 
-  56:Src/main.c    **** void dfu_otter_bootloader(void)
-  57:Src/main.c    **** {
-  99              		.loc 1 57 0
+  52:Src/main.c    **** 
+  53:Src/main.c    ****   while (1)
+  54:Src/main.c    ****   {
+  55:Src/main.c    ****   }
+  56:Src/main.c    **** }
+  57:Src/main.c    **** 
+  58:Src/main.c    **** void dfu_otter_bootloader(void)
+  59:Src/main.c    **** {
+  99              		.loc 1 59 0
  100              		.cfi_startproc
  101              		@ Volatile: function does not return.
  102              		@ args = 0, pretend = 0, frame = 0
  103              		@ frame_needed = 0, uses_anonymous_args = 0
  104              		@ link register save eliminated.
-  58:Src/main.c    ****   *((unsigned long *)0x20003FF0) = 0xDEADBEEF;
- 105              		.loc 1 58 0
+  60:Src/main.c    ****   *((unsigned long *)0x20003FF0) = 0xDEADBEEF;
+ 105              		.loc 1 60 0
  106 0000 054B     		ldr	r3, .L7
  107 0002 064A     		ldr	r2, .L7+4
  108 0004 1A60     		str	r2, [r3]
@@ -176,11 +178,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  112              	.LBB19:
  113              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
    1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+ARM GAS  /tmp/cc7aE6WD.s 			page 4
+
+
    2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
    3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS Cortex-M Core Function/Instruction Header File
-ARM GAS  /tmp/ccIvCswH.s 			page 4
-
-
    4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V4.30
    5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     20. October 2015
    6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
@@ -236,11 +238,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   56:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
   57:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
   58:Drivers/CMSIS/Include/cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_irq(void)
+ARM GAS  /tmp/cc7aE6WD.s 			page 5
+
+
   59:Drivers/CMSIS/Include/cmsis_gcc.h **** {
   60:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
-ARM GAS  /tmp/ccIvCswH.s 			page 5
-
-
   61:Drivers/CMSIS/Include/cmsis_gcc.h **** }
   62:Drivers/CMSIS/Include/cmsis_gcc.h **** 
   63:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -296,11 +298,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  113:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  114:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  115:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ARM GAS  /tmp/cc7aE6WD.s 			page 6
+
+
  116:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
  117:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
-ARM GAS  /tmp/ccIvCswH.s 			page 6
-
-
  118:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  119:Drivers/CMSIS/Include/cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_APSR(void)
  120:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -356,11 +358,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  170:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
  171:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
  172:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ARM GAS  /tmp/cc7aE6WD.s 			page 7
+
+
  173:Drivers/CMSIS/Include/cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_MSP(void)
  174:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  /tmp/ccIvCswH.s 			page 7
-
-
  175:Drivers/CMSIS/Include/cmsis_gcc.h ****   register uint32_t result;
  176:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  177:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp\n" : "=r" (result) );
@@ -416,11 +418,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  227:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  228:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie f" : : : "memory");
  229:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/cc7aE6WD.s 			page 8
+
+
  230:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  231:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/ccIvCswH.s 			page 8
-
-
  232:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  233:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable FIQ
  234:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables FIQ interrupts by setting the F-bit in the CPSR.
@@ -476,11 +478,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  284:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  285:Drivers/CMSIS/Include/cmsis_gcc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __get_FAULTMASK(void)
  286:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ARM GAS  /tmp/cc7aE6WD.s 			page 9
+
+
  287:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
  288:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/ccIvCswH.s 			page 9
-
-
  289:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, faultmask" : "=r" (result) );
  290:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
  291:Drivers/CMSIS/Include/cmsis_gcc.h **** }
@@ -536,11 +538,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  341:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("");
  342:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
  343:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/cc7aE6WD.s 			page 10
+
+
  344:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  345:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif /* (__CORTEX_M == 0x04U) || (__CORTEX_M == 0x07U) */
-ARM GAS  /tmp/ccIvCswH.s 			page 10
-
-
  346:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  347:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  348:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -596,11 +598,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  398:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  399:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  400:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ARM GAS  /tmp/cc7aE6WD.s 			page 11
+
+
  401:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Send Event
  402:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
-ARM GAS  /tmp/ccIvCswH.s 			page 11
-
-
  403:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  404:Drivers/CMSIS/Include/cmsis_gcc.h **** __attribute__((always_inline)) __STATIC_INLINE void __SEV(void)
  405:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -656,11 +658,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   16:Drivers/CMSIS/Include/core_cm0.h ****      documentation and/or other materials provided with the distribution.
   17:Drivers/CMSIS/Include/core_cm0.h ****    - Neither the name of ARM nor the names of its contributors may be used
   18:Drivers/CMSIS/Include/core_cm0.h ****      to endorse or promote products derived from this software without
+ARM GAS  /tmp/cc7aE6WD.s 			page 12
+
+
   19:Drivers/CMSIS/Include/core_cm0.h ****      specific prior written permission.
   20:Drivers/CMSIS/Include/core_cm0.h ****    *
-ARM GAS  /tmp/ccIvCswH.s 			page 12
-
-
   21:Drivers/CMSIS/Include/core_cm0.h ****    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
   22:Drivers/CMSIS/Include/core_cm0.h ****    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
   23:Drivers/CMSIS/Include/core_cm0.h ****    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -716,11 +718,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   73:Drivers/CMSIS/Include/core_cm0.h **** /*  CMSIS CM0 definitions */
   74:Drivers/CMSIS/Include/core_cm0.h **** #define __CM0_CMSIS_VERSION_MAIN  (0x04U)                                      /*!< [31:16] CMSIS H
   75:Drivers/CMSIS/Include/core_cm0.h **** #define __CM0_CMSIS_VERSION_SUB   (0x1EU)                                      /*!< [15:0]  CMSIS H
+ARM GAS  /tmp/cc7aE6WD.s 			page 13
+
+
   76:Drivers/CMSIS/Include/core_cm0.h **** #define __CM0_CMSIS_VERSION       ((__CM0_CMSIS_VERSION_MAIN << 16U) | \
   77:Drivers/CMSIS/Include/core_cm0.h ****                                     __CM0_CMSIS_VERSION_SUB           )        /*!< CMSIS HAL versi
-ARM GAS  /tmp/ccIvCswH.s 			page 13
-
-
   78:Drivers/CMSIS/Include/core_cm0.h **** 
   79:Drivers/CMSIS/Include/core_cm0.h **** #define __CORTEX_M                (0x00U)                                      /*!< Cortex-M Core *
   80:Drivers/CMSIS/Include/core_cm0.h **** 
@@ -776,11 +778,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  130:Drivers/CMSIS/Include/core_cm0.h **** 
  131:Drivers/CMSIS/Include/core_cm0.h **** #elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
  132:Drivers/CMSIS/Include/core_cm0.h ****   #if defined __ARM_PCS_VFP
+ARM GAS  /tmp/cc7aE6WD.s 			page 14
+
+
  133:Drivers/CMSIS/Include/core_cm0.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
  134:Drivers/CMSIS/Include/core_cm0.h ****   #endif
-ARM GAS  /tmp/ccIvCswH.s 			page 14
-
-
  135:Drivers/CMSIS/Include/core_cm0.h **** 
  136:Drivers/CMSIS/Include/core_cm0.h **** #elif defined ( __GNUC__ )
  137:Drivers/CMSIS/Include/core_cm0.h ****   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
@@ -836,11 +838,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  187:Drivers/CMSIS/Include/core_cm0.h **** 
  188:Drivers/CMSIS/Include/core_cm0.h ****   #ifndef __NVIC_PRIO_BITS
  189:Drivers/CMSIS/Include/core_cm0.h ****     #define __NVIC_PRIO_BITS          2U
+ARM GAS  /tmp/cc7aE6WD.s 			page 15
+
+
  190:Drivers/CMSIS/Include/core_cm0.h ****     #warning "__NVIC_PRIO_BITS not defined in device header file; using default!"
  191:Drivers/CMSIS/Include/core_cm0.h ****   #endif
-ARM GAS  /tmp/ccIvCswH.s 			page 15
-
-
  192:Drivers/CMSIS/Include/core_cm0.h **** 
  193:Drivers/CMSIS/Include/core_cm0.h ****   #ifndef __Vendor_SysTickConfig
  194:Drivers/CMSIS/Include/core_cm0.h ****     #define __Vendor_SysTickConfig    0U
@@ -896,11 +898,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  244:Drivers/CMSIS/Include/core_cm0.h **** /**
  245:Drivers/CMSIS/Include/core_cm0.h ****   \brief  Union type to access the Application Program Status Register (APSR).
  246:Drivers/CMSIS/Include/core_cm0.h ****  */
+ARM GAS  /tmp/cc7aE6WD.s 			page 16
+
+
  247:Drivers/CMSIS/Include/core_cm0.h **** typedef union
  248:Drivers/CMSIS/Include/core_cm0.h **** {
-ARM GAS  /tmp/ccIvCswH.s 			page 16
-
-
  249:Drivers/CMSIS/Include/core_cm0.h ****   struct
  250:Drivers/CMSIS/Include/core_cm0.h ****   {
  251:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t _reserved0:28;              /*!< bit:  0..27  Reserved */
@@ -956,11 +958,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  301:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t T:1;                        /*!< bit:     24  Thumb bit        (read 0) */
  302:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t _reserved1:3;               /*!< bit: 25..27  Reserved */
  303:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
+ARM GAS  /tmp/cc7aE6WD.s 			page 17
+
+
  304:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
  305:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
-ARM GAS  /tmp/ccIvCswH.s 			page 17
-
-
  306:Drivers/CMSIS/Include/core_cm0.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
  307:Drivers/CMSIS/Include/core_cm0.h ****   } b;                                   /*!< Structure used for bit  access */
  308:Drivers/CMSIS/Include/core_cm0.h ****   uint32_t w;                            /*!< Type      used for word access */
@@ -1016,11 +1018,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  358:Drivers/CMSIS/Include/core_cm0.h **** 
  359:Drivers/CMSIS/Include/core_cm0.h **** /**
  360:Drivers/CMSIS/Include/core_cm0.h ****   \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
+ARM GAS  /tmp/cc7aE6WD.s 			page 18
+
+
  361:Drivers/CMSIS/Include/core_cm0.h ****  */
  362:Drivers/CMSIS/Include/core_cm0.h **** typedef struct
-ARM GAS  /tmp/ccIvCswH.s 			page 18
-
-
  363:Drivers/CMSIS/Include/core_cm0.h **** {
  364:Drivers/CMSIS/Include/core_cm0.h ****   __IOM uint32_t ISER[1U];               /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register */
  365:Drivers/CMSIS/Include/core_cm0.h ****         uint32_t RESERVED0[31U];
@@ -1076,11 +1078,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  415:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CPUID_REVISION_Pos              0U                                            /*!< SCB 
  416:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CPUID_REVISION_Msk             (0xFUL /*<< SCB_CPUID_REVISION_Pos*/)          /*!< SCB 
  417:Drivers/CMSIS/Include/core_cm0.h **** 
+ARM GAS  /tmp/cc7aE6WD.s 			page 19
+
+
  418:Drivers/CMSIS/Include/core_cm0.h **** /* SCB Interrupt Control State Register Definitions */
  419:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_ICSR_NMIPENDSET_Pos            31U                                            /*!< SCB 
-ARM GAS  /tmp/ccIvCswH.s 			page 19
-
-
  420:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_ICSR_NMIPENDSET_Msk            (1UL << SCB_ICSR_NMIPENDSET_Pos)               /*!< SCB 
  421:Drivers/CMSIS/Include/core_cm0.h **** 
  422:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_ICSR_PENDSVSET_Pos             28U                                            /*!< SCB 
@@ -1136,11 +1138,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  472:Drivers/CMSIS/Include/core_cm0.h **** /* SCB Configuration Control Register Definitions */
  473:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CCR_STKALIGN_Pos                9U                                            /*!< SCB 
  474:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CCR_STKALIGN_Msk               (1UL << SCB_CCR_STKALIGN_Pos)                  /*!< SCB 
+ARM GAS  /tmp/cc7aE6WD.s 			page 20
+
+
  475:Drivers/CMSIS/Include/core_cm0.h **** 
  476:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CCR_UNALIGN_TRP_Pos             3U                                            /*!< SCB 
-ARM GAS  /tmp/ccIvCswH.s 			page 20
-
-
  477:Drivers/CMSIS/Include/core_cm0.h **** #define SCB_CCR_UNALIGN_TRP_Msk            (1UL << SCB_CCR_UNALIGN_TRP_Pos)               /*!< SCB 
  478:Drivers/CMSIS/Include/core_cm0.h **** 
  479:Drivers/CMSIS/Include/core_cm0.h **** /* SCB System Handler Control and State Register Definitions */
@@ -1196,11 +1198,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  529:Drivers/CMSIS/Include/core_cm0.h **** #define SysTick_CALIB_SKEW_Pos             30U                                            /*!< SysT
  530:Drivers/CMSIS/Include/core_cm0.h **** #define SysTick_CALIB_SKEW_Msk             (1UL << SysTick_CALIB_SKEW_Pos)                /*!< SysT
  531:Drivers/CMSIS/Include/core_cm0.h **** 
+ARM GAS  /tmp/cc7aE6WD.s 			page 21
+
+
  532:Drivers/CMSIS/Include/core_cm0.h **** #define SysTick_CALIB_TENMS_Pos             0U                                            /*!< SysT
  533:Drivers/CMSIS/Include/core_cm0.h **** #define SysTick_CALIB_TENMS_Msk            (0xFFFFFFUL /*<< SysTick_CALIB_TENMS_Pos*/)    /*!< SysT
-ARM GAS  /tmp/ccIvCswH.s 			page 21
-
-
  534:Drivers/CMSIS/Include/core_cm0.h **** 
  535:Drivers/CMSIS/Include/core_cm0.h **** /*@} end of group CMSIS_SysTick */
  536:Drivers/CMSIS/Include/core_cm0.h **** 
@@ -1256,11 +1258,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  586:Drivers/CMSIS/Include/core_cm0.h **** 
  587:Drivers/CMSIS/Include/core_cm0.h **** #define SCB                 ((SCB_Type       *)     SCB_BASE      )   /*!< SCB configuration struct
  588:Drivers/CMSIS/Include/core_cm0.h **** #define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration st
+ARM GAS  /tmp/cc7aE6WD.s 			page 22
+
+
  589:Drivers/CMSIS/Include/core_cm0.h **** #define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struc
  590:Drivers/CMSIS/Include/core_cm0.h **** 
-ARM GAS  /tmp/ccIvCswH.s 			page 22
-
-
  591:Drivers/CMSIS/Include/core_cm0.h **** 
  592:Drivers/CMSIS/Include/core_cm0.h **** /*@} */
  593:Drivers/CMSIS/Include/core_cm0.h **** 
@@ -1316,11 +1318,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  643:Drivers/CMSIS/Include/core_cm0.h **** }
  644:Drivers/CMSIS/Include/core_cm0.h **** 
  645:Drivers/CMSIS/Include/core_cm0.h **** 
+ARM GAS  /tmp/cc7aE6WD.s 			page 23
+
+
  646:Drivers/CMSIS/Include/core_cm0.h **** /**
  647:Drivers/CMSIS/Include/core_cm0.h ****   \brief   Get Pending Interrupt
-ARM GAS  /tmp/ccIvCswH.s 			page 23
-
-
  648:Drivers/CMSIS/Include/core_cm0.h ****   \details Reads the pending register in the NVIC and returns the pending bit for the specified int
  649:Drivers/CMSIS/Include/core_cm0.h ****   \param [in]      IRQn  Interrupt number.
  650:Drivers/CMSIS/Include/core_cm0.h ****   \return             0  Interrupt status is not pending.
@@ -1376,11 +1378,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  700:Drivers/CMSIS/Include/core_cm0.h **** }
  701:Drivers/CMSIS/Include/core_cm0.h **** 
  702:Drivers/CMSIS/Include/core_cm0.h **** 
+ARM GAS  /tmp/cc7aE6WD.s 			page 24
+
+
  703:Drivers/CMSIS/Include/core_cm0.h **** /**
  704:Drivers/CMSIS/Include/core_cm0.h ****   \brief   Get Interrupt Priority
-ARM GAS  /tmp/ccIvCswH.s 			page 24
-
-
  705:Drivers/CMSIS/Include/core_cm0.h ****   \details Reads the priority of an interrupt.
  706:Drivers/CMSIS/Include/core_cm0.h ****            The interrupt number can be positive to specify an external (device specific) interrupt,
  707:Drivers/CMSIS/Include/core_cm0.h ****            or negative to specify an internal (core) interrupt.
@@ -1436,11 +1438,11 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  145 0014 C046     		nop
  146              	@ 0 "" 2
  147              		.thumb
+ARM GAS  /tmp/cc7aE6WD.s 			page 25
+
+
  148              		.syntax unified
  149 0016 FDE7     		b	.L6
-ARM GAS  /tmp/ccIvCswH.s 			page 25
-
-
  150              	.L8:
  151              		.align	2
  152              	.L7:
@@ -1463,62 +1465,61 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
  170              		.fpu softvfp
  172              	StartDefaultTask:
  173              	.LFB57:
-  59:Src/main.c    ****   NVIC_SystemReset();
-  60:Src/main.c    **** }
-  61:Src/main.c    **** 
-  62:Src/main.c    **** void StartDefaultTask(void const * argument)
-  63:Src/main.c    **** {
- 174              		.loc 1 63 0
+  61:Src/main.c    ****   NVIC_SystemReset();
+  62:Src/main.c    **** }
+  63:Src/main.c    **** 
+  64:Src/main.c    **** void StartDefaultTask(void const * argument)
+  65:Src/main.c    **** {
+ 174              		.loc 1 65 0
  175              		.cfi_startproc
  176              		@ args = 0, pretend = 0, frame = 104
  177              		@ frame_needed = 0, uses_anonymous_args = 0
  178              	.LVL9:
- 179 0000 30B5     		push	{r4, r5, lr}
+ 179 0000 10B5     		push	{r4, lr}
  180              	.LCFI2:
- 181              		.cfi_def_cfa_offset 12
- 182              		.cfi_offset 4, -12
- 183              		.cfi_offset 5, -8
- 184              		.cfi_offset 14, -4
- 185 0002 9BB0     		sub	sp, sp, #108
- 186              	.LCFI3:
- 187              		.cfi_def_cfa_offset 120
-  64:Src/main.c    ****   if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
- 188              		.loc 1 64 0
- 189 0004 9020     		movs	r0, #144
- 190              	.LVL10:
- 191 0006 0821     		movs	r1, #8
- 192 0008 C005     		lsls	r0, r0, #23
- 193 000a FFF7FEFF 		bl	HAL_GPIO_ReadPin
- 194              	.LVL11:
- 195 000e 0128     		cmp	r0, #1
- 196 0010 01D1     		bne	.L10
-  65:Src/main.c    ****     dfu_otter_bootloader();
- 197              		.loc 1 65 0
- 198 0012 FFF7FEFF 		bl	dfu_otter_bootloader
- 199              	.LVL12:
- 200              	.L10:
-  66:Src/main.c    ****   }  
-ARM GAS  /tmp/ccIvCswH.s 			page 26
+ 181              		.cfi_def_cfa_offset 8
+ 182              		.cfi_offset 4, -8
+ 183              		.cfi_offset 14, -4
+ 184 0002 9AB0     		sub	sp, sp, #104
+ 185              	.LCFI3:
+ 186              		.cfi_def_cfa_offset 112
+  66:Src/main.c    ****   if(HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin) == 1) {
+ 187              		.loc 1 66 0
+ 188 0004 9020     		movs	r0, #144
+ 189              	.LVL10:
+ 190 0006 0821     		movs	r1, #8
+ 191 0008 C005     		lsls	r0, r0, #23
+ 192 000a FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 193              	.LVL11:
+ 194 000e 0128     		cmp	r0, #1
+ 195 0010 01D1     		bne	.L10
+  67:Src/main.c    ****     dfu_otter_bootloader();
+ 196              		.loc 1 67 0
+ 197 0012 FFF7FEFF 		bl	dfu_otter_bootloader
+ 198              	.LVL12:
+ 199              	.L10:
+ARM GAS  /tmp/cc7aE6WD.s 			page 26
 
 
-  67:Src/main.c    **** 
-  68:Src/main.c    ****   MX_USB_DEVICE_Init();
- 201              		.loc 1 68 0
- 202 0016 FFF7FEFF 		bl	MX_USB_DEVICE_Init
- 203              	.LVL13:
+  68:Src/main.c    ****   }  
   69:Src/main.c    **** 
-  70:Src/main.c    ****   HAL_GPIO_WritePin(GPIOA,LED_POWER_Pin,1);
- 204              		.loc 1 70 0
- 205 001a 8021     		movs	r1, #128
- 206 001c 9020     		movs	r0, #144
- 207 001e 0122     		movs	r2, #1
- 208 0020 C900     		lsls	r1, r1, #3
- 209 0022 C005     		lsls	r0, r0, #23
- 210 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 211              	.LVL14:
- 212              	.LBB26:
- 213              	.LBB27:
- 214              		.file 4 "Inc/tcpm.h"
+  70:Src/main.c    ****   MX_USB_DEVICE_Init();
+ 200              		.loc 1 70 0
+ 201 0016 FFF7FEFF 		bl	MX_USB_DEVICE_Init
+ 202              	.LVL13:
+  71:Src/main.c    **** 
+  72:Src/main.c    ****   HAL_GPIO_WritePin(GPIOA,LED_POWER_Pin,1);
+ 203              		.loc 1 72 0
+ 204 001a 8021     		movs	r1, #128
+ 205 001c 9020     		movs	r0, #144
+ 206 001e 0122     		movs	r2, #1
+ 207 0020 C900     		lsls	r1, r1, #3
+ 208 0022 C005     		lsls	r0, r0, #23
+ 209 0024 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 210              	.LVL14:
+ 211              	.LBB26:
+ 212              	.LBB27:
+ 213              		.file 4 "Inc/tcpm.h"
    1:Inc/tcpm.h    **** /* Copyright 2015 The Chromium OS Authors. All rights reserved.
    2:Inc/tcpm.h    ****  * Use of this source code is governed by a BSD-style license that can be
    3:Inc/tcpm.h    ****  * found in the LICENSE file.
@@ -1557,224 +1558,235 @@ ARM GAS  /tmp/ccIvCswH.s 			page 1
   36:Inc/tcpm.h    **** 	int rv;
   37:Inc/tcpm.h    **** 
   38:Inc/tcpm.h    **** 	rv = tcpc_config[port].drv->init(port);
- 215              		.loc 4 38 0
-ARM GAS  /tmp/ccIvCswH.s 			page 27
+ARM GAS  /tmp/cc7aE6WD.s 			page 27
 
 
- 216 0028 174B     		ldr	r3, .L13
- 217 002a 1B68     		ldr	r3, [r3]
- 218 002c 0020     		movs	r0, #0
- 219 002e 9847     		blx	r3
- 220              	.LVL15:
+ 214              		.loc 4 38 0
+ 215 0028 1B4B     		ldr	r3, .L13
+ 216 002a 1B68     		ldr	r3, [r3]
+ 217 002c 0020     		movs	r0, #0
+ 218 002e 9847     		blx	r3
+ 219              	.LVL15:
   39:Inc/tcpm.h    **** 	if (rv)
- 221              		.loc 4 39 0
- 222 0030 0028     		cmp	r0, #0
- 223 0032 04D1     		bne	.L11
+ 220              		.loc 4 39 0
+ 221 0030 0028     		cmp	r0, #0
+ 222 0032 04D1     		bne	.L11
   40:Inc/tcpm.h    **** 		return rv;
   41:Inc/tcpm.h    **** 
   42:Inc/tcpm.h    **** 	/* Board specific post TCPC init */
   43:Inc/tcpm.h    **** 	if (board_tcpc_post_init)
- 224              		.loc 4 43 0
- 225 0034 154B     		ldr	r3, .L13+4
- 226 0036 002B     		cmp	r3, #0
- 227 0038 01D0     		beq	.L11
+ 223              		.loc 4 43 0
+ 224 0034 194B     		ldr	r3, .L13+4
+ 225 0036 002B     		cmp	r3, #0
+ 226 0038 01D0     		beq	.L11
   44:Inc/tcpm.h    **** 		rv = board_tcpc_post_init(port);
- 228              		.loc 4 44 0
- 229 003a FFF7FEFF 		bl	board_tcpc_post_init
- 230              	.LVL16:
- 231              	.L11:
- 232              	.LBE27:
- 233              	.LBE26:
-  71:Src/main.c    **** 
-  72:Src/main.c    ****   tcpm_init(0);
-  73:Src/main.c    ****   osDelay(50);
- 234              		.loc 1 73 0
- 235 003e 3220     		movs	r0, #50
- 236 0040 FFF7FEFF 		bl	osDelay
- 237              	.LVL17:
-  74:Src/main.c    ****   pd_init(0);
- 238              		.loc 1 74 0
- 239 0044 0020     		movs	r0, #0
- 240 0046 FFF7FEFF 		bl	pd_init
- 241              	.LVL18:
+ 227              		.loc 4 44 0
+ 228 003a FFF7FEFF 		bl	board_tcpc_post_init
+ 229              	.LVL16:
+ 230              	.L11:
+ 231              	.LBE27:
+ 232              	.LBE26:
+  73:Src/main.c    **** 
+  74:Src/main.c    ****   tcpm_init(0);
   75:Src/main.c    ****   osDelay(50);
- 242              		.loc 1 75 0
- 243 004a 3220     		movs	r0, #50
- 244 004c FFF7FEFF 		bl	osDelay
- 245              	.LVL19:
-  76:Src/main.c    **** 
-  77:Src/main.c    ****   char str[100];
-  78:Src/main.c    ****   uint8_t i = 0;
- 246              		.loc 1 78 0
- 247 0050 0024     		movs	r4, #0
- 248              	.LVL20:
- 249              	.L12:
-  79:Src/main.c    ****   for(;;)
-  80:Src/main.c    ****   {
-  81:Src/main.c    ****     i++;
- 250              		.loc 1 81 0 discriminator 1
- 251 0052 0134     		adds	r4, r4, #1
- 252              	.LVL21:
- 253 0054 E4B2     		uxtb	r4, r4
- 254              	.LVL22:
-  82:Src/main.c    ****     osDelay(1);
-ARM GAS  /tmp/ccIvCswH.s 			page 28
+ 233              		.loc 1 75 0
+ 234 003e 3220     		movs	r0, #50
+ 235 0040 FFF7FEFF 		bl	osDelay
+ 236              	.LVL17:
+  76:Src/main.c    ****   pd_init(0);
+ 237              		.loc 1 76 0
+ 238 0044 0020     		movs	r0, #0
+ 239 0046 FFF7FEFF 		bl	pd_init
+ 240              	.LVL18:
+  77:Src/main.c    ****   osDelay(50);
+ 241              		.loc 1 77 0
+ 242 004a 3220     		movs	r0, #50
+ 243 004c FFF7FEFF 		bl	osDelay
+ 244              	.LVL19:
+ 245              	.L12:
+  78:Src/main.c    **** 
+  79:Src/main.c    ****   char str[100];
+  80:Src/main.c    ****   uint8_t i = 0;
+  81:Src/main.c    ****   for(;;)
+  82:Src/main.c    ****   {
+  83:Src/main.c    ****     i++;
+  84:Src/main.c    ****     osDelay(1);
+ 246              		.loc 1 84 0 discriminator 1
+ 247 0050 0120     		movs	r0, #1
+ 248 0052 FFF7FEFF 		bl	osDelay
+ 249              	.LVL20:
+  85:Src/main.c    ****     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
+ 250              		.loc 1 85 0 discriminator 1
+ 251 0056 9024     		movs	r4, #144
+ARM GAS  /tmp/cc7aE6WD.s 			page 28
 
 
- 255              		.loc 1 82 0 discriminator 1
- 256 0056 0120     		movs	r0, #1
- 257 0058 FFF7FEFF 		bl	osDelay
- 258              	.LVL23:
-  83:Src/main.c    ****     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
- 259              		.loc 1 83 0 discriminator 1
- 260 005c 9025     		movs	r5, #144
- 261 005e ED05     		lsls	r5, r5, #23
- 262 0060 0821     		movs	r1, #8
- 263 0062 2800     		movs	r0, r5
- 264 0064 FFF7FEFF 		bl	HAL_GPIO_ReadPin
- 265              	.LVL24:
- 266 0068 0200     		movs	r2, r0
- 267 006a 8021     		movs	r1, #128
- 268 006c 0902     		lsls	r1, r1, #8
- 269 006e 2800     		movs	r0, r5
- 270 0070 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 271              	.LVL25:
-  84:Src/main.c    ****     sprintf(str,"Otter! %d\n\r",i);
- 272              		.loc 1 84 0 discriminator 1
- 273 0074 2200     		movs	r2, r4
- 274 0076 0649     		ldr	r1, .L13+8
- 275 0078 01A8     		add	r0, sp, #4
- 276 007a FFF7FEFF 		bl	sprintf
- 277              	.LVL26:
-  85:Src/main.c    ****     CDC_Transmit_FS((unsigned char*)str,sizeof(str));
- 278              		.loc 1 85 0 discriminator 1
- 279 007e 6421     		movs	r1, #100
- 280 0080 01A8     		add	r0, sp, #4
- 281 0082 FFF7FEFF 		bl	CDC_Transmit_FS
- 282              	.LVL27:
- 283 0086 E4E7     		b	.L12
- 284              	.L14:
- 285              		.align	2
- 286              	.L13:
- 287 0088 00000000 		.word	fusb302_tcpm_drv
- 288 008c 00000000 		.word	board_tcpc_post_init
- 289 0090 00000000 		.word	.LC7
- 290              		.cfi_endproc
- 291              	.LFE57:
- 293              		.section	.text.Error_Handler,"ax",%progbits
- 294              		.align	1
- 295              		.global	Error_Handler
- 296              		.syntax unified
- 297              		.code	16
- 298              		.thumb_func
- 299              		.fpu softvfp
- 301              	Error_Handler:
- 302              	.LFB58:
-  86:Src/main.c    ****   }
-  87:Src/main.c    **** }
-  88:Src/main.c    **** 
-  89:Src/main.c    **** void Error_Handler(void)
-  90:Src/main.c    **** {
- 303              		.loc 1 90 0
- 304              		.cfi_startproc
- 305              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  /tmp/ccIvCswH.s 			page 29
+ 252 0058 E405     		lsls	r4, r4, #23
+ 253 005a 0821     		movs	r1, #8
+ 254 005c 2000     		movs	r0, r4
+ 255 005e FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 256              	.LVL21:
+ 257 0062 0200     		movs	r2, r0
+ 258 0064 8021     		movs	r1, #128
+ 259 0066 0902     		lsls	r1, r1, #8
+ 260 0068 2000     		movs	r0, r4
+ 261 006a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 262              	.LVL22:
+  86:Src/main.c    ****     sprintf(str,"Otter! %d %d\n\r",pd_is_connected(0),pd_is_port_enabled(0));
+ 263              		.loc 1 86 0 discriminator 1
+ 264 006e 0020     		movs	r0, #0
+ 265 0070 FFF7FEFF 		bl	pd_is_connected
+ 266              	.LVL23:
+ 267 0074 0400     		movs	r4, r0
+ 268 0076 0020     		movs	r0, #0
+ 269 0078 FFF7FEFF 		bl	pd_is_port_enabled
+ 270              	.LVL24:
+ 271 007c 0300     		movs	r3, r0
+ 272 007e 2200     		movs	r2, r4
+ 273 0080 0749     		ldr	r1, .L13+8
+ 274 0082 01A8     		add	r0, sp, #4
+ 275 0084 FFF7FEFF 		bl	sprintf
+ 276              	.LVL25:
+  87:Src/main.c    ****     CDC_Transmit_FS((unsigned char*)str,sizeof(str));
+ 277              		.loc 1 87 0 discriminator 1
+ 278 0088 6421     		movs	r1, #100
+ 279 008a 01A8     		add	r0, sp, #4
+ 280 008c FFF7FEFF 		bl	CDC_Transmit_FS
+ 281              	.LVL26:
+  88:Src/main.c    ****     
+  89:Src/main.c    ****     //if (HAL_GPIO_ReadPin(GPIOA,INT_N_Pin) == 0) {
+  90:Src/main.c    ****     //  tcpc_alert(0);
+  91:Src/main.c    ****     //}
+  92:Src/main.c    **** 
+  93:Src/main.c    ****     pd_run_state_machine(0);
+ 282              		.loc 1 93 0 discriminator 1
+ 283 0090 0020     		movs	r0, #0
+ 284 0092 FFF7FEFF 		bl	pd_run_state_machine
+ 285              	.LVL27:
+ 286 0096 DBE7     		b	.L12
+ 287              	.L14:
+ 288              		.align	2
+ 289              	.L13:
+ 290 0098 00000000 		.word	fusb302_tcpm_drv
+ 291 009c 00000000 		.word	board_tcpc_post_init
+ 292 00a0 00000000 		.word	.LC7
+ 293              		.cfi_endproc
+ 294              	.LFE57:
+ 296              		.section	.text.Error_Handler,"ax",%progbits
+ 297              		.align	1
+ 298              		.global	Error_Handler
+ 299              		.syntax unified
+ 300              		.code	16
+ 301              		.thumb_func
+ARM GAS  /tmp/cc7aE6WD.s 			page 29
 
 
- 306              		@ frame_needed = 0, uses_anonymous_args = 0
- 307              		@ link register save eliminated.
-  91:Src/main.c    **** 
-  92:Src/main.c    **** }
- 308              		.loc 1 92 0
- 309              		@ sp needed
- 310 0000 7047     		bx	lr
- 311              		.cfi_endproc
- 312              	.LFE58:
- 314              		.global	tcpc_config
- 315              		.comm	defaultTaskHandle,4,4
- 316              		.section	.rodata
- 317              		.align	2
- 318              		.set	.LANCHOR0,. + 0
- 319              	.LC2:
- 320 0000 00000000 		.word	.LC0
- 321 0004 00000000 		.word	StartDefaultTask
- 322 0008 0000     		.short	0
- 323 000a 0000     		.space	2
- 324 000c 00000000 		.word	0
- 325 0010 80000000 		.word	128
- 326              		.section	.rodata.StartDefaultTask.str1.4,"aMS",%progbits,1
- 327              		.align	2
- 328              	.LC7:
- 329 0000 4F747465 		.ascii	"Otter! %d\012\015\000"
- 329      72212025 
- 329      640A0D00 
- 330              		.section	.rodata.str1.4,"aMS",%progbits,1
- 331              		.align	2
- 332              	.LC0:
- 333 0000 64656661 		.ascii	"defaultTask\000"
- 333      756C7454 
- 333      61736B00 
- 334              		.section	.rodata.tcpc_config,"a",%progbits
- 335              		.align	2
- 338              	tcpc_config:
- 339 0000 00000000 		.word	hi2c1
- 340 0004 22000000 		.word	34
- 341 0008 00000000 		.word	fusb302_tcpm_drv
- 342 000c 00000000 		.space	4
- 343              		.weak	board_tcpc_post_init
- 344              		.text
- 345              	.Letext0:
- 346              		.file 5 "/usr/arm-none-eabi/include/machine/_default_types.h"
- 347              		.file 6 "/usr/arm-none-eabi/include/sys/_stdint.h"
- 348              		.file 7 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
- 349              		.file 8 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h"
- 350              		.file 9 "/usr/arm-none-eabi/include/sys/lock.h"
- 351              		.file 10 "/usr/arm-none-eabi/include/sys/_types.h"
- 352              		.file 11 "/usr/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h"
- 353              		.file 12 "/usr/arm-none-eabi/include/sys/reent.h"
- 354              		.file 13 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
- 355              		.file 14 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
- 356              		.file 15 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_adc.h"
- 357              		.file 16 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_i2c.h"
- 358              		.file 17 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
- 359              		.file 18 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
-ARM GAS  /tmp/ccIvCswH.s 			page 30
+ 302              		.fpu softvfp
+ 304              	Error_Handler:
+ 305              	.LFB58:
+  94:Src/main.c    ****   }
+  95:Src/main.c    **** }
+  96:Src/main.c    **** 
+  97:Src/main.c    **** void Error_Handler(void)
+  98:Src/main.c    **** {
+ 306              		.loc 1 98 0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 0
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+ 310              		@ link register save eliminated.
+  99:Src/main.c    **** 
+ 100:Src/main.c    **** }
+ 311              		.loc 1 100 0
+ 312              		@ sp needed
+ 313 0000 7047     		bx	lr
+ 314              		.cfi_endproc
+ 315              	.LFE58:
+ 317              		.global	tcpc_config
+ 318              		.comm	defaultTaskHandle,4,4
+ 319              		.section	.rodata
+ 320              		.align	2
+ 321              		.set	.LANCHOR0,. + 0
+ 322              	.LC2:
+ 323 0000 00000000 		.word	.LC0
+ 324 0004 00000000 		.word	StartDefaultTask
+ 325 0008 0000     		.short	0
+ 326 000a 0000     		.space	2
+ 327 000c 00000000 		.word	0
+ 328 0010 80000000 		.word	128
+ 329              		.section	.rodata.StartDefaultTask.str1.4,"aMS",%progbits,1
+ 330              		.align	2
+ 331              	.LC7:
+ 332 0000 4F747465 		.ascii	"Otter! %d %d\012\015\000"
+ 332      72212025 
+ 332      64202564 
+ 332      0A0D00
+ 333              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 334              		.align	2
+ 335              	.LC0:
+ 336 0000 64656661 		.ascii	"defaultTask\000"
+ 336      756C7454 
+ 336      61736B00 
+ 337              		.section	.rodata.tcpc_config,"a",%progbits
+ 338              		.align	2
+ 341              	tcpc_config:
+ 342 0000 00000000 		.word	hi2c1
+ 343 0004 22000000 		.word	34
+ 344 0008 00000000 		.word	fusb302_tcpm_drv
+ 345 000c 00000000 		.space	4
+ 346              		.weak	board_tcpc_post_init
+ 347              		.text
+ 348              	.Letext0:
+ 349              		.file 5 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 350              		.file 6 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  /tmp/cc7aE6WD.s 			page 30
 
 
- 360              		.file 19 "/usr/arm-none-eabi/include/stdlib.h"
- 361              		.file 20 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
- 362              		.file 21 "Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h"
- 363              		.file 22 "Inc/usbd_cdc_if.h"
- 364              		.file 23 "Inc/usb_pd_tcpm.h"
- 365              		.file 24 "Inc/usb_pd.h"
- 366              		.file 25 "Inc/FUSB302.h"
- 367              		.file 26 "Inc/tcpm_driver.h"
- 368              		.file 27 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_gpio.h"
- 369              		.file 28 "Inc/usb_device.h"
- 370              		.file 29 "/usr/arm-none-eabi/include/stdio.h"
- 371              		.file 30 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
-ARM GAS  /tmp/ccIvCswH.s 			page 31
+ 351              		.file 7 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+ 352              		.file 8 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h"
+ 353              		.file 9 "/usr/arm-none-eabi/include/sys/lock.h"
+ 354              		.file 10 "/usr/arm-none-eabi/include/sys/_types.h"
+ 355              		.file 11 "/usr/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h"
+ 356              		.file 12 "/usr/arm-none-eabi/include/sys/reent.h"
+ 357              		.file 13 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
+ 358              		.file 14 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
+ 359              		.file 15 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_adc.h"
+ 360              		.file 16 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_i2c.h"
+ 361              		.file 17 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 362              		.file 18 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 363              		.file 19 "/usr/arm-none-eabi/include/stdlib.h"
+ 364              		.file 20 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
+ 365              		.file 21 "Inc/usb_pd_tcpm.h"
+ 366              		.file 22 "Inc/FUSB302.h"
+ 367              		.file 23 "Inc/tcpm_driver.h"
+ 368              		.file 24 "Inc/usb_pd.h"
+ 369              		.file 25 "Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h"
+ 370              		.file 26 "Inc/usbd_cdc_if.h"
+ 371              		.file 27 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_gpio.h"
+ 372              		.file 28 "Inc/usb_device.h"
+ 373              		.file 29 "/usr/arm-none-eabi/include/stdio.h"
+ 374              		.file 30 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
+ARM GAS  /tmp/cc7aE6WD.s 			page 31
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccIvCswH.s:16     .text.main:0000000000000000 $t
-     /tmp/ccIvCswH.s:23     .text.main:0000000000000000 main
-     /tmp/ccIvCswH.s:84     .text.main:0000000000000040 $d
+     /tmp/cc7aE6WD.s:16     .text.main:0000000000000000 $t
+     /tmp/cc7aE6WD.s:23     .text.main:0000000000000000 main
+     /tmp/cc7aE6WD.s:84     .text.main:0000000000000040 $d
                             *COM*:0000000000000004 defaultTaskHandle
-     /tmp/ccIvCswH.s:90     .text.dfu_otter_bootloader:0000000000000000 $t
-     /tmp/ccIvCswH.s:97     .text.dfu_otter_bootloader:0000000000000000 dfu_otter_bootloader
-     /tmp/ccIvCswH.s:153    .text.dfu_otter_bootloader:0000000000000018 $d
-     /tmp/ccIvCswH.s:165    .text.StartDefaultTask:0000000000000000 $t
-     /tmp/ccIvCswH.s:172    .text.StartDefaultTask:0000000000000000 StartDefaultTask
-     /tmp/ccIvCswH.s:287    .text.StartDefaultTask:0000000000000088 $d
-     /tmp/ccIvCswH.s:294    .text.Error_Handler:0000000000000000 $t
-     /tmp/ccIvCswH.s:301    .text.Error_Handler:0000000000000000 Error_Handler
-     /tmp/ccIvCswH.s:338    .rodata.tcpc_config:0000000000000000 tcpc_config
-     /tmp/ccIvCswH.s:317    .rodata:0000000000000000 $d
-     /tmp/ccIvCswH.s:327    .rodata.StartDefaultTask.str1.4:0000000000000000 $d
-     /tmp/ccIvCswH.s:331    .rodata.str1.4:0000000000000000 $d
-     /tmp/ccIvCswH.s:335    .rodata.tcpc_config:0000000000000000 $d
+     /tmp/cc7aE6WD.s:90     .text.dfu_otter_bootloader:0000000000000000 $t
+     /tmp/cc7aE6WD.s:97     .text.dfu_otter_bootloader:0000000000000000 dfu_otter_bootloader
+     /tmp/cc7aE6WD.s:153    .text.dfu_otter_bootloader:0000000000000018 $d
+     /tmp/cc7aE6WD.s:165    .text.StartDefaultTask:0000000000000000 $t
+     /tmp/cc7aE6WD.s:172    .text.StartDefaultTask:0000000000000000 StartDefaultTask
+     /tmp/cc7aE6WD.s:290    .text.StartDefaultTask:0000000000000098 $d
+     /tmp/cc7aE6WD.s:297    .text.Error_Handler:0000000000000000 $t
+     /tmp/cc7aE6WD.s:304    .text.Error_Handler:0000000000000000 Error_Handler
+     /tmp/cc7aE6WD.s:341    .rodata.tcpc_config:0000000000000000 tcpc_config
+     /tmp/cc7aE6WD.s:320    .rodata:0000000000000000 $d
+     /tmp/cc7aE6WD.s:330    .rodata.StartDefaultTask.str1.4:0000000000000000 $d
+     /tmp/cc7aE6WD.s:334    .rodata.str1.4:0000000000000000 $d
+     /tmp/cc7aE6WD.s:338    .rodata.tcpc_config:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 HAL_Init
@@ -1792,7 +1804,10 @@ HAL_GPIO_WritePin
 board_tcpc_post_init
 osDelay
 pd_init
+pd_is_connected
+pd_is_port_enabled
 sprintf
 CDC_Transmit_FS
+pd_run_state_machine
 fusb302_tcpm_drv
 hi2c1

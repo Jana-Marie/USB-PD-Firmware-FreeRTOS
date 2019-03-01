@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccIpyHw4.s 			page 1
+ARM GAS  /tmp/ccWzdgK1.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
   32:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c ****      *    Help yourself get started quickly while simultaneously helping     *
   33:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c ****      *    to support the FreeRTOS project by purchasing a FreeRTOS           *
   34:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c ****      *    tutorial book, reference manual, or both:                          *
-ARM GAS  /tmp/ccIpyHw4.s 			page 2
+ARM GAS  /tmp/ccWzdgK1.s 			page 2
 
 
   35:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c ****      *    http://www.FreeRTOS.org/Documentation                              *
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
   89:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
   90:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** /* The following bit fields convey control information in a task's event list
   91:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** item value.  It is important they don't clash with the
-ARM GAS  /tmp/ccIpyHw4.s 			page 3
+ARM GAS  /tmp/ccWzdgK1.s 			page 3
 
 
   92:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** taskEVENT_LIST_ITEM_VALUE_IN_USE definition. */
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  146:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		{
  147:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			pxEventBits->uxEventBits = 0;
  148:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			vListInitialise( &( pxEventBits->xTasksWaitingForBits ) );
-ARM GAS  /tmp/ccIpyHw4.s 			page 4
+ARM GAS  /tmp/ccWzdgK1.s 			page 4
 
 
  149:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  203:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	}
  204:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
  205:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** #endif /* configSUPPORT_DYNAMIC_ALLOCATION */
-ARM GAS  /tmp/ccIpyHw4.s 			page 5
+ARM GAS  /tmp/ccWzdgK1.s 			page 5
 
 
  206:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** /*-----------------------------------------------------------*/
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  260:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				specified - just return the current event bit value. */
  261:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				uxReturn = pxEventBits->uxEventBits;
  262:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			}
-ARM GAS  /tmp/ccIpyHw4.s 			page 6
+ARM GAS  /tmp/ccWzdgK1.s 			page 6
 
 
  263:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		}
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  317:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
  318:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	traceEVENT_GROUP_SYNC_END( xEventGroup, uxBitsToSet, uxBitsToWaitFor, xTimeoutOccurred );
  319:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
-ARM GAS  /tmp/ccIpyHw4.s 			page 7
+ARM GAS  /tmp/ccWzdgK1.s 			page 7
 
 
  320:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	return uxReturn;
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  374:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			/* The task is going to block to wait for its required bits to be
  375:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			set.  uxControlBits are used to remember the specified behaviour of
  376:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			this call to xEventGroupWaitBits() - for use when the event bits
-ARM GAS  /tmp/ccIpyHw4.s 			page 8
+ARM GAS  /tmp/ccWzdgK1.s 			page 8
 
 
  377:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			unblock the task. */
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  431:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			{
  432:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				/* The task timed out, just return the current event bit value. */
  433:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				uxReturn = pxEventBits->uxEventBits;
-ARM GAS  /tmp/ccIpyHw4.s 			page 9
+ARM GAS  /tmp/ccWzdgK1.s 			page 9
 
 
  434:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  488:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		uxReturn = pxEventBits->uxEventBits;
  489:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
  490:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		/* Clear the bits. */
-ARM GAS  /tmp/ccIpyHw4.s 			page 10
+ARM GAS  /tmp/ccWzdgK1.s 			page 10
 
 
  491:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		pxEventBits->uxEventBits &= ~uxBitsToClear;
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  545:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	pxListEnd = listGET_END_MARKER( pxList ); /*lint !e826 !e740 The mini list structure is used as th
  546:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	vTaskSuspendAll();
  547:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	{
-ARM GAS  /tmp/ccIpyHw4.s 			page 11
+ARM GAS  /tmp/ccWzdgK1.s 			page 11
 
 
  548:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		traceEVENT_GROUP_SET_BITS( xEventGroup, uxBitsToSet );
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  602:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				eventUNBLOCKED_DUE_TO_BIT_SET bit is set so the task knows
  603:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				that is was unblocked due to its required bits matching, rather
  604:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				than because it timed out. */
-ARM GAS  /tmp/ccIpyHw4.s 			page 12
+ARM GAS  /tmp/ccWzdgK1.s 			page 12
 
 
  605:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 				( void ) xTaskRemoveFromUnorderedEventList( pxListItem, pxEventBits->uxEventBits | eventUNBLOCK
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  659:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		}
  660:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
  661:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	}
-ARM GAS  /tmp/ccIpyHw4.s 			page 13
+ARM GAS  /tmp/ccWzdgK1.s 			page 13
 
 
  662:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	( void ) xTaskResumeAll();
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  699:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	else
  700:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	{
  701:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		/* Task has to wait for all the bits in uxBitsToWaitFor to be set.
-ARM GAS  /tmp/ccIpyHw4.s 			page 14
+ARM GAS  /tmp/ccWzdgK1.s 			page 14
 
 
  702:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		Are they set already? */
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  175:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	EventGroup_t *pxEventBits;
   79              		.loc 1 175 0
   80              		.cfi_startproc
-ARM GAS  /tmp/ccIpyHw4.s 			page 15
+ARM GAS  /tmp/ccWzdgK1.s 			page 15
 
 
   81              		@ args = 0, pretend = 0, frame = 0
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  131              		.cfi_offset 5, -16
  132              		.cfi_offset 6, -12
  133              		.cfi_offset 7, -8
-ARM GAS  /tmp/ccIpyHw4.s 			page 16
+ARM GAS  /tmp/ccWzdgK1.s 			page 16
 
 
  134              		.cfi_offset 14, -4
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  182              		.loc 1 335 0 is_stmt 0 discriminator 1
  183              		.syntax divided
  184              	@ 335 "Middlewares/Third_Party/FreeRTOS/Source/event_groups.c" 1
-ARM GAS  /tmp/ccIpyHw4.s 			page 17
+ARM GAS  /tmp/ccWzdgK1.s 			page 17
 
 
  185 0028 72B6     		 cpsid i 
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  359:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			}
  231              		.loc 1 359 0
  232 0056 2300     		movs	r3, r4
-ARM GAS  /tmp/ccIpyHw4.s 			page 18
+ARM GAS  /tmp/ccWzdgK1.s 			page 18
 
 
  233 0058 AB43     		bics	r3, r5
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  441:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 					}
  277              		.loc 1 441 0
  278 0090 2300     		movs	r3, r4
-ARM GAS  /tmp/ccIpyHw4.s 			page 19
+ARM GAS  /tmp/ccWzdgK1.s 			page 19
 
 
  279 0092 AB43     		bics	r3, r5
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  325 00ba 8023     		movs	r3, #128
  326 00bc DB04     		lsls	r3, r3, #19
  327 00be 1943     		orrs	r1, r3
-ARM GAS  /tmp/ccIpyHw4.s 			page 20
+ARM GAS  /tmp/ccWzdgK1.s 			page 20
 
 
  328              	.LVL40:
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  380 0002 0400     		movs	r4, r0
  381 0004 0E00     		movs	r6, r1
  382              	.LVL47:
-ARM GAS  /tmp/ccIpyHw4.s 			page 21
+ARM GAS  /tmp/ccWzdgK1.s 			page 21
 
 
  479:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	configASSERT( ( uxBitsToClear & eventEVENT_BITS_CONTROL_BYTES ) == 0 );
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  428 0028 70BD     		pop	{r4, r5, r6, pc}
  429              		.cfi_endproc
  430              	.LFE3:
-ARM GAS  /tmp/ccIpyHw4.s 			page 22
+ARM GAS  /tmp/ccWzdgK1.s 			page 22
 
 
  432              		.section	.text.xEventGroupGetBitsFromISR,"ax",%progbits
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  483              		@ args = 0, pretend = 0, frame = 0
  484              		@ frame_needed = 0, uses_anonymous_args = 0
  485              	.LVL60:
-ARM GAS  /tmp/ccIpyHw4.s 			page 23
+ARM GAS  /tmp/ccWzdgK1.s 			page 23
 
 
  486 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  533 001e 2069     		ldr	r0, [r4, #16]
  534              	.LVL65:
  553:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 
-ARM GAS  /tmp/ccIpyHw4.s 			page 24
+ARM GAS  /tmp/ccWzdgK1.s 			page 24
 
 
  535              		.loc 1 553 0
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  578              		.loc 1 591 0
  579 004a D201     		lsls	r2, r2, #7
  580 004c 00D5     		bpl	.L43
-ARM GAS  /tmp/ccIpyHw4.s 			page 25
+ARM GAS  /tmp/ccWzdgK1.s 			page 25
 
 
  581              	.LVL73:
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  630 0000 F0B5     		push	{r4, r5, r6, r7, lr}
  631              	.LCFI7:
  632              		.cfi_def_cfa_offset 20
-ARM GAS  /tmp/ccIpyHw4.s 			page 26
+ARM GAS  /tmp/ccWzdgK1.s 			page 26
 
 
  633              		.cfi_offset 4, -20
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  219:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 	}
  681              		.loc 1 219 0
  682              		.syntax divided
-ARM GAS  /tmp/ccIpyHw4.s 			page 27
+ARM GAS  /tmp/ccWzdgK1.s 			page 27
 
 
  683              	@ 219 "Middlewares/Third_Party/FreeRTOS/Source/event_groups.c" 1
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  728 0058 01D1     		bne	.L57
  271:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 		}
  729              		.loc 1 271 0
-ARM GAS  /tmp/ccIpyHw4.s 			page 28
+ARM GAS  /tmp/ccWzdgK1.s 			page 28
 
 
  730 005a FFF7FEFF 		bl	vPortYield
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  775 0088 F0BD     		pop	{r4, r5, r6, r7, pc}
  776              	.LVL106:
  777              	.L53:
-ARM GAS  /tmp/ccIpyHw4.s 			page 29
+ARM GAS  /tmp/ccWzdgK1.s 			page 29
 
 
  242:Middlewares/Third_Party/FreeRTOS/Source/event_groups.c **** 			{
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  827              		.loc 1 633 0
  828 0008 6368     		ldr	r3, [r4, #4]
  829 000a 002B     		cmp	r3, #0
-ARM GAS  /tmp/ccIpyHw4.s 			page 30
+ARM GAS  /tmp/ccWzdgK1.s 			page 30
 
 
  830 000c 0BD0     		beq	.L65
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  879              		.cfi_startproc
  880              		@ args = 0, pretend = 0, frame = 0
  881              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccIpyHw4.s 			page 31
+ARM GAS  /tmp/ccWzdgK1.s 			page 31
 
 
  882              	.LVL117:
@@ -1858,38 +1858,38 @@ ARM GAS  /tmp/ccIpyHw4.s 			page 1
  934              		.file 8 "/usr/arm-none-eabi/include/sys/_stdint.h"
  935              		.file 9 "Inc/FreeRTOSConfig.h"
  936              		.file 10 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h"
-ARM GAS  /tmp/ccIpyHw4.s 			page 32
+ARM GAS  /tmp/ccWzdgK1.s 			page 32
 
 
  937              		.file 11 "Middlewares/Third_Party/FreeRTOS/Source/include/list.h"
  938              		.file 12 "Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h"
  939              		.file 13 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
  940              		.file 14 "Middlewares/Third_Party/FreeRTOS/Source/include/portable.h"
-ARM GAS  /tmp/ccIpyHw4.s 			page 33
+ARM GAS  /tmp/ccWzdgK1.s 			page 33
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 event_groups.c
-     /tmp/ccIpyHw4.s:16     .text.prvTestWaitCondition:0000000000000000 $t
-     /tmp/ccIpyHw4.s:22     .text.prvTestWaitCondition:0000000000000000 prvTestWaitCondition
-     /tmp/ccIpyHw4.s:70     .text.xEventGroupCreate:0000000000000000 $t
-     /tmp/ccIpyHw4.s:77     .text.xEventGroupCreate:0000000000000000 xEventGroupCreate
-     /tmp/ccIpyHw4.s:113    .text.xEventGroupWaitBits:0000000000000000 $t
-     /tmp/ccIpyHw4.s:120    .text.xEventGroupWaitBits:0000000000000000 xEventGroupWaitBits
-     /tmp/ccIpyHw4.s:359    .text.xEventGroupClearBits:0000000000000000 $t
-     /tmp/ccIpyHw4.s:366    .text.xEventGroupClearBits:0000000000000000 xEventGroupClearBits
-     /tmp/ccIpyHw4.s:433    .text.xEventGroupGetBitsFromISR:0000000000000000 $t
-     /tmp/ccIpyHw4.s:440    .text.xEventGroupGetBitsFromISR:0000000000000000 xEventGroupGetBitsFromISR
-     /tmp/ccIpyHw4.s:472    .text.xEventGroupSetBits:0000000000000000 $t
-     /tmp/ccIpyHw4.s:479    .text.xEventGroupSetBits:0000000000000000 xEventGroupSetBits
-     /tmp/ccIpyHw4.s:616    .text.xEventGroupSync:0000000000000000 $t
-     /tmp/ccIpyHw4.s:623    .text.xEventGroupSync:0000000000000000 xEventGroupSync
-     /tmp/ccIpyHw4.s:802    .text.vEventGroupDelete:0000000000000000 $t
-     /tmp/ccIpyHw4.s:809    .text.vEventGroupDelete:0000000000000000 vEventGroupDelete
-     /tmp/ccIpyHw4.s:869    .text.vEventGroupSetBitsCallback:0000000000000000 $t
-     /tmp/ccIpyHw4.s:876    .text.vEventGroupSetBitsCallback:0000000000000000 vEventGroupSetBitsCallback
-     /tmp/ccIpyHw4.s:898    .text.vEventGroupClearBitsCallback:0000000000000000 $t
-     /tmp/ccIpyHw4.s:905    .text.vEventGroupClearBitsCallback:0000000000000000 vEventGroupClearBitsCallback
+     /tmp/ccWzdgK1.s:16     .text.prvTestWaitCondition:0000000000000000 $t
+     /tmp/ccWzdgK1.s:22     .text.prvTestWaitCondition:0000000000000000 prvTestWaitCondition
+     /tmp/ccWzdgK1.s:70     .text.xEventGroupCreate:0000000000000000 $t
+     /tmp/ccWzdgK1.s:77     .text.xEventGroupCreate:0000000000000000 xEventGroupCreate
+     /tmp/ccWzdgK1.s:113    .text.xEventGroupWaitBits:0000000000000000 $t
+     /tmp/ccWzdgK1.s:120    .text.xEventGroupWaitBits:0000000000000000 xEventGroupWaitBits
+     /tmp/ccWzdgK1.s:359    .text.xEventGroupClearBits:0000000000000000 $t
+     /tmp/ccWzdgK1.s:366    .text.xEventGroupClearBits:0000000000000000 xEventGroupClearBits
+     /tmp/ccWzdgK1.s:433    .text.xEventGroupGetBitsFromISR:0000000000000000 $t
+     /tmp/ccWzdgK1.s:440    .text.xEventGroupGetBitsFromISR:0000000000000000 xEventGroupGetBitsFromISR
+     /tmp/ccWzdgK1.s:472    .text.xEventGroupSetBits:0000000000000000 $t
+     /tmp/ccWzdgK1.s:479    .text.xEventGroupSetBits:0000000000000000 xEventGroupSetBits
+     /tmp/ccWzdgK1.s:616    .text.xEventGroupSync:0000000000000000 $t
+     /tmp/ccWzdgK1.s:623    .text.xEventGroupSync:0000000000000000 xEventGroupSync
+     /tmp/ccWzdgK1.s:802    .text.vEventGroupDelete:0000000000000000 $t
+     /tmp/ccWzdgK1.s:809    .text.vEventGroupDelete:0000000000000000 vEventGroupDelete
+     /tmp/ccWzdgK1.s:869    .text.vEventGroupSetBitsCallback:0000000000000000 $t
+     /tmp/ccWzdgK1.s:876    .text.vEventGroupSetBitsCallback:0000000000000000 vEventGroupSetBitsCallback
+     /tmp/ccWzdgK1.s:898    .text.vEventGroupClearBitsCallback:0000000000000000 $t
+     /tmp/ccWzdgK1.s:905    .text.vEventGroupClearBitsCallback:0000000000000000 vEventGroupClearBitsCallback
 
 UNDEFINED SYMBOLS
 pvPortMalloc

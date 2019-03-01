@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccFkZzMB.s 			page 1
+ARM GAS  /tmp/ccTIkfhw.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
   25:Src/usb_pd_driver.c **** 			break;
   26:Src/usb_pd_driver.c **** 	}
   27:Src/usb_pd_driver.c **** 	return 0;
-ARM GAS  /tmp/ccFkZzMB.s 			page 2
+ARM GAS  /tmp/ccTIkfhw.s 			page 2
 
 
   28:Src/usb_pd_driver.c **** }
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
   71              	.LFB20:
   47:Src/usb_pd_driver.c **** 
   48:Src/usb_pd_driver.c **** int pd_is_valid_input_voltage(int mv)
-ARM GAS  /tmp/ccFkZzMB.s 			page 3
+ARM GAS  /tmp/ccTIkfhw.s 			page 3
 
 
   49:Src/usb_pd_driver.c **** {
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
   59:Src/usb_pd_driver.c **** {
  120              		.loc 1 59 0
  121              		.cfi_startproc
-ARM GAS  /tmp/ccFkZzMB.s 			page 4
+ARM GAS  /tmp/ccTIkfhw.s 			page 4
 
 
  122              		@ args = 0, pretend = 0, frame = 0
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  164              		.cfi_endproc
  165              	.LFE23:
  167              		.section	.text.pd_custom_vdm,"ax",%progbits
-ARM GAS  /tmp/ccFkZzMB.s 			page 5
+ARM GAS  /tmp/ccTIkfhw.s 			page 5
 
 
  168              		.align	1
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  114:Src/usb_pd_driver.c **** 			//CPRINTF("DevId:%d.%d SW:%d RW:%d\n",
  115:Src/usb_pd_driver.c **** 			//	HW_DEV_ID_MAJ(dev_id),
  116:Src/usb_pd_driver.c **** 			//	HW_DEV_ID_MIN(dev_id),
-ARM GAS  /tmp/ccFkZzMB.s 			page 6
+ARM GAS  /tmp/ccTIkfhw.s 			page 6
 
 
  117:Src/usb_pd_driver.c **** 			//	VDO_INFO_SW_DBG_VER(payload[6]),
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  210              		.cfi_endproc
  211              	.LFE25:
  213              		.section	.text.pd_check_data_swap,"ax",%progbits
-ARM GAS  /tmp/ccFkZzMB.s 			page 7
+ARM GAS  /tmp/ccTIkfhw.s 			page 7
 
 
  214              		.align	1
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  259              	.LFE27:
  261              		.section	.text.pd_board_checks,"ax",%progbits
  262              		.align	1
-ARM GAS  /tmp/ccFkZzMB.s 			page 8
+ARM GAS  /tmp/ccTIkfhw.s 			page 8
 
 
  263              		.global	pd_board_checks
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  300 0000 0020     		movs	r0, #0
  301              	.LVL19:
  302              		@ sp needed
-ARM GAS  /tmp/ccFkZzMB.s 			page 9
+ARM GAS  /tmp/ccTIkfhw.s 			page 9
 
 
  303 0002 7047     		bx	lr
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  214:Src/usb_pd_driver.c **** #endif // if 0
  215:Src/usb_pd_driver.c **** 
  216:Src/usb_pd_driver.c **** }
-ARM GAS  /tmp/ccFkZzMB.s 			page 10
+ARM GAS  /tmp/ccTIkfhw.s 			page 10
 
 
  323              		.loc 1 216 0
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  231:Src/usb_pd_driver.c **** 	 * If partner is dual-role power and dualrole toggling is on, consider
  232:Src/usb_pd_driver.c **** 	 * if a power swap is necessary.
  233:Src/usb_pd_driver.c **** 	 */
-ARM GAS  /tmp/ccFkZzMB.s 			page 11
+ARM GAS  /tmp/ccTIkfhw.s 			page 11
 
 
  234:Src/usb_pd_driver.c **** 	if ((flags & PD_FLAGS_PARTNER_DR_POWER) &&
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  268:Src/usb_pd_driver.c **** 	ssd1306_write_data_n(display_buffer, DISP_MEM_SIZE);
  269:Src/usb_pd_driver.c **** 	*/
  270:Src/usb_pd_driver.c **** }
-ARM GAS  /tmp/ccFkZzMB.s 			page 12
+ARM GAS  /tmp/ccTIkfhw.s 			page 12
 
 
  389              		.loc 1 270 0
@@ -698,51 +698,51 @@ ARM GAS  /tmp/ccFkZzMB.s 			page 1
  432              		.file 7 "Inc/tcpm_driver.h"
  433              		.file 8 "Inc/usb_pd.h"
  434              		.file 9 "Inc/usb_pd_driver.h"
-ARM GAS  /tmp/ccFkZzMB.s 			page 13
+ARM GAS  /tmp/ccTIkfhw.s 			page 13
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 usb_pd_driver.c
-     /tmp/ccFkZzMB.s:16     .text.pd_task_set_event:0000000000000000 $t
-     /tmp/ccFkZzMB.s:23     .text.pd_task_set_event:0000000000000000 pd_task_set_event
-     /tmp/ccFkZzMB.s:41     .text.pd_set_input_current_limit:0000000000000000 $t
-     /tmp/ccFkZzMB.s:48     .text.pd_set_input_current_limit:0000000000000000 pd_set_input_current_limit
-     /tmp/ccFkZzMB.s:63     .text.pd_is_valid_input_voltage:0000000000000000 $t
-     /tmp/ccFkZzMB.s:70     .text.pd_is_valid_input_voltage:0000000000000000 pd_is_valid_input_voltage
-     /tmp/ccFkZzMB.s:87     .text.pd_snk_is_vbus_provided:0000000000000000 $t
-     /tmp/ccFkZzMB.s:94     .text.pd_snk_is_vbus_provided:0000000000000000 pd_snk_is_vbus_provided
-     /tmp/ccFkZzMB.s:111    .text.get_time:0000000000000000 $t
-     /tmp/ccFkZzMB.s:118    .text.get_time:0000000000000000 get_time
-     /tmp/ccFkZzMB.s:146    .text.pd_power_supply_reset:0000000000000000 $t
-     /tmp/ccFkZzMB.s:153    .text.pd_power_supply_reset:0000000000000000 pd_power_supply_reset
-     /tmp/ccFkZzMB.s:168    .text.pd_custom_vdm:0000000000000000 $t
-     /tmp/ccFkZzMB.s:175    .text.pd_custom_vdm:0000000000000000 pd_custom_vdm
-     /tmp/ccFkZzMB.s:192    .text.pd_execute_data_swap:0000000000000000 $t
-     /tmp/ccFkZzMB.s:199    .text.pd_execute_data_swap:0000000000000000 pd_execute_data_swap
-     /tmp/ccFkZzMB.s:214    .text.pd_check_data_swap:0000000000000000 $t
-     /tmp/ccFkZzMB.s:221    .text.pd_check_data_swap:0000000000000000 pd_check_data_swap
-     /tmp/ccFkZzMB.s:238    .text.pd_check_power_swap:0000000000000000 $t
-     /tmp/ccFkZzMB.s:245    .text.pd_check_power_swap:0000000000000000 pd_check_power_swap
-     /tmp/ccFkZzMB.s:262    .text.pd_board_checks:0000000000000000 $t
-     /tmp/ccFkZzMB.s:269    .text.pd_board_checks:0000000000000000 pd_board_checks
-     /tmp/ccFkZzMB.s:284    .text.pd_set_power_supply_ready:0000000000000000 $t
-     /tmp/ccFkZzMB.s:291    .text.pd_set_power_supply_ready:0000000000000000 pd_set_power_supply_ready
-     /tmp/ccFkZzMB.s:308    .text.pd_transition_voltage:0000000000000000 $t
-     /tmp/ccFkZzMB.s:315    .text.pd_transition_voltage:0000000000000000 pd_transition_voltage
-     /tmp/ccFkZzMB.s:330    .text.pd_check_dr_role:0000000000000000 $t
-     /tmp/ccFkZzMB.s:337    .text.pd_check_dr_role:0000000000000000 pd_check_dr_role
-     /tmp/ccFkZzMB.s:352    .text.pd_check_pr_role:0000000000000000 $t
-     /tmp/ccFkZzMB.s:359    .text.pd_check_pr_role:0000000000000000 pd_check_pr_role
-     /tmp/ccFkZzMB.s:374    .text.pd_process_source_cap_callback:0000000000000000 $t
-     /tmp/ccFkZzMB.s:381    .text.pd_process_source_cap_callback:0000000000000000 pd_process_source_cap_callback
-     /tmp/ccFkZzMB.s:411    .rodata.pd_snk_pdo_cnt:0000000000000000 pd_snk_pdo_cnt
-     /tmp/ccFkZzMB.s:403    .rodata.pd_snk_pdo:0000000000000000 pd_snk_pdo
-     /tmp/ccFkZzMB.s:423    .rodata.pd_src_pdo_cnt:0000000000000000 pd_src_pdo_cnt
-     /tmp/ccFkZzMB.s:417    .rodata.pd_src_pdo:0000000000000000 pd_src_pdo
-     /tmp/ccFkZzMB.s:400    .rodata.pd_snk_pdo:0000000000000000 $d
-     /tmp/ccFkZzMB.s:408    .rodata.pd_snk_pdo_cnt:0000000000000000 $d
-     /tmp/ccFkZzMB.s:414    .rodata.pd_src_pdo:0000000000000000 $d
-     /tmp/ccFkZzMB.s:420    .rodata.pd_src_pdo_cnt:0000000000000000 $d
+     /tmp/ccTIkfhw.s:16     .text.pd_task_set_event:0000000000000000 $t
+     /tmp/ccTIkfhw.s:23     .text.pd_task_set_event:0000000000000000 pd_task_set_event
+     /tmp/ccTIkfhw.s:41     .text.pd_set_input_current_limit:0000000000000000 $t
+     /tmp/ccTIkfhw.s:48     .text.pd_set_input_current_limit:0000000000000000 pd_set_input_current_limit
+     /tmp/ccTIkfhw.s:63     .text.pd_is_valid_input_voltage:0000000000000000 $t
+     /tmp/ccTIkfhw.s:70     .text.pd_is_valid_input_voltage:0000000000000000 pd_is_valid_input_voltage
+     /tmp/ccTIkfhw.s:87     .text.pd_snk_is_vbus_provided:0000000000000000 $t
+     /tmp/ccTIkfhw.s:94     .text.pd_snk_is_vbus_provided:0000000000000000 pd_snk_is_vbus_provided
+     /tmp/ccTIkfhw.s:111    .text.get_time:0000000000000000 $t
+     /tmp/ccTIkfhw.s:118    .text.get_time:0000000000000000 get_time
+     /tmp/ccTIkfhw.s:146    .text.pd_power_supply_reset:0000000000000000 $t
+     /tmp/ccTIkfhw.s:153    .text.pd_power_supply_reset:0000000000000000 pd_power_supply_reset
+     /tmp/ccTIkfhw.s:168    .text.pd_custom_vdm:0000000000000000 $t
+     /tmp/ccTIkfhw.s:175    .text.pd_custom_vdm:0000000000000000 pd_custom_vdm
+     /tmp/ccTIkfhw.s:192    .text.pd_execute_data_swap:0000000000000000 $t
+     /tmp/ccTIkfhw.s:199    .text.pd_execute_data_swap:0000000000000000 pd_execute_data_swap
+     /tmp/ccTIkfhw.s:214    .text.pd_check_data_swap:0000000000000000 $t
+     /tmp/ccTIkfhw.s:221    .text.pd_check_data_swap:0000000000000000 pd_check_data_swap
+     /tmp/ccTIkfhw.s:238    .text.pd_check_power_swap:0000000000000000 $t
+     /tmp/ccTIkfhw.s:245    .text.pd_check_power_swap:0000000000000000 pd_check_power_swap
+     /tmp/ccTIkfhw.s:262    .text.pd_board_checks:0000000000000000 $t
+     /tmp/ccTIkfhw.s:269    .text.pd_board_checks:0000000000000000 pd_board_checks
+     /tmp/ccTIkfhw.s:284    .text.pd_set_power_supply_ready:0000000000000000 $t
+     /tmp/ccTIkfhw.s:291    .text.pd_set_power_supply_ready:0000000000000000 pd_set_power_supply_ready
+     /tmp/ccTIkfhw.s:308    .text.pd_transition_voltage:0000000000000000 $t
+     /tmp/ccTIkfhw.s:315    .text.pd_transition_voltage:0000000000000000 pd_transition_voltage
+     /tmp/ccTIkfhw.s:330    .text.pd_check_dr_role:0000000000000000 $t
+     /tmp/ccTIkfhw.s:337    .text.pd_check_dr_role:0000000000000000 pd_check_dr_role
+     /tmp/ccTIkfhw.s:352    .text.pd_check_pr_role:0000000000000000 $t
+     /tmp/ccTIkfhw.s:359    .text.pd_check_pr_role:0000000000000000 pd_check_pr_role
+     /tmp/ccTIkfhw.s:374    .text.pd_process_source_cap_callback:0000000000000000 $t
+     /tmp/ccTIkfhw.s:381    .text.pd_process_source_cap_callback:0000000000000000 pd_process_source_cap_callback
+     /tmp/ccTIkfhw.s:411    .rodata.pd_snk_pdo_cnt:0000000000000000 pd_snk_pdo_cnt
+     /tmp/ccTIkfhw.s:403    .rodata.pd_snk_pdo:0000000000000000 pd_snk_pdo
+     /tmp/ccTIkfhw.s:423    .rodata.pd_src_pdo_cnt:0000000000000000 pd_src_pdo_cnt
+     /tmp/ccTIkfhw.s:417    .rodata.pd_src_pdo:0000000000000000 pd_src_pdo
+     /tmp/ccTIkfhw.s:400    .rodata.pd_snk_pdo:0000000000000000 $d
+     /tmp/ccTIkfhw.s:408    .rodata.pd_snk_pdo_cnt:0000000000000000 $d
+     /tmp/ccTIkfhw.s:414    .rodata.pd_src_pdo:0000000000000000 $d
+     /tmp/ccTIkfhw.s:420    .rodata.pd_src_pdo_cnt:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 xTaskGetTickCount

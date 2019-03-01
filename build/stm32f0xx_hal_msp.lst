@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccQlMOoQ.s 			page 1
+ARM GAS  /tmp/cc3zdOTF.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
   31:Src/stm32f0xx_hal_msp.c ****   * 5. Redistribution and use of this software other than as permitted under 
   32:Src/stm32f0xx_hal_msp.c ****   *    this license is void and will automatically terminate your rights under 
   33:Src/stm32f0xx_hal_msp.c ****   *    this license. 
-ARM GAS  /tmp/ccQlMOoQ.s 			page 2
+ARM GAS  /tmp/cc3zdOTF.s 			page 2
 
 
   34:Src/stm32f0xx_hal_msp.c ****   *
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
   88:Src/stm32f0xx_hal_msp.c **** /* USER CODE BEGIN PFP */
   89:Src/stm32f0xx_hal_msp.c **** 
   90:Src/stm32f0xx_hal_msp.c **** /* USER CODE END PFP */
-ARM GAS  /tmp/ccQlMOoQ.s 			page 3
+ARM GAS  /tmp/cc3zdOTF.s 			page 3
 
 
   91:Src/stm32f0xx_hal_msp.c **** 
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
   60              	.LBE3:
  111:Src/stm32f0xx_hal_msp.c **** 
  112:Src/stm32f0xx_hal_msp.c ****   /* System interrupt init*/
-ARM GAS  /tmp/ccQlMOoQ.s 			page 4
+ARM GAS  /tmp/cc3zdOTF.s 			page 4
 
 
  113:Src/stm32f0xx_hal_msp.c ****   /* PendSV_IRQn interrupt configuration */
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  101              		.cfi_def_cfa_offset 40
  102 0004 0400     		movs	r4, r0
  129:Src/stm32f0xx_hal_msp.c **** 
-ARM GAS  /tmp/ccQlMOoQ.s 			page 5
+ARM GAS  /tmp/cc3zdOTF.s 			page 5
 
 
  130:Src/stm32f0xx_hal_msp.c ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  171:Src/stm32f0xx_hal_msp.c **** }
  116              		.loc 1 171 0
  117 0018 08B0     		add	sp, sp, #32
-ARM GAS  /tmp/ccQlMOoQ.s 			page 6
+ARM GAS  /tmp/cc3zdOTF.s 			page 6
 
 
  118              		@ sp needed
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  165              		.loc 1 152 0
  166 005c 0023     		movs	r3, #0
  167 005e 4360     		str	r3, [r0, #4]
-ARM GAS  /tmp/ccQlMOoQ.s 			page 7
+ARM GAS  /tmp/cc3zdOTF.s 			page 7
 
 
  153:Src/stm32f0xx_hal_msp.c ****     hdma_adc.Init.MemInc = DMA_MINC_ENABLE;
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  214              		.syntax unified
  215              		.code	16
  216              		.thumb_func
-ARM GAS  /tmp/ccQlMOoQ.s 			page 8
+ARM GAS  /tmp/cc3zdOTF.s 			page 8
 
 
  217              		.fpu softvfp
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  239              		.loc 1 204 0
  240              		@ sp needed
  241              	.LVL11:
-ARM GAS  /tmp/ccQlMOoQ.s 			page 9
+ARM GAS  /tmp/cc3zdOTF.s 			page 9
 
 
  242 000c 10BD     		pop	{r4, pc}
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  286              		@ frame_needed = 0, uses_anonymous_args = 0
  287              	.LVL16:
  288 0000 30B5     		push	{r4, r5, lr}
-ARM GAS  /tmp/ccQlMOoQ.s 			page 10
+ARM GAS  /tmp/cc3zdOTF.s 			page 10
 
 
  289              	.LCFI5:
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  247:Src/stm32f0xx_hal_msp.c ****     if (HAL_DMA_Init(&hdma_i2c1_rx) != HAL_OK)
  248:Src/stm32f0xx_hal_msp.c ****     {
  249:Src/stm32f0xx_hal_msp.c ****       Error_Handler();
-ARM GAS  /tmp/ccQlMOoQ.s 			page 11
+ARM GAS  /tmp/cc3zdOTF.s 			page 11
 
 
  250:Src/stm32f0xx_hal_msp.c ****     }
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  299:Src/stm32f0xx_hal_msp.c ****     hdma_i2c2_rx.Init.PeriphInc = DMA_PINC_DISABLE;
  300:Src/stm32f0xx_hal_msp.c ****     hdma_i2c2_rx.Init.MemInc = DMA_MINC_ENABLE;
  301:Src/stm32f0xx_hal_msp.c ****     hdma_i2c2_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-ARM GAS  /tmp/ccQlMOoQ.s 			page 12
+ARM GAS  /tmp/cc3zdOTF.s 			page 12
 
 
  302:Src/stm32f0xx_hal_msp.c ****     hdma_i2c2_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  335              		.loc 1 227 0
  336 0036 C023     		movs	r3, #192
  337 0038 0593     		str	r3, [sp, #20]
-ARM GAS  /tmp/ccQlMOoQ.s 			page 13
+ARM GAS  /tmp/cc3zdOTF.s 			page 13
 
 
  228:Src/stm32f0xx_hal_msp.c ****     GPIO_InitStruct.Pull = GPIO_PULLUP;
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  380              		.loc 1 244 0
  381 0074 4361     		str	r3, [r0, #20]
  245:Src/stm32f0xx_hal_msp.c ****     hdma_i2c1_rx.Init.Priority = DMA_PRIORITY_LOW;
-ARM GAS  /tmp/ccQlMOoQ.s 			page 14
+ARM GAS  /tmp/cc3zdOTF.s 			page 14
 
 
  382              		.loc 1 245 0
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  423              		.loc 1 268 0
  424 00aa 344B     		ldr	r3, .L29+24
  425 00ac A363     		str	r3, [r4, #56]
-ARM GAS  /tmp/ccQlMOoQ.s 			page 15
+ARM GAS  /tmp/cc3zdOTF.s 			page 15
 
 
  426 00ae 5C62     		str	r4, [r3, #36]
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  471              	.LVL26:
  472              	.LBB9:
  293:Src/stm32f0xx_hal_msp.c ****   
-ARM GAS  /tmp/ccQlMOoQ.s 			page 16
+ARM GAS  /tmp/cc3zdOTF.s 			page 16
 
 
  473              		.loc 1 293 0
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  516              		.loc 1 313 0
  517 012a 1848     		ldr	r0, .L29+40
  518 012c 184B     		ldr	r3, .L29+44
-ARM GAS  /tmp/ccQlMOoQ.s 			page 17
+ARM GAS  /tmp/cc3zdOTF.s 			page 17
 
 
  519 012e 0360     		str	r3, [r0]
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  562              		.align	2
  563              	.L29:
  564 0164 00540040 		.word	1073763328
-ARM GAS  /tmp/ccQlMOoQ.s 			page 18
+ARM GAS  /tmp/cc3zdOTF.s 			page 18
 
 
  565 0168 00580040 		.word	1073764352
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  350:Src/stm32f0xx_hal_msp.c ****     /* Peripheral clock disable */
  351:Src/stm32f0xx_hal_msp.c ****     __HAL_RCC_I2C1_CLK_DISABLE();
  352:Src/stm32f0xx_hal_msp.c ****   
-ARM GAS  /tmp/ccQlMOoQ.s 			page 19
+ARM GAS  /tmp/cc3zdOTF.s 			page 19
 
 
  353:Src/stm32f0xx_hal_msp.c ****     /**I2C1 GPIO Configuration    
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  622 001c D361     		str	r3, [r2, #28]
  357:Src/stm32f0xx_hal_msp.c **** 
  623              		.loc 1 357 0
-ARM GAS  /tmp/ccQlMOoQ.s 			page 20
+ARM GAS  /tmp/cc3zdOTF.s 			page 20
 
 
  624 001e C021     		movs	r1, #192
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  672              		.cfi_endproc
  673              	.LFE41:
  675              		.text
-ARM GAS  /tmp/ccQlMOoQ.s 			page 21
+ARM GAS  /tmp/cc3zdOTF.s 			page 21
 
 
  676              	.Letext0:
@@ -1218,26 +1218,26 @@ ARM GAS  /tmp/ccQlMOoQ.s 			page 1
  690              		.file 15 "Inc/main.h"
  691              		.file 16 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_cortex.h"
  692              		.file 17 "<built-in>"
-ARM GAS  /tmp/ccQlMOoQ.s 			page 22
+ARM GAS  /tmp/cc3zdOTF.s 			page 22
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 stm32f0xx_hal_msp.c
-     /tmp/ccQlMOoQ.s:16     .text.HAL_MspInit:0000000000000000 $t
-     /tmp/ccQlMOoQ.s:23     .text.HAL_MspInit:0000000000000000 HAL_MspInit
-     /tmp/ccQlMOoQ.s:75     .text.HAL_MspInit:0000000000000038 $d
-     /tmp/ccQlMOoQ.s:80     .text.HAL_ADC_MspInit:0000000000000000 $t
-     /tmp/ccQlMOoQ.s:87     .text.HAL_ADC_MspInit:0000000000000000 HAL_ADC_MspInit
-     /tmp/ccQlMOoQ.s:204    .text.HAL_ADC_MspInit:000000000000008c $d
-     /tmp/ccQlMOoQ.s:212    .text.HAL_ADC_MspDeInit:0000000000000000 $t
-     /tmp/ccQlMOoQ.s:219    .text.HAL_ADC_MspDeInit:0000000000000000 HAL_ADC_MspDeInit
-     /tmp/ccQlMOoQ.s:267    .text.HAL_ADC_MspDeInit:000000000000002c $d
-     /tmp/ccQlMOoQ.s:274    .text.HAL_I2C_MspInit:0000000000000000 $t
-     /tmp/ccQlMOoQ.s:281    .text.HAL_I2C_MspInit:0000000000000000 HAL_I2C_MspInit
-     /tmp/ccQlMOoQ.s:564    .text.HAL_I2C_MspInit:0000000000000164 $d
-     /tmp/ccQlMOoQ.s:580    .text.HAL_I2C_MspDeInit:0000000000000000 $t
-     /tmp/ccQlMOoQ.s:587    .text.HAL_I2C_MspDeInit:0000000000000000 HAL_I2C_MspDeInit
-     /tmp/ccQlMOoQ.s:666    .text.HAL_I2C_MspDeInit:0000000000000058 $d
+     /tmp/cc3zdOTF.s:16     .text.HAL_MspInit:0000000000000000 $t
+     /tmp/cc3zdOTF.s:23     .text.HAL_MspInit:0000000000000000 HAL_MspInit
+     /tmp/cc3zdOTF.s:75     .text.HAL_MspInit:0000000000000038 $d
+     /tmp/cc3zdOTF.s:80     .text.HAL_ADC_MspInit:0000000000000000 $t
+     /tmp/cc3zdOTF.s:87     .text.HAL_ADC_MspInit:0000000000000000 HAL_ADC_MspInit
+     /tmp/cc3zdOTF.s:204    .text.HAL_ADC_MspInit:000000000000008c $d
+     /tmp/cc3zdOTF.s:212    .text.HAL_ADC_MspDeInit:0000000000000000 $t
+     /tmp/cc3zdOTF.s:219    .text.HAL_ADC_MspDeInit:0000000000000000 HAL_ADC_MspDeInit
+     /tmp/cc3zdOTF.s:267    .text.HAL_ADC_MspDeInit:000000000000002c $d
+     /tmp/cc3zdOTF.s:274    .text.HAL_I2C_MspInit:0000000000000000 $t
+     /tmp/cc3zdOTF.s:281    .text.HAL_I2C_MspInit:0000000000000000 HAL_I2C_MspInit
+     /tmp/cc3zdOTF.s:564    .text.HAL_I2C_MspInit:0000000000000164 $d
+     /tmp/cc3zdOTF.s:580    .text.HAL_I2C_MspDeInit:0000000000000000 $t
+     /tmp/cc3zdOTF.s:587    .text.HAL_I2C_MspDeInit:0000000000000000 HAL_I2C_MspDeInit
+     /tmp/cc3zdOTF.s:666    .text.HAL_I2C_MspDeInit:0000000000000058 $d
 
 UNDEFINED SYMBOLS
 HAL_NVIC_SetPriority

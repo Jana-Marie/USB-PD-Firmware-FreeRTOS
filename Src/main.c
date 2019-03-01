@@ -2,10 +2,12 @@
 #include "stddef.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
+#include "usb_pd_driver.h"
 #include "init.h"
 #include "usbd_cdc_if.h"
 #include "tcpm_driver.h"
-#include "usb_pd_driver.h"
+#include "usb_pd.h"
+#include "usb_pd_tcpm.h"
 
 extern ADC_HandleTypeDef hadc;
 extern DMA_HandleTypeDef hdma_adc;
@@ -81,8 +83,14 @@ void StartDefaultTask(void const * argument)
     i++;
     osDelay(1);
     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
-    sprintf(str,"Otter! %d\n\r",i);
+    sprintf(str,"Otter! %d %d\n\r",pd_is_connected(0),pd_is_port_enabled(0));
     CDC_Transmit_FS((unsigned char*)str,sizeof(str));
+    
+    //if (HAL_GPIO_ReadPin(GPIOA,INT_N_Pin) == 0) {
+    //  tcpc_alert(0);
+    //}
+
+    pd_run_state_machine(0);
   }
 }
 
