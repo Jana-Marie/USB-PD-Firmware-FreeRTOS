@@ -29,10 +29,10 @@
 //#include "version.h"
 
 #ifdef CONFIG_COMMON_RUNTIME
-#define CPRINTF(format, args...) cprintf(CC_USBPD, format, ## args)
-#define CPRINTS(format, args...) cprints(CC_USBPD, format, ## args)
+#define CPRINTF(format, args...)
+#define CPRINTS(format, args...)
 
-BUILD_ASSERT(CONFIG_USB_PD_PORT_COUNT <= EC_USB_PD_MAX_PORTS);
+//BUILD_ASSERT(CONFIG_USB_PD_PORT_COUNT <= EC_USB_PD_MAX_PORTS);
 
 /*
  * Debug log level - higher number == more log
@@ -256,7 +256,7 @@ static const char * const pd_state_names[] = {
 	"DRP_AUTO_TOGGLE",
 #endif
 };
-BUILD_ASSERT(ARRAY_SIZE(pd_state_names) == PD_STATE_COUNT);
+//BUILD_ASSERT(ARRAY_SIZE(pd_state_names) == PD_STATE_COUNT);
 #endif
 
 /*
@@ -3470,6 +3470,25 @@ static void dual_role_force_sink(void)
 	CPRINTS("chipset -> S5");
 }
 DECLARE_HOOK(HOOK_CHIPSET_SHUTDOWN, dual_role_force_sink, HOOK_PRIO_DEFAULT);
+
+void pd_request_source_voltage(int port, int mv)
+{
+	pd_set_max_voltage(mv);
+
+	if (pd[port].task_state == PD_STATE_SNK_READY ||
+	    pd[port].task_state == PD_STATE_SNK_TRANSITION) {
+		/* Set flag to send new power request in pd_task */
+		pd[port].new_power_request = 1;
+	} else {
+		pd[port].power_role = PD_ROLE_SINK;
+		tcpm_set_cc(port, TYPEC_CC_RD);
+		set_state(port, PD_STATE_SNK_DISCONNECTED);
+	}
+
+	// getting rid of task stuff
+	//task_wake(PD_PORT_TO_TASK_ID(port));
+}
+
 
 #endif /* CONFIG_USB_PD_DUAL_ROLE */
 

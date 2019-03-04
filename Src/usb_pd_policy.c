@@ -23,9 +23,11 @@
 #include "usb_pd.h"
 //#include "version.h"
 
+//#define CPRINTS(format, args...) //cprints(CC_USBPD, format, ## args)
+//#define CPRINTF(format, args...) //cprintf(CC_USBPD, format, ## args)
 #ifdef CONFIG_COMMON_RUNTIME
-#define CPRINTS(format, args...) cprints(CC_USBPD, format, ## args)
-#define CPRINTF(format, args...) cprintf(CC_USBPD, format, ## args)
+#define CPRINTS(format, args...)
+#define CPRINTF(format, args...)
 #else
 #define CPRINTS(format, args...)
 #define CPRINTF(format, args...)

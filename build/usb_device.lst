@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccBMpVpa.s 			page 1
+ARM GAS  /tmp/ccHSkaE2.s 			page 1
 
 
    1              		.cpu cortex-m0
@@ -18,13 +18,14 @@ ARM GAS  /tmp/ccBMpVpa.s 			page 1
   15              		.section	.text.MX_USB_DEVICE_Init,"ax",%progbits
   16              		.align	1
   17              		.global	MX_USB_DEVICE_Init
-  18              		.syntax unified
-  19              		.code	16
-  20              		.thumb_func
-  21              		.fpu softvfp
-  23              	MX_USB_DEVICE_Init:
-  24              	.LFB37:
-  25              		.file 1 "Src/usb_device.c"
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	MX_USB_DEVICE_Init:
+  25              	.LFB37:
+  26              		.file 1 "Src/usb_device.c"
    1:Src/usb_device.c **** /**
    2:Src/usb_device.c ****   ******************************************************************************
    3:Src/usb_device.c ****   * @file           : usb_device.c
@@ -57,10 +58,10 @@ ARM GAS  /tmp/ccBMpVpa.s 			page 1
   30:Src/usb_device.c ****   * 5. Redistribution and use of this software other than as permitted under 
   31:Src/usb_device.c ****   *    this license is void and will automatically terminate your rights under 
   32:Src/usb_device.c ****   *    this license. 
+ARM GAS  /tmp/ccHSkaE2.s 			page 2
+
+
   33:Src/usb_device.c ****   *
-ARM GAS  /tmp/ccBMpVpa.s 			page 2
-
-
   34:Src/usb_device.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
   35:Src/usb_device.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
   36:Src/usb_device.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
@@ -117,100 +118,100 @@ ARM GAS  /tmp/ccBMpVpa.s 			page 1
   87:Src/usb_device.c **** /* USER CODE END 1 */
   88:Src/usb_device.c **** 
   89:Src/usb_device.c **** /**
+ARM GAS  /tmp/ccHSkaE2.s 			page 3
+
+
   90:Src/usb_device.c ****   * Init USB device Library, add supported class and start the library
-ARM GAS  /tmp/ccBMpVpa.s 			page 3
-
-
   91:Src/usb_device.c ****   * @retval None
   92:Src/usb_device.c ****   */
   93:Src/usb_device.c **** void MX_USB_DEVICE_Init(void)
   94:Src/usb_device.c **** {
-  26              		.loc 1 94 0
-  27              		.cfi_startproc
-  28              		@ args = 0, pretend = 0, frame = 0
-  29              		@ frame_needed = 0, uses_anonymous_args = 0
-  30 0000 10B5     		push	{r4, lr}
-  31              	.LCFI0:
-  32              		.cfi_def_cfa_offset 8
-  33              		.cfi_offset 4, -8
-  34              		.cfi_offset 14, -4
+  27              		.loc 1 94 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 10B5     		push	{r4, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
   95:Src/usb_device.c ****   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
   96:Src/usb_device.c ****   
   97:Src/usb_device.c ****   /* USER CODE END USB_DEVICE_Init_PreTreatment */
   98:Src/usb_device.c ****   
   99:Src/usb_device.c ****   /* Init Device Library, add supported class and start the library. */
  100:Src/usb_device.c ****   USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
-  35              		.loc 1 100 0
-  36 0002 094C     		ldr	r4, .L2
-  37 0004 0022     		movs	r2, #0
-  38 0006 0949     		ldr	r1, .L2+4
-  39 0008 2000     		movs	r0, r4
-  40 000a FFF7FEFF 		bl	USBD_Init
-  41              	.LVL0:
+  36              		.loc 1 100 3 view .LVU1
+  37 0002 094C     		ldr	r4, .L2
+  38 0004 0022     		movs	r2, #0
+  39 0006 0949     		ldr	r1, .L2+4
+  40 0008 2000     		movs	r0, r4
+  41 000a FFF7FEFF 		bl	USBD_Init
+  42              	.LVL0:
  101:Src/usb_device.c **** 
  102:Src/usb_device.c ****   USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC);
-  42              		.loc 1 102 0
-  43 000e 0849     		ldr	r1, .L2+8
-  44 0010 2000     		movs	r0, r4
-  45 0012 FFF7FEFF 		bl	USBD_RegisterClass
-  46              	.LVL1:
+  43              		.loc 1 102 3 view .LVU2
+  44 000e 0849     		ldr	r1, .L2+8
+  45 0010 2000     		movs	r0, r4
+  46 0012 FFF7FEFF 		bl	USBD_RegisterClass
+  47              	.LVL1:
  103:Src/usb_device.c **** 
  104:Src/usb_device.c ****   USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS);
-  47              		.loc 1 104 0
-  48 0016 0749     		ldr	r1, .L2+12
-  49 0018 2000     		movs	r0, r4
-  50 001a FFF7FEFF 		bl	USBD_CDC_RegisterInterface
-  51              	.LVL2:
+  48              		.loc 1 104 3 view .LVU3
+  49 0016 0749     		ldr	r1, .L2+12
+  50 0018 2000     		movs	r0, r4
+  51 001a FFF7FEFF 		bl	USBD_CDC_RegisterInterface
+  52              	.LVL2:
  105:Src/usb_device.c **** 
  106:Src/usb_device.c ****   USBD_Start(&hUsbDeviceFS);
-  52              		.loc 1 106 0
-  53 001e 2000     		movs	r0, r4
-  54 0020 FFF7FEFF 		bl	USBD_Start
-  55              	.LVL3:
+  53              		.loc 1 106 3 view .LVU4
+  54 001e 2000     		movs	r0, r4
+  55 0020 FFF7FEFF 		bl	USBD_Start
+  56              	.LVL3:
  107:Src/usb_device.c **** 
  108:Src/usb_device.c ****   /* USER CODE BEGIN USB_DEVICE_Init_PostTreatment */
  109:Src/usb_device.c ****   
  110:Src/usb_device.c ****   /* USER CODE END USB_DEVICE_Init_PostTreatment */
  111:Src/usb_device.c **** }
-  56              		.loc 1 111 0
-  57              		@ sp needed
-  58 0024 10BD     		pop	{r4, pc}
-  59              	.L3:
-  60 0026 C046     		.align	2
-  61              	.L2:
-ARM GAS  /tmp/ccBMpVpa.s 			page 4
+  57              		.loc 1 111 1 is_stmt 0 view .LVU5
+  58              		@ sp needed
+  59 0024 10BD     		pop	{r4, pc}
+  60              	.L3:
+  61 0026 C046     		.align	2
+ARM GAS  /tmp/ccHSkaE2.s 			page 4
 
 
-  62 0028 00000000 		.word	hUsbDeviceFS
-  63 002c 00000000 		.word	FS_Desc
-  64 0030 00000000 		.word	USBD_CDC
-  65 0034 00000000 		.word	USBD_Interface_fops_FS
-  66              		.cfi_endproc
-  67              	.LFE37:
-  69              		.comm	hUsbDeviceFS,548,4
-  70              		.text
-  71              	.Letext0:
-  72              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
-  73              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
-  74              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
-  75              		.file 5 "/usr/arm-none-eabi/include/sys/lock.h"
-  76              		.file 6 "/usr/arm-none-eabi/include/sys/_types.h"
-  77              		.file 7 "/usr/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h"
-  78              		.file 8 "/usr/arm-none-eabi/include/sys/reent.h"
-  79              		.file 9 "/usr/arm-none-eabi/include/stdlib.h"
-  80              		.file 10 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
-  81              		.file 11 "Inc/usbd_desc.h"
-  82              		.file 12 "Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h"
-  83              		.file 13 "Inc/usbd_cdc_if.h"
-  84              		.file 14 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h"
-ARM GAS  /tmp/ccBMpVpa.s 			page 5
+  62              	.L2:
+  63 0028 00000000 		.word	hUsbDeviceFS
+  64 002c 00000000 		.word	FS_Desc
+  65 0030 00000000 		.word	USBD_CDC
+  66 0034 00000000 		.word	USBD_Interface_fops_FS
+  67              		.cfi_endproc
+  68              	.LFE37:
+  70              		.comm	hUsbDeviceFS,548,4
+  71              		.text
+  72              	.Letext0:
+  73              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+  74              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+  75              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+  76              		.file 5 "/usr/arm-none-eabi/include/sys/lock.h"
+  77              		.file 6 "/usr/arm-none-eabi/include/sys/_types.h"
+  78              		.file 7 "/usr/lib/gcc/arm-none-eabi/8.2.0/include/stddef.h"
+  79              		.file 8 "/usr/arm-none-eabi/include/sys/reent.h"
+  80              		.file 9 "/usr/arm-none-eabi/include/stdlib.h"
+  81              		.file 10 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
+  82              		.file 11 "Inc/usbd_desc.h"
+  83              		.file 12 "Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h"
+  84              		.file 13 "Inc/usbd_cdc_if.h"
+  85              		.file 14 "Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h"
+ARM GAS  /tmp/ccHSkaE2.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 usb_device.c
-     /tmp/ccBMpVpa.s:16     .text.MX_USB_DEVICE_Init:0000000000000000 $t
-     /tmp/ccBMpVpa.s:23     .text.MX_USB_DEVICE_Init:0000000000000000 MX_USB_DEVICE_Init
-     /tmp/ccBMpVpa.s:62     .text.MX_USB_DEVICE_Init:0000000000000028 $d
+     /tmp/ccHSkaE2.s:16     .text.MX_USB_DEVICE_Init:0000000000000000 $t
+     /tmp/ccHSkaE2.s:24     .text.MX_USB_DEVICE_Init:0000000000000000 MX_USB_DEVICE_Init
+     /tmp/ccHSkaE2.s:63     .text.MX_USB_DEVICE_Init:0000000000000028 $d
                             *COM*:0000000000000224 hUsbDeviceFS
 
 UNDEFINED SYMBOLS

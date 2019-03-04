@@ -1,0 +1,572 @@
+ARM GAS  /tmp/ccRlZVpC.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"tcpm_driver.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.Wirewrite,"ax",%progbits
+  16              		.align	1
+  17              		.global	Wirewrite
+  18              		.arch armv6s-m
+  19              		.syntax unified
+  20              		.code	16
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	Wirewrite:
+  25              	.LVL0:
+  26              	.LFB55:
+  27              		.file 1 "Src/tcpm_driver.c"
+   1:Src/tcpm_driver.c **** /*
+   2:Src/tcpm_driver.c ****  * tcpm_driver.c
+   3:Src/tcpm_driver.c ****  *
+   4:Src/tcpm_driver.c ****  * Created: 11/11/2017 18:42:26
+   5:Src/tcpm_driver.c ****  *  Author: jason
+   6:Src/tcpm_driver.c ****  */ 
+   7:Src/tcpm_driver.c **** 
+   8:Src/tcpm_driver.c **** #include "tcpm_driver.h"
+   9:Src/tcpm_driver.c **** #include "main.h"
+  10:Src/tcpm_driver.c **** 
+  11:Src/tcpm_driver.c **** extern const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT];
+  12:Src/tcpm_driver.c **** extern I2C_HandleTypeDef hi2c1;
+  13:Src/tcpm_driver.c **** 
+  14:Src/tcpm_driver.c **** void Wirewrite(char value[], int size)
+  15:Src/tcpm_driver.c **** {
+  28              		.loc 1 15 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 15 1 is_stmt 0 view .LVU1
+  33 0000 00B5     		push	{lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 4
+  36              		.cfi_offset 14, -4
+  37 0002 83B0     		sub	sp, sp, #12
+  38              	.LCFI1:
+  39              		.cfi_def_cfa_offset 16
+  40 0004 0200     		movs	r2, r0
+  16:Src/tcpm_driver.c ****   HAL_I2C_Master_Transmit(&hi2c1,(fusb302_I2C_SLAVE_ADDR << 1), value, size, 1);
+  41              		.loc 1 16 3 is_stmt 1 view .LVU2
+  42 0006 8BB2     		uxth	r3, r1
+ARM GAS  /tmp/ccRlZVpC.s 			page 2
+
+
+  43 0008 0121     		movs	r1, #1
+  44              	.LVL1:
+  45              		.loc 1 16 3 is_stmt 0 view .LVU3
+  46 000a 0091     		str	r1, [sp]
+  47 000c 4331     		adds	r1, r1, #67
+  48 000e 0248     		ldr	r0, .L2
+  49              	.LVL2:
+  50              		.loc 1 16 3 view .LVU4
+  51 0010 FFF7FEFF 		bl	HAL_I2C_Master_Transmit
+  52              	.LVL3:
+  17:Src/tcpm_driver.c **** }
+  53              		.loc 1 17 1 view .LVU5
+  54 0014 03B0     		add	sp, sp, #12
+  55              		@ sp needed
+  56 0016 00BD     		pop	{pc}
+  57              	.L3:
+  58              		.align	2
+  59              	.L2:
+  60 0018 00000000 		.word	hi2c1
+  61              		.cfi_endproc
+  62              	.LFE55:
+  64              		.section	.text.WirerequestFrom,"ax",%progbits
+  65              		.align	1
+  66              		.global	WirerequestFrom
+  67              		.syntax unified
+  68              		.code	16
+  69              		.thumb_func
+  70              		.fpu softvfp
+  72              	WirerequestFrom:
+  73              	.LVL4:
+  74              	.LFB56:
+  18:Src/tcpm_driver.c **** 
+  19:Src/tcpm_driver.c **** char WirerequestFrom(int size)
+  20:Src/tcpm_driver.c **** {
+  75              		.loc 1 20 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 1, uses_anonymous_args = 0
+  79              		.loc 1 20 1 is_stmt 0 view .LVU7
+  80 0000 80B5     		push	{r7, lr}
+  81              	.LCFI2:
+  82              		.cfi_def_cfa_offset 8
+  83              		.cfi_offset 7, -8
+  84              		.cfi_offset 14, -4
+  85 0002 82B0     		sub	sp, sp, #8
+  86              	.LCFI3:
+  87              		.cfi_def_cfa_offset 16
+  88 0004 02AF     		add	r7, sp, #8
+  89              	.LCFI4:
+  90              		.cfi_def_cfa 7, 8
+  21:Src/tcpm_driver.c ****   char value[size];
+  91              		.loc 1 21 3 is_stmt 1 view .LVU8
+  92              	.LVL5:
+  93              		.loc 1 21 8 is_stmt 0 view .LVU9
+  94 0006 C21D     		adds	r2, r0, #7
+  95 0008 D208     		lsrs	r2, r2, #3
+  96 000a D200     		lsls	r2, r2, #3
+ARM GAS  /tmp/ccRlZVpC.s 			page 3
+
+
+  97 000c 6B46     		mov	r3, sp
+  98 000e 9B1A     		subs	r3, r3, r2
+  99 0010 9D46     		mov	sp, r3
+ 100 0012 02AA     		add	r2, sp, #8
+ 101              	.LVL6:
+  22:Src/tcpm_driver.c ****   HAL_I2C_Master_Receive(&hi2c1,  (fusb302_I2C_SLAVE_ADDR << 1), value, size, 1);
+ 102              		.loc 1 22 3 is_stmt 1 view .LVU10
+ 103 0014 83B2     		uxth	r3, r0
+ 104 0016 0121     		movs	r1, #1
+ 105 0018 0091     		str	r1, [sp]
+ 106 001a 4331     		adds	r1, r1, #67
+ 107 001c 0248     		ldr	r0, .L5
+ 108              	.LVL7:
+ 109              		.loc 1 22 3 is_stmt 0 view .LVU11
+ 110 001e FFF7FEFF 		bl	HAL_I2C_Master_Receive
+ 111              	.LVL8:
+  23:Src/tcpm_driver.c ****   return value;
+ 112              		.loc 1 23 3 is_stmt 1 view .LVU12
+  24:Src/tcpm_driver.c **** }
+ 113              		.loc 1 24 1 is_stmt 0 view .LVU13
+ 114 0022 0020     		movs	r0, #0
+ 115 0024 BD46     		mov	sp, r7
+ 116              	.LVL9:
+ 117              		.loc 1 24 1 view .LVU14
+ 118              		@ sp needed
+ 119 0026 80BD     		pop	{r7, pc}
+ 120              	.L6:
+ 121              		.align	2
+ 122              	.L5:
+ 123 0028 00000000 		.word	hi2c1
+ 124              		.cfi_endproc
+ 125              	.LFE56:
+ 127              		.section	.text.tcpc_write,"ax",%progbits
+ 128              		.align	1
+ 129              		.global	tcpc_write
+ 130              		.syntax unified
+ 131              		.code	16
+ 132              		.thumb_func
+ 133              		.fpu softvfp
+ 135              	tcpc_write:
+ 136              	.LVL10:
+ 137              	.LFB57:
+  25:Src/tcpm_driver.c **** 
+  26:Src/tcpm_driver.c **** 
+  27:Src/tcpm_driver.c **** /* I2C wrapper functions - get I2C port / slave addr from config struct. */
+  28:Src/tcpm_driver.c **** int tcpc_write(int port, int reg, int val)
+  29:Src/tcpm_driver.c **** {
+ 138              		.loc 1 29 1 is_stmt 1 view -0
+ 139              		.cfi_startproc
+ 140              		@ args = 0, pretend = 0, frame = 8
+ 141              		@ frame_needed = 0, uses_anonymous_args = 0
+ 142              		.loc 1 29 1 is_stmt 0 view .LVU16
+ 143 0000 00B5     		push	{lr}
+ 144              	.LCFI5:
+ 145              		.cfi_def_cfa_offset 4
+ 146              		.cfi_offset 14, -4
+ 147 0002 83B0     		sub	sp, sp, #12
+ARM GAS  /tmp/ccRlZVpC.s 			page 4
+
+
+ 148              	.LCFI6:
+ 149              		.cfi_def_cfa_offset 16
+  30:Src/tcpm_driver.c ****   char data[2] = {reg & 0xFF,val & 0xFF};
+ 150              		.loc 1 30 3 is_stmt 1 view .LVU17
+ 151              		.loc 1 30 8 is_stmt 0 view .LVU18
+ 152 0004 01A8     		add	r0, sp, #4
+ 153              	.LVL11:
+ 154              		.loc 1 30 8 view .LVU19
+ 155 0006 0170     		strb	r1, [r0]
+ 156 0008 4270     		strb	r2, [r0, #1]
+  31:Src/tcpm_driver.c ****   Wirewrite(data,2); 
+ 157              		.loc 1 31 3 is_stmt 1 view .LVU20
+ 158 000a 0221     		movs	r1, #2
+ 159              	.LVL12:
+ 160              		.loc 1 31 3 is_stmt 0 view .LVU21
+ 161 000c FFF7FEFF 		bl	Wirewrite
+ 162              	.LVL13:
+  32:Src/tcpm_driver.c **** 
+  33:Src/tcpm_driver.c ****   return 0;
+ 163              		.loc 1 33 3 is_stmt 1 view .LVU22
+  34:Src/tcpm_driver.c **** }
+ 164              		.loc 1 34 1 is_stmt 0 view .LVU23
+ 165 0010 0020     		movs	r0, #0
+ 166 0012 03B0     		add	sp, sp, #12
+ 167              		@ sp needed
+ 168 0014 00BD     		pop	{pc}
+ 169              		.cfi_endproc
+ 170              	.LFE57:
+ 172              		.section	.text.tcpc_write16,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	tcpc_write16
+ 175              		.syntax unified
+ 176              		.code	16
+ 177              		.thumb_func
+ 178              		.fpu softvfp
+ 180              	tcpc_write16:
+ 181              	.LVL14:
+ 182              	.LFB58:
+  35:Src/tcpm_driver.c **** 
+  36:Src/tcpm_driver.c **** int tcpc_write16(int port, int reg, int val)
+  37:Src/tcpm_driver.c **** {
+ 183              		.loc 1 37 1 is_stmt 1 view -0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 8
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187              		.loc 1 37 1 is_stmt 0 view .LVU25
+ 188 0000 00B5     		push	{lr}
+ 189              	.LCFI7:
+ 190              		.cfi_def_cfa_offset 4
+ 191              		.cfi_offset 14, -4
+ 192 0002 83B0     		sub	sp, sp, #12
+ 193              	.LCFI8:
+ 194              		.cfi_def_cfa_offset 16
+  38:Src/tcpm_driver.c ****   char data[3] = {reg & 0xFF,val & 0xFF,(val >> 8) & 0xFF};
+ 195              		.loc 1 38 3 is_stmt 1 view .LVU26
+ 196              		.loc 1 38 8 is_stmt 0 view .LVU27
+ 197 0004 01A8     		add	r0, sp, #4
+ARM GAS  /tmp/ccRlZVpC.s 			page 5
+
+
+ 198              	.LVL15:
+ 199              		.loc 1 38 8 view .LVU28
+ 200 0006 0170     		strb	r1, [r0]
+ 201 0008 4270     		strb	r2, [r0, #1]
+ 202              		.loc 1 38 46 view .LVU29
+ 203 000a 1212     		asrs	r2, r2, #8
+ 204              	.LVL16:
+ 205              		.loc 1 38 8 view .LVU30
+ 206 000c 8270     		strb	r2, [r0, #2]
+  39:Src/tcpm_driver.c ****   Wirewrite(data,3);
+ 207              		.loc 1 39 3 is_stmt 1 view .LVU31
+ 208 000e 0321     		movs	r1, #3
+ 209              	.LVL17:
+ 210              		.loc 1 39 3 is_stmt 0 view .LVU32
+ 211 0010 FFF7FEFF 		bl	Wirewrite
+ 212              	.LVL18:
+  40:Src/tcpm_driver.c **** 
+  41:Src/tcpm_driver.c ****   return 0;
+ 213              		.loc 1 41 3 is_stmt 1 view .LVU33
+  42:Src/tcpm_driver.c **** }
+ 214              		.loc 1 42 1 is_stmt 0 view .LVU34
+ 215 0014 0020     		movs	r0, #0
+ 216 0016 03B0     		add	sp, sp, #12
+ 217              		@ sp needed
+ 218 0018 00BD     		pop	{pc}
+ 219              		.cfi_endproc
+ 220              	.LFE58:
+ 222              		.section	.text.tcpc_read,"ax",%progbits
+ 223              		.align	1
+ 224              		.global	tcpc_read
+ 225              		.syntax unified
+ 226              		.code	16
+ 227              		.thumb_func
+ 228              		.fpu softvfp
+ 230              	tcpc_read:
+ 231              	.LVL19:
+ 232              	.LFB59:
+  43:Src/tcpm_driver.c **** 
+  44:Src/tcpm_driver.c **** int tcpc_read(int port, int reg, int *val)
+  45:Src/tcpm_driver.c **** {
+ 233              		.loc 1 45 1 is_stmt 1 view -0
+ 234              		.cfi_startproc
+ 235              		@ args = 0, pretend = 0, frame = 8
+ 236              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237              		.loc 1 45 1 is_stmt 0 view .LVU36
+ 238 0000 10B5     		push	{r4, lr}
+ 239              	.LCFI9:
+ 240              		.cfi_def_cfa_offset 8
+ 241              		.cfi_offset 4, -8
+ 242              		.cfi_offset 14, -4
+ 243 0002 82B0     		sub	sp, sp, #8
+ 244              	.LCFI10:
+ 245              		.cfi_def_cfa_offset 16
+ 246 0004 1400     		movs	r4, r2
+  46:Src/tcpm_driver.c ****   char data[1] = {reg & 0xFF};
+ 247              		.loc 1 46 3 is_stmt 1 view .LVU37
+ 248              		.loc 1 46 8 is_stmt 0 view .LVU38
+ARM GAS  /tmp/ccRlZVpC.s 			page 6
+
+
+ 249 0006 01A8     		add	r0, sp, #4
+ 250              	.LVL20:
+ 251              		.loc 1 46 8 view .LVU39
+ 252 0008 0170     		strb	r1, [r0]
+  47:Src/tcpm_driver.c ****   Wirewrite(data,1);
+ 253              		.loc 1 47 3 is_stmt 1 view .LVU40
+ 254 000a 0121     		movs	r1, #1
+ 255              	.LVL21:
+ 256              		.loc 1 47 3 is_stmt 0 view .LVU41
+ 257 000c FFF7FEFF 		bl	Wirewrite
+ 258              	.LVL22:
+  48:Src/tcpm_driver.c ****   *val = WirerequestFrom(1);
+ 259              		.loc 1 48 3 is_stmt 1 view .LVU42
+ 260              		.loc 1 48 10 is_stmt 0 view .LVU43
+ 261 0010 0120     		movs	r0, #1
+ 262 0012 FFF7FEFF 		bl	WirerequestFrom
+ 263              	.LVL23:
+ 264              		.loc 1 48 8 view .LVU44
+ 265 0016 2060     		str	r0, [r4]
+  49:Src/tcpm_driver.c **** 
+  50:Src/tcpm_driver.c ****   return 0;
+ 266              		.loc 1 50 3 is_stmt 1 view .LVU45
+  51:Src/tcpm_driver.c **** }
+ 267              		.loc 1 51 1 is_stmt 0 view .LVU46
+ 268 0018 0020     		movs	r0, #0
+ 269 001a 02B0     		add	sp, sp, #8
+ 270              		@ sp needed
+ 271              	.LVL24:
+ 272              		.loc 1 51 1 view .LVU47
+ 273 001c 10BD     		pop	{r4, pc}
+ 274              		.cfi_endproc
+ 275              	.LFE59:
+ 277              		.section	.text.tcpc_read16,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	tcpc_read16
+ 280              		.syntax unified
+ 281              		.code	16
+ 282              		.thumb_func
+ 283              		.fpu softvfp
+ 285              	tcpc_read16:
+ 286              	.LVL25:
+ 287              	.LFB60:
+  52:Src/tcpm_driver.c **** 
+  53:Src/tcpm_driver.c **** int tcpc_read16(int port, int reg, int *val)
+  54:Src/tcpm_driver.c **** {
+ 288              		.loc 1 54 1 is_stmt 1 view -0
+ 289              		.cfi_startproc
+ 290              		@ args = 0, pretend = 0, frame = 8
+ 291              		@ frame_needed = 0, uses_anonymous_args = 0
+ 292              		.loc 1 54 1 is_stmt 0 view .LVU49
+ 293 0000 10B5     		push	{r4, lr}
+ 294              	.LCFI11:
+ 295              		.cfi_def_cfa_offset 8
+ 296              		.cfi_offset 4, -8
+ 297              		.cfi_offset 14, -4
+ 298 0002 82B0     		sub	sp, sp, #8
+ 299              	.LCFI12:
+ARM GAS  /tmp/ccRlZVpC.s 			page 7
+
+
+ 300              		.cfi_def_cfa_offset 16
+ 301 0004 1400     		movs	r4, r2
+  55:Src/tcpm_driver.c **** 
+  56:Src/tcpm_driver.c ****   char data[1] = {reg & 0xFF};
+ 302              		.loc 1 56 3 is_stmt 1 view .LVU50
+ 303              		.loc 1 56 8 is_stmt 0 view .LVU51
+ 304 0006 01A8     		add	r0, sp, #4
+ 305              	.LVL26:
+ 306              		.loc 1 56 8 view .LVU52
+ 307 0008 0170     		strb	r1, [r0]
+  57:Src/tcpm_driver.c ****   Wirewrite(data,1);
+ 308              		.loc 1 57 3 is_stmt 1 view .LVU53
+ 309 000a 0121     		movs	r1, #1
+ 310              	.LVL27:
+ 311              		.loc 1 57 3 is_stmt 0 view .LVU54
+ 312 000c FFF7FEFF 		bl	Wirewrite
+ 313              	.LVL28:
+  58:Src/tcpm_driver.c ****   *val  = WirerequestFrom(1);
+ 314              		.loc 1 58 3 is_stmt 1 view .LVU55
+ 315              		.loc 1 58 11 is_stmt 0 view .LVU56
+ 316 0010 0120     		movs	r0, #1
+ 317 0012 FFF7FEFF 		bl	WirerequestFrom
+ 318              	.LVL29:
+ 319              		.loc 1 58 9 view .LVU57
+ 320 0016 2060     		str	r0, [r4]
+  59:Src/tcpm_driver.c ****   *val |= (WirerequestFrom(1) << 8);
+ 321              		.loc 1 59 3 is_stmt 1 view .LVU58
+ 322              		.loc 1 59 12 is_stmt 0 view .LVU59
+ 323 0018 0120     		movs	r0, #1
+ 324 001a FFF7FEFF 		bl	WirerequestFrom
+ 325              	.LVL30:
+ 326              		.loc 1 59 31 view .LVU60
+ 327 001e 0002     		lsls	r0, r0, #8
+ 328              		.loc 1 59 8 view .LVU61
+ 329 0020 2368     		ldr	r3, [r4]
+ 330 0022 1843     		orrs	r0, r3
+ 331 0024 2060     		str	r0, [r4]
+  60:Src/tcpm_driver.c **** 
+  61:Src/tcpm_driver.c ****   return 0;
+ 332              		.loc 1 61 3 is_stmt 1 view .LVU62
+  62:Src/tcpm_driver.c **** }
+ 333              		.loc 1 62 1 is_stmt 0 view .LVU63
+ 334 0026 0020     		movs	r0, #0
+ 335 0028 02B0     		add	sp, sp, #8
+ 336              		@ sp needed
+ 337              	.LVL31:
+ 338              		.loc 1 62 1 view .LVU64
+ 339 002a 10BD     		pop	{r4, pc}
+ 340              		.cfi_endproc
+ 341              	.LFE60:
+ 343              		.section	.text.tcpc_xfer,"ax",%progbits
+ 344              		.align	1
+ 345              		.global	tcpc_xfer
+ 346              		.syntax unified
+ 347              		.code	16
+ 348              		.thumb_func
+ 349              		.fpu softvfp
+ARM GAS  /tmp/ccRlZVpC.s 			page 8
+
+
+ 351              	tcpc_xfer:
+ 352              	.LVL32:
+ 353              	.LFB61:
+  63:Src/tcpm_driver.c **** 
+  64:Src/tcpm_driver.c **** int tcpc_xfer(int port,
+  65:Src/tcpm_driver.c **** 	const uint8_t *out, int out_size,
+  66:Src/tcpm_driver.c **** 	uint8_t *in, int in_size,
+  67:Src/tcpm_driver.c **** 	int flags)
+  68:Src/tcpm_driver.c **** {
+ 354              		.loc 1 68 1 is_stmt 1 view -0
+ 355              		.cfi_startproc
+ 356              		@ args = 8, pretend = 0, frame = 0
+ 357              		@ frame_needed = 0, uses_anonymous_args = 0
+ 358              		.loc 1 68 1 is_stmt 0 view .LVU66
+ 359 0000 70B5     		push	{r4, r5, r6, lr}
+ 360              	.LCFI13:
+ 361              		.cfi_def_cfa_offset 16
+ 362              		.cfi_offset 4, -16
+ 363              		.cfi_offset 5, -12
+ 364              		.cfi_offset 6, -8
+ 365              		.cfi_offset 14, -4
+ 366 0002 0800     		movs	r0, r1
+ 367              	.LVL33:
+ 368              		.loc 1 68 1 view .LVU67
+ 369 0004 1D00     		movs	r5, r3
+ 370 0006 049C     		ldr	r4, [sp, #16]
+  69:Src/tcpm_driver.c ****   if (out_size)
+ 371              		.loc 1 69 3 is_stmt 1 view .LVU68
+ 372              		.loc 1 69 6 is_stmt 0 view .LVU69
+ 373 0008 002A     		cmp	r2, #0
+ 374 000a 02D1     		bne	.L16
+ 375              	.LVL34:
+ 376              	.L12:
+  70:Src/tcpm_driver.c ****   {
+  71:Src/tcpm_driver.c ****     Wirewrite(out,out_size);
+  72:Src/tcpm_driver.c ****   }
+  73:Src/tcpm_driver.c **** 
+  74:Src/tcpm_driver.c ****   if (in_size) {
+ 377              		.loc 1 74 3 is_stmt 1 view .LVU70
+ 378              		.loc 1 74 6 is_stmt 0 view .LVU71
+ 379 000c 002C     		cmp	r4, #0
+ 380 000e 04D1     		bne	.L13
+ 381              	.LVL35:
+ 382              	.L14:
+  75:Src/tcpm_driver.c ****     for (; in_size>0; in_size--) {
+  76:Src/tcpm_driver.c ****         *in = WirerequestFrom(1);
+  77:Src/tcpm_driver.c ****         in++;
+  78:Src/tcpm_driver.c ****     }
+  79:Src/tcpm_driver.c ****   }
+  80:Src/tcpm_driver.c **** }
+ 383              		.loc 1 80 1 view .LVU72
+ 384              		@ sp needed
+ 385              	.LVL36:
+ 386              		.loc 1 80 1 view .LVU73
+ 387 0010 70BD     		pop	{r4, r5, r6, pc}
+ 388              	.LVL37:
+ 389              	.L16:
+ARM GAS  /tmp/ccRlZVpC.s 			page 9
+
+
+  71:Src/tcpm_driver.c ****   }
+ 390              		.loc 1 71 5 is_stmt 1 view .LVU74
+ 391 0012 1100     		movs	r1, r2
+ 392 0014 FFF7FEFF 		bl	Wirewrite
+ 393              	.LVL38:
+  71:Src/tcpm_driver.c ****   }
+ 394              		.loc 1 71 5 is_stmt 0 view .LVU75
+ 395 0018 F8E7     		b	.L12
+ 396              	.LVL39:
+ 397              	.L13:
+  75:Src/tcpm_driver.c ****     for (; in_size>0; in_size--) {
+ 398              		.loc 1 75 5 discriminator 1 view .LVU76
+ 399 001a 002C     		cmp	r4, #0
+ 400 001c F8DD     		ble	.L14
+  76:Src/tcpm_driver.c ****         in++;
+ 401              		.loc 1 76 9 is_stmt 1 discriminator 2 view .LVU77
+  76:Src/tcpm_driver.c ****         in++;
+ 402              		.loc 1 76 15 is_stmt 0 discriminator 2 view .LVU78
+ 403 001e 0120     		movs	r0, #1
+ 404 0020 FFF7FEFF 		bl	WirerequestFrom
+ 405              	.LVL40:
+  76:Src/tcpm_driver.c ****         in++;
+ 406              		.loc 1 76 13 discriminator 2 view .LVU79
+ 407 0024 2870     		strb	r0, [r5]
+  77:Src/tcpm_driver.c ****     }
+ 408              		.loc 1 77 9 is_stmt 1 discriminator 2 view .LVU80
+  77:Src/tcpm_driver.c ****     }
+ 409              		.loc 1 77 11 is_stmt 0 discriminator 2 view .LVU81
+ 410 0026 0135     		adds	r5, r5, #1
+ 411              	.LVL41:
+  75:Src/tcpm_driver.c ****         *in = WirerequestFrom(1);
+ 412              		.loc 1 75 30 discriminator 2 view .LVU82
+ 413 0028 013C     		subs	r4, r4, #1
+ 414              	.LVL42:
+  75:Src/tcpm_driver.c ****         *in = WirerequestFrom(1);
+ 415              		.loc 1 75 30 discriminator 2 view .LVU83
+ 416 002a F6E7     		b	.L13
+ 417              		.cfi_endproc
+ 418              	.LFE61:
+ 420              		.comm	ticks,4,4
+ 421              		.text
+ 422              	.Letext0:
+ 423              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 424              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 425              		.file 4 "Inc/usb_pd_tcpm.h"
+ 426              		.file 5 "Inc/usb_pd.h"
+ 427              		.file 6 "Inc/tcpm.h"
+ 428              		.file 7 "Inc/FUSB302.h"
+ 429              		.file 8 "Inc/tcpm_driver.h"
+ 430              		.file 9 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+ 431              		.file 10 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h"
+ 432              		.file 11 "/usr/arm-none-eabi/include/sys/lock.h"
+ 433              		.file 12 "/usr/arm-none-eabi/include/sys/_types.h"
+ 434              		.file 13 "/usr/lib/gcc/arm-none-eabi/8.2.0/include/stddef.h"
+ 435              		.file 14 "/usr/arm-none-eabi/include/sys/reent.h"
+ 436              		.file 15 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
+ 437              		.file 16 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
+ARM GAS  /tmp/ccRlZVpC.s 			page 10
+
+
+ 438              		.file 17 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_i2c.h"
+ 439              		.file 18 "Inc/main.h"
+ARM GAS  /tmp/ccRlZVpC.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 tcpm_driver.c
+     /tmp/ccRlZVpC.s:16     .text.Wirewrite:0000000000000000 $t
+     /tmp/ccRlZVpC.s:24     .text.Wirewrite:0000000000000000 Wirewrite
+     /tmp/ccRlZVpC.s:60     .text.Wirewrite:0000000000000018 $d
+     /tmp/ccRlZVpC.s:65     .text.WirerequestFrom:0000000000000000 $t
+     /tmp/ccRlZVpC.s:72     .text.WirerequestFrom:0000000000000000 WirerequestFrom
+     /tmp/ccRlZVpC.s:123    .text.WirerequestFrom:0000000000000028 $d
+     /tmp/ccRlZVpC.s:128    .text.tcpc_write:0000000000000000 $t
+     /tmp/ccRlZVpC.s:135    .text.tcpc_write:0000000000000000 tcpc_write
+     /tmp/ccRlZVpC.s:173    .text.tcpc_write16:0000000000000000 $t
+     /tmp/ccRlZVpC.s:180    .text.tcpc_write16:0000000000000000 tcpc_write16
+     /tmp/ccRlZVpC.s:223    .text.tcpc_read:0000000000000000 $t
+     /tmp/ccRlZVpC.s:230    .text.tcpc_read:0000000000000000 tcpc_read
+     /tmp/ccRlZVpC.s:278    .text.tcpc_read16:0000000000000000 $t
+     /tmp/ccRlZVpC.s:285    .text.tcpc_read16:0000000000000000 tcpc_read16
+     /tmp/ccRlZVpC.s:344    .text.tcpc_xfer:0000000000000000 $t
+     /tmp/ccRlZVpC.s:351    .text.tcpc_xfer:0000000000000000 tcpc_xfer
+                            *COM*:0000000000000004 ticks
+
+UNDEFINED SYMBOLS
+HAL_I2C_Master_Transmit
+hi2c1
+HAL_I2C_Master_Receive

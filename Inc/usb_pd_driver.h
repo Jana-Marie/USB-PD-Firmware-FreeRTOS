@@ -15,14 +15,17 @@
 
 //#define CONFIG_BBRAM
 #define CONFIG_CHARGE_MANAGER
+//#define CONFIG_COMMON_RUNTIME
 //#define CONFIG_USBC_BACKWARDS_COMPATIBLE_DFP
 //#define CONFIG_USBC_VCONN_SWAP
 //#define CONFIG_USB_PD_ALT_MODE
 //#define CONFIG_USB_PD_CHROMEOS
 #define CONFIG_USB_PD_DUAL_ROLE
+#define CONFIG_CMD_PD
 //#define CONFIG_USB_PD_GIVE_BACK
 //#define CONFIG_USB_PD_SIMPLE_DFP
 //#define CONFIG_USB_PD_TCPM_TCPCI
+#define PD_PREFER_HIGH_VOLTAGE
 
 /* Default pull-up value on the USB-C ports when they are used as source. */
 #define CONFIG_USB_PD_PULLUP TYPEC_RP_USB
@@ -51,8 +54,8 @@
 #define PDO_FIXED_FLAGS (PDO_FIXED_DUAL_ROLE | PDO_FIXED_DATA_SWAP |\
 PDO_FIXED_COMM_CAP)
 
-#define usleep(us) (delay_us(us))
-#define msleep(us) (delay_ms(us))
+//#define usleep(us) (delay_us(us))
+#define msleep(us) (osDelay(us))
 
 typedef union {
 	uint64_t val;

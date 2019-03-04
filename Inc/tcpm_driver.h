@@ -10,6 +10,8 @@
 #define TCPM_DRIVER_H_
 
 #include <stdint.h>
+#include <string.h>
+#include "cmsis_os.h"
 
 // USB-C Stuff
 #include "tcpm.h"

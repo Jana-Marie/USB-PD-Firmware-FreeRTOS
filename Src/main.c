@@ -30,7 +30,7 @@ void MX_I2C2_Init(void);
 void StartDefaultTask(void const * argument);
 
 const struct tcpc_config_t tcpc_config[CONFIG_USB_PD_PORT_COUNT] = {
-  {&hi2c1, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
+  {&hi2c2, fusb302_I2C_SLAVE_ADDR, &fusb302_tcpm_drv},
 };
 
 int main(void)
@@ -81,14 +81,19 @@ void StartDefaultTask(void const * argument)
   for(;;)
   {
     i++;
-    osDelay(1);
+    osDelay(2);
     HAL_GPIO_WritePin(GPIOA,LED_STATUS_Pin,HAL_GPIO_ReadPin(GPIOA,BUTTON_Pin));
-    sprintf(str,"Otter! %d %d\n\r",pd_is_connected(0),pd_is_port_enabled(0));
+    
+    uint32_t otter = i;
+    
+    
+    sprintf(str,"Otter! %lu\n\r",pd_find_pdo_index(0,20000,&otter));//pd_is_connected(0),pd_is_port_enabled(0));
+    pd_request_source_voltage(0,20000);
     CDC_Transmit_FS((unsigned char*)str,sizeof(str));
     
-    //if (HAL_GPIO_ReadPin(GPIOA,INT_N_Pin) == 0) {
-    //  tcpc_alert(0);
-    //}
+    if (HAL_GPIO_ReadPin(GPIOA,INT_N_Pin) == 0) {
+      tcpc_alert(0);
+    }
 
     pd_run_state_machine(0);
   }
